@@ -5,6 +5,7 @@ A new Flutter project.
 ## Getting Started
 
 This project is a starting point for a Flutter application.
+After Clonning, please run the command : flutter packages get
 
 A few resources to get you started if this is your first Flutter project:
 
