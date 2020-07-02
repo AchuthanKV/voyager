@@ -68,7 +68,7 @@ class _SignUpPageState extends State<SignUpPage> {
             : ListView(
                 children: <Widget>[
                   logoSection(),
-                  logoTitle(),
+                  //logoTitle(),
                   headerSection(),
                   textSection(),
                   buttonSection(),
@@ -82,7 +82,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Container logoSection() {
     return Container(
       alignment: Alignment(0.0, 0.0),
-      height: 50.0,
+      height: 130.0,
       //width: 100.0,
       margin: EdgeInsets.only(top: 50.0),
       decoration: BoxDecoration(
@@ -147,7 +147,7 @@ class _SignUpPageState extends State<SignUpPage> {
               "Sign Up",
               style: GoogleFonts.raleway(
                 textStyle: TextStyle(
-                    color: Colors.white,
+                    color: Color(THEME.PRIMARY_COLOR),
                     fontSize: 25.0,
                     fontWeight: FontWeight.normal),
               ),
@@ -189,16 +189,18 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
                 controller: firstNameController,
                 cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.account_circle, color: Colors.white70),
+                  icon: Icon(Icons.account_circle,
+                      color: Color(THEME.PRIMARY_COLOR)),
                   hintText: "First Name",
                   border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70)),
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 ),
               ),
               SizedBox(height: 30.0),
