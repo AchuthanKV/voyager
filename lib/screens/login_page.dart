@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
             : ListView(
                 children: <Widget>[
                   logoSection(),
-                  logoTitle(),
+                  //logoTitle(),
                   headerSection(),
                   textSection(),
                   forgotPasswordSection(),
@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
   Container logoSection() {
     return Container(
       alignment: Alignment(0.0, 0.0),
-      height: 50.0,
+      height: 130.0,
       //width: 100.0,
       margin: EdgeInsets.only(top: 50.0),
       decoration: BoxDecoration(
@@ -134,7 +134,8 @@ class _LoginPageState extends State<LoginPage> {
       child: Text(
         "Sign In",
         style: GoogleFonts.raleway(
-          textStyle: TextStyle(color: Colors.white, fontSize: 25.0),
+          textStyle:
+              TextStyle(color: Color(THEME.PRIMARY_COLOR), fontSize: 25.0),
         ),
       ),
     );
@@ -157,16 +158,17 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 controller: emailController,
                 cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.email, color: Colors.white70),
-                  hintText: "Email",
+                  icon: Icon(Icons.email, color: Color(THEME.PRIMARY_COLOR)),
+                  hintText: "Membership No.",
                   border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70)),
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 ),
               ),
               SizedBox(height: 30.0),
@@ -180,16 +182,17 @@ class _LoginPageState extends State<LoginPage> {
                 controller: passwordController,
                 cursorColor: Colors.white,
                 obscureText: true,
-                style: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.lock, color: Colors.white70),
-                  hintText: "Password",
+                  icon: Icon(Icons.lock, color: Color(THEME.PRIMARY_COLOR)),
+                  hintText: "Pin",
                   border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70)),
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 ),
               ),
               SizedBox(height: 30.0),
@@ -247,7 +250,8 @@ class _LoginPageState extends State<LoginPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Don't have an account?", style: TextStyle(color: Colors.white)),
+          Text("Don't have an account?",
+              style: TextStyle(color: Color(THEME.PRIMARY_COLOR))),
           InkWell(
             onTap: () => {
               Navigator.of(context).pushNamed('/signup'),
@@ -255,7 +259,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Text(
               'Sign up',
               style: TextStyle(
-                  color: Color(THEME.PRIMARY_COLOR),
+                  color: Color(THEME.SECONDARY_COLOR),
                   decoration: TextDecoration.underline,
                   fontWeight: FontWeight.bold),
             ),

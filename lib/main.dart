@@ -6,9 +6,9 @@ import 'package:chameleon/screens/sign_up.dart';
 import 'package:chameleon/theme/theme.dart' as THEME;
 
 void main() => runApp(MaterialApp(
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Color(0xff212035),
+        primaryColor: Color(THEME.PRIMARY_COLOR),
       ),
       home: LoginPage(),
       routes: {
@@ -28,7 +28,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text("Chameleon", style: TextStyle(color: Colors.white)),
+        title: Text("South African Airlines",
+            style: TextStyle(color: Colors.white)),
         actions: <Widget>[
           FlatButton(
             onPressed: () {
@@ -66,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                       child: Text(
                         "Welcome to Dashboard",
                         style: TextStyle(
-                            color: Colors.white,
+                            color: Color(THEME.PRIMARY_COLOR),
                             fontSize: 30,
                             fontWeight: FontWeight.normal),
                       ),
