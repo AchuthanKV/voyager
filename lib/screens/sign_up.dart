@@ -188,7 +188,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   _fName = value;
                 },
                 controller: firstNameController,
-                cursorColor: Colors.white,
+                cursorColor: Color(THEME.PRIMARY_COLOR),
                 style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
                   icon: Icon(Icons.account_circle,
@@ -215,17 +215,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   _lName = value;
                 },
                 controller: lastNameController,
-                cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white70),
+                cursorColor: Color(THEME.PRIMARY_COLOR),
+                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.account_circle, color: Colors.white70),
+                  icon: Icon(Icons.account_circle,
+                      color: Color(THEME.PRIMARY_COLOR)),
                   hintText: "Last Name",
                   border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white70)),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 ),
               ),
               SizedBox(height: 30.0),
@@ -240,17 +241,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   _email = value;
                 },
                 controller: emailController,
-                cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white70),
+                cursorColor: Color(THEME.PRIMARY_COLOR),
+                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.email, color: Colors.white70),
+                  icon: Icon(Icons.email, color: Color(THEME.PRIMARY_COLOR)),
                   hintText: "Email",
                   border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70)),
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 ),
               ),
               SizedBox(height: 30.0),
@@ -265,17 +267,17 @@ class _SignUpPageState extends State<SignUpPage> {
                   _phone = value;
                 },
                 controller: phoneController,
-                cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white70),
+                cursorColor: Color(THEME.PRIMARY_COLOR),
+                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.phone, color: Colors.white70),
+                  icon: Icon(Icons.phone, color: Color(THEME.PRIMARY_COLOR)),
                   hintText: "Phone",
                   border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white70)),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 ),
               ),
               SizedBox(height: 30.0),
@@ -287,18 +289,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   return null;
                 },
                 controller: passController,
-                cursorColor: Colors.white,
+                cursorColor: Color(THEME.PRIMARY_COLOR),
                 obscureText: true,
-                style: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.lock, color: Colors.white70),
+                  icon: Icon(Icons.lock, color: Color(THEME.PRIMARY_COLOR)),
                   hintText: "Password",
                   border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white70)),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 ),
               ),
               SizedBox(height: 30.0),
@@ -316,18 +318,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   _confPassword = value;
                 },
                 controller: confirmPassController,
-                cursorColor: Colors.white,
+                cursorColor: Color(THEME.PRIMARY_COLOR),
                 obscureText: true,
-                style: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.lock, color: Colors.white70),
+                  icon: Icon(Icons.lock, color: Color(THEME.PRIMARY_COLOR)),
                   hintText: "Confirm Password",
                   border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white70)),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 ),
               ),
               SizedBox(height: 30.0),

@@ -8,6 +8,7 @@ import 'package:chameleon/services/api.dart' as API;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:chameleon/theme/theme.dart' as THEME;
+import 'package:local_auth/local_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -15,6 +16,66 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  final LocalAuthentication _autherization = LocalAuthentication();
+  bool _canChkBiomeric = false;
+  String _authOrNot = "Not Authorized";
+  List<BiometricType> _availBiometrics = List<BiometricType>();
+
+  Future<void> _checkBiometric() async {
+    bool canCheckBiometric = false;
+    try {
+      canCheckBiometric = await _autherization.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _canChkBiomeric = canCheckBiometric;
+    });
+  }
+
+  Future<void> _getListOfBiometricTypes() async {
+    List<BiometricType> listOfBiometrics;
+    try {
+      listOfBiometrics = await _autherization.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _availBiometrics = listOfBiometrics;
+    });
+  }
+
+  Future<void> _authorizeNow() async {
+    bool isAuthorized = false;
+    try {
+      isAuthorized = await _autherization.authenticateWithBiometrics(
+        localizedReason: "Please authenticate to complete your transaction",
+        useErrorDialogs: true,
+        stickyAuth: true,
+      );
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      if (isAuthorized) {
+        _authOrNot = "Authorized";
+      } else {
+        _authOrNot = "Not Authorized";
+      }
+    });
+  }
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   final _loginFormKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = false;
@@ -57,6 +118,11 @@ class _LoginPageState extends State<LoginPage> {
               ))
             : ListView(
                 children: <Widget>[
+                  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                  chkBiometric(_canChkBiomeric),
+                  listBiometrics(_availBiometrics),
+                  biometricAuth(_authOrNot),
+                  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                   logoSection(),
                   //logoTitle(),
                   headerSection(),
@@ -69,6 +135,59 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  Container chkBiometric(_canChkBiomeric) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Can we check Biometric : $_canChkBiomeric"),
+          RaisedButton(
+            onPressed: _checkBiometric,
+            child: Text("Check Biometric"),
+            color: Colors.green,
+            colorBrightness: Brightness.light,
+          )
+        ],
+      ),
+    );
+  }
+
+  Container listBiometrics(_availBiometrics) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("List Of Biometric : ${_availBiometrics.toString()}"),
+          RaisedButton(
+            onPressed: _getListOfBiometricTypes,
+            child: Text("List of Biometric Types"),
+            color: Colors.green,
+            colorBrightness: Brightness.light,
+          )
+        ],
+      ),
+    );
+  }
+
+  Container biometricAuth(_authOrNot) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Authorized : $_authOrNot"),
+          RaisedButton(
+            onPressed: _authorizeNow,
+            child: Text("Authorize now"),
+            color: Colors.green,
+            colorBrightness: Brightness.light,
+          ),
+        ],
+      ),
+    );
+  }
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   Container logoSection() {
     return Container(
