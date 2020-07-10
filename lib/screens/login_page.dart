@@ -1,0 +1,533 @@
+import 'dart:convert';
+import 'dart:core';
+import 'dart:ui';
+import 'package:chameleon/main.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:chameleon/services/api.dart' as API;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:chameleon/theme/theme.dart' as THEME;
+import 'package:local_auth/local_auth.dart';
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  String errorMsg = '';
+  final username = 'admin';
+  final mail = 'admin@gmail.com';
+  final password = 'admin';
+
+  bool _isNormalSignIn = true;
+  String _nextSignInText = "SignIn With FingerPrint";
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  final LocalAuthentication _autherization = LocalAuthentication();
+  bool _canChkBiomeric = false;
+  String _authOrNot = "Not Authorized";
+  List<BiometricType> _availBiometrics = List<BiometricType>();
+
+  Future<void> _checkBiometric() async {
+    bool canCheckBiometric = false;
+    try {
+      canCheckBiometric = await _autherization.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _canChkBiomeric = canCheckBiometric;
+    });
+  }
+
+  Future<void> _getListOfBiometricTypes() async {
+    List<BiometricType> listOfBiometrics;
+    try {
+      listOfBiometrics = await _autherization.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _availBiometrics = listOfBiometrics;
+    });
+  }
+
+  Future<void> _authorizeNow() async {
+    bool isAuthorized = false;
+    try {
+      print('Is finger print available : ' + _canChkBiomeric.toString());
+      if (_canChkBiomeric) {
+        isAuthorized = await _autherization.authenticateWithBiometrics(
+          localizedReason: "Please authenticate to complete your transaction",
+          useErrorDialogs: true,
+          stickyAuth: true,
+        );
+      }
+    } on PlatformException catch (e) {
+      print(e);
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      if (isAuthorized) {
+        _authOrNot = "Authorized";
+        dummySignIn('admin', true);
+        _isLoading = true;
+      } else {
+        _authOrNot = "Not Authorized";
+      }
+    });
+    // call dummySignIn
+    //if (_loginFormKey.currentState.validate()) {
+  }
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  final _loginFormKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isLoading = false;
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+
+  void initState() {
+    super.initState();
+    emailController.addListener(() {
+      final text = emailController.text.toLowerCase();
+      emailController.value = emailController.value.copyWith(
+        text: text,
+        // selection:
+        //     TextSelection(baseOffset: text.length, extentOffset: text.length),
+        composing: TextRange.empty,
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
+        .copyWith(statusBarColor: Colors.transparent));
+    return Scaffold(
+      key: _scaffoldKey,
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          //gradient: LinearGradient(colors: [
+          //  Color(THEME.BG_GRADIENT_COLOR_1),
+          //  Color(THEME.BG_GRADIENT_COLOR_2)
+          //], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+          image: DecorationImage(
+            image: ExactAssetImage("assets/images/saa2.jpg"),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: ClipRRect(
+          // make sure we apply clip it properly
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colors.grey.withOpacity(0.1),
+              child: _isLoading
+                  ? Center(
+                      child: SpinKitHourGlass(
+                        color: Colors.white,
+                        size: 100.0,
+                      ),
+                    )
+                  //child: _isLoading
+                  //   ? Center(
+                  //   child: CircularProgressIndicator(
+                  //   valueColor: new AlwaysStoppedAnimation<Color>(
+                  //       Color(THEME.PRIMARY_COLOR)),
+                  //  ))
+                  : ListView(
+                      children: <Widget>[
+                        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                        //chkBiometric(_canChkBiomeric),
+                        //listBiometrics(_availBiometrics),
+                        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                        logoSection(),
+                        //logoTitle(),
+                        // headerSection(),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        normalOrBio(),
+                        (_isNormalSignIn) ? normalSignIn() : biometricAuth(),
+                        registerAccountSection()
+                      ],
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container normalOrBio() {
+    _checkBiometric();
+    //_authorizeNow();
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.0),
+      alignment: Alignment(1.0, 0.0),
+      child: normalSignInLnk(),
+    );
+  }
+
+  InkWell normalSignInLnk() {
+    return InkWell(
+      child: Text(
+        _nextSignInText,
+        style: TextStyle(
+            color: Color(THEME.PRIMARY_COLOR),
+            decoration: TextDecoration.underline),
+      ),
+      onTap: () => {
+        setState(() {
+          if (_isNormalSignIn) {
+            _isNormalSignIn = false;
+            _nextSignInText = "SignIn With Pin";
+            _authorizeNow();
+          } else {
+            try {
+              //bool isAuthorized = false;
+              //print(asyncCall());
+              //print('Authorize: ' + isAuthorized);
+            } on PlatformException catch (e) {
+              print(e);
+            }
+            _isNormalSignIn = true;
+            _nextSignInText = "SignIn With FingerPrint";
+          }
+        })
+      },
+    );
+  }
+
+  Future<void> asyncCall() async {
+    return await _autherization.authenticateWithBiometrics(
+      //sensitiveTransaction: true,
+      localizedReason: "Please authenticate to complete your transaction",
+      useErrorDialogs: true,
+      stickyAuth: true,
+    );
+  }
+
+  Container normalSignIn() {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          textSection(),
+          forgotPasswordSection(),
+          buttonSection()
+        ],
+      ),
+    );
+  }
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  Container chkBiometric(_canChkBiomeric) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Can we check Biometric : $_canChkBiomeric"),
+          RaisedButton(
+            onPressed: _checkBiometric,
+            child: Text("Check Biometric"),
+            color: Colors.green,
+            colorBrightness: Brightness.light,
+          )
+        ],
+      ),
+    );
+  }
+
+  Container listBiometrics(_availBiometrics) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("List Of Biometric : ${_availBiometrics.toString()}"),
+          RaisedButton(
+            onPressed: _getListOfBiometricTypes,
+            child: Text("List of Biometric Types"),
+            color: Colors.green,
+            colorBrightness: Brightness.light,
+          )
+        ],
+      ),
+    );
+  }
+
+  Container biometricAuth() {
+    return Container(
+        // child: Column(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: <Widget>[
+        //     //Text("Authorized : $_authOrNot"),
+        //     RaisedButton(
+        //       onPressed: _authorizeNow,
+        //       //child: Text("Sign In With FingerPrint",
+        //       //    style: TextStyle(color: Colors.white)),
+        //       //color: Color(THEME.PRIMARY_COLOR),
+        //       //shape: RoundedRectangleBorder(
+        //       //    borderRadius: BorderRadius.circular(5.0)),
+        //       //colorBrightness: Brightness.light,
+        //     ),
+        //   ],
+        // ),
+        );
+  }
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  Container logoSection() {
+    return Container(
+      alignment: Alignment(0.0, 0.0),
+      height: 130.0,
+      //width: 100.0,
+      margin: EdgeInsets.only(top: 50.0),
+      decoration: BoxDecoration(
+          image: DecorationImage(
+        image: AssetImage('assets/images/logo.png'),
+        fit: BoxFit.fitHeight,
+      )),
+    );
+  }
+
+  Container logoTitle() {
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      child: Text(
+        "Chameleon",
+        style: GoogleFonts.raleway(
+          textStyle: TextStyle(color: Colors.white, fontSize: 35.0),
+        ),
+      ),
+    );
+  }
+
+  signIn(String email, pass) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    Map data = {'email': email, 'password': pass};
+    var jsonResponse;
+    var response = await http.post(API.LOGIN_API,
+        headers: {"Content-Type": "application/json"}, body: json.encode(data));
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        setState(() {
+          _isLoading = false;
+        });
+        sharedPreferences.setString(
+            "accessToken", jsonResponse['results']['user']['accessToken']);
+        sharedPreferences.setString(
+            "sessionToken", jsonResponse['results']['user']['sessionToken']);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+            (Route<dynamic> route) => false);
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      jsonResponse = json.decode(response.body);
+      _displaySnackBar(context, jsonResponse);
+      //print(response.body);
+    }
+  }
+
+//Header Section
+  Container headerSection() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+      child: Text(
+        "Sign In",
+        style: GoogleFonts.raleway(
+          textStyle:
+              TextStyle(color: Color(THEME.PRIMARY_COLOR), fontSize: 25.0),
+        ),
+      ),
+    );
+  }
+
+//Text Section with InkWell
+  Container textSection() {
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+        child: Form(
+          key: _loginFormKey,
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter your Email ID/ Membership Id';
+                  }
+                  return null;
+                },
+                controller: emailController,
+                cursorColor: Colors.white,
+                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                decoration: InputDecoration(
+                  icon: Icon(Icons.email, color: Color(THEME.PRIMARY_COLOR)),
+                  hintText: "Membership No. / Email ID",
+                  border: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                ),
+              ),
+              SizedBox(height: 30.0),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter your password';
+                  }
+                  return null;
+                },
+                controller: passwordController,
+                cursorColor: Colors.white,
+                obscureText: true,
+                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                decoration: InputDecoration(
+                  icon: Icon(Icons.lock, color: Color(THEME.PRIMARY_COLOR)),
+                  hintText: "Pin",
+                  border: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                ),
+              ),
+              SizedBox(height: 30.0),
+            ],
+          ),
+        ));
+  }
+
+  Container forgotPasswordSection() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.0),
+      alignment: Alignment(1.0, 0.0),
+      child: inkWellSection("Forgot Password?"),
+    );
+  }
+
+  InkWell inkWellSection(String title) {
+    return InkWell(
+      child: Text(
+        title,
+        style: TextStyle(
+            color: Color(THEME.PRIMARY_COLOR),
+            decoration: TextDecoration.underline),
+      ),
+    );
+  }
+
+  dummySignIn(String email, pass) {
+    if ((email == username || email == mail) && (pass == password || pass)) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+          (Route<dynamic> route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+          (Route<dynamic> route) => false);
+    }
+  }
+
+  Container buttonSection() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 50.0,
+      padding: EdgeInsets.symmetric(horizontal: 20.0),
+      margin: EdgeInsets.only(top: 55.0),
+      child: RaisedButton(
+        onPressed: () {
+          if (_loginFormKey.currentState.validate()) {
+            setState(() {
+              _isLoading = true;
+            });
+            dummySignIn(
+                emailController.text.trim(), passwordController.text.trim());
+            //signIn(emailController.text.trim(), passwordController.text.trim());
+          }
+        },
+        textColor: Colors.white,
+        elevation: 0.0,
+        color: Color(THEME.PRIMARY_COLOR),
+        child: Text("Sign In", style: TextStyle(color: Colors.white)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+      ),
+    );
+  }
+
+  Container registerAccountSection() {
+    return Container(
+      margin: EdgeInsets.only(top: 40.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        verticalDirection: VerticalDirection.down,
+        children: <Widget>[
+          Text("New User? ",
+              style: TextStyle(color: Color(THEME.PRIMARY_COLOR))),
+          InkWell(
+            onTap: () => {
+              Navigator.of(context).pushNamed('/signup'),
+            },
+            child: Text(
+              'Join Voyager',
+              //'Sign up',
+              style: TextStyle(
+                color: Color(THEME.SECONDARY_COLOR),
+                decoration: TextDecoration.underline,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          )
+        ],
+        //teinkWellSection("Don't have an account? Sign up"
+      ),
+    );
+  }
+
+  _displaySnackBar(BuildContext context, var response) {
+    print(response);
+    var msg = response['errors'][0]['msg'];
+    // print(jsonObj);
+    // var msg;
+    // if (jsonObj.isEmpty()) {
+    //   msg = jsonObj;
+    // } else {
+    //   msg = 'Something went wrong!';
+    // }
+    final snackBar = SnackBar(
+      content: Text(
+        msg,
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor: Colors.red,
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+}
