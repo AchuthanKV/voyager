@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:ui';
 import 'package:chameleon/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:chameleon/services/api.dart' as API;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +18,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  String errorMsg = '';
+  final username = 'admin';
+  final mail = 'admin@gmail.com';
+  final password = 'admin';
+
+  bool _isNormalSignIn = true;
+  String _nextSignInText = "SignIn With FingerPrint";
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   final LocalAuthentication _autherization = LocalAuthentication();
   bool _canChkBiomeric = false;
@@ -55,11 +64,14 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _authorizeNow() async {
     bool isAuthorized = false;
     try {
-      isAuthorized = await _autherization.authenticateWithBiometrics(
-        localizedReason: "Please authenticate to complete your transaction",
-        useErrorDialogs: true,
-        stickyAuth: true,
-      );
+      print('Is finger print available : ' + _canChkBiomeric.toString());
+      if (_canChkBiomeric) {
+        isAuthorized = await _autherization.authenticateWithBiometrics(
+          localizedReason: "Please authenticate to complete your transaction",
+          useErrorDialogs: true,
+          stickyAuth: true,
+        );
+      }
     } on PlatformException catch (e) {
       print(e);
     }
@@ -69,10 +81,14 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       if (isAuthorized) {
         _authOrNot = "Authorized";
+        dummySignIn('admin', true);
+        _isLoading = true;
       } else {
         _authOrNot = "Not Authorized";
       }
     });
+    // call dummySignIn
+    //if (_loginFormKey.currentState.validate()) {
   }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -105,33 +121,117 @@ class _LoginPageState extends State<LoginPage> {
         height: double.infinity,
         width: double.infinity,
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Color(THEME.BG_GRADIENT_COLOR_1),
-            Color(THEME.BG_GRADIENT_COLOR_2)
-          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+          //gradient: LinearGradient(colors: [
+          //  Color(THEME.BG_GRADIENT_COLOR_1),
+          //  Color(THEME.BG_GRADIENT_COLOR_2)
+          //], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+          image: DecorationImage(
+            image: ExactAssetImage("assets/images/saa2.jpg"),
+            fit: BoxFit.fill,
+          ),
         ),
-        child: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(
-                    Color(THEME.PRIMARY_COLOR)),
-              ))
-            : ListView(
-                children: <Widget>[
-                  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                  chkBiometric(_canChkBiomeric),
-                  listBiometrics(_availBiometrics),
-                  biometricAuth(_authOrNot),
-                  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                  logoSection(),
-                  //logoTitle(),
-                  headerSection(),
-                  textSection(),
-                  forgotPasswordSection(),
-                  buttonSection(),
-                  registerAccountSection()
-                ],
-              ),
+        child: ClipRRect(
+          // make sure we apply clip it properly
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colors.grey.withOpacity(0.1),
+              child: _isLoading
+                  ? Center(
+                      child: SpinKitHourGlass(
+                        color: Colors.white,
+                        size: 100.0,
+                      ),
+                    )
+                  //child: _isLoading
+                  //   ? Center(
+                  //   child: CircularProgressIndicator(
+                  //   valueColor: new AlwaysStoppedAnimation<Color>(
+                  //       Color(THEME.PRIMARY_COLOR)),
+                  //  ))
+                  : ListView(
+                      children: <Widget>[
+                        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                        //chkBiometric(_canChkBiomeric),
+                        //listBiometrics(_availBiometrics),
+                        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                        logoSection(),
+                        //logoTitle(),
+                        // headerSection(),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        normalOrBio(),
+                        (_isNormalSignIn) ? normalSignIn() : biometricAuth(),
+                        registerAccountSection()
+                      ],
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container normalOrBio() {
+    _checkBiometric();
+    //_authorizeNow();
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.0),
+      alignment: Alignment(1.0, 0.0),
+      child: normalSignInLnk(),
+    );
+  }
+
+  InkWell normalSignInLnk() {
+    return InkWell(
+      child: Text(
+        _nextSignInText,
+        style: TextStyle(
+            color: Color(THEME.PRIMARY_COLOR),
+            decoration: TextDecoration.underline),
+      ),
+      onTap: () => {
+        setState(() {
+          if (_isNormalSignIn) {
+            _isNormalSignIn = false;
+            _nextSignInText = "SignIn With Pin";
+            _authorizeNow();
+          } else {
+            try {
+              //bool isAuthorized = false;
+              //print(asyncCall());
+              //print('Authorize: ' + isAuthorized);
+            } on PlatformException catch (e) {
+              print(e);
+            }
+            _isNormalSignIn = true;
+            _nextSignInText = "SignIn With FingerPrint";
+          }
+        })
+      },
+    );
+  }
+
+  Future<void> asyncCall() async {
+    return await _autherization.authenticateWithBiometrics(
+      //sensitiveTransaction: true,
+      localizedReason: "Please authenticate to complete your transaction",
+      useErrorDialogs: true,
+      stickyAuth: true,
+    );
+  }
+
+  Container normalSignIn() {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          textSection(),
+          forgotPasswordSection(),
+          buttonSection()
+        ],
       ),
     );
   }
@@ -171,21 +271,24 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Container biometricAuth(_authOrNot) {
+  Container biometricAuth() {
     return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text("Authorized : $_authOrNot"),
-          RaisedButton(
-            onPressed: _authorizeNow,
-            child: Text("Authorize now"),
-            color: Colors.green,
-            colorBrightness: Brightness.light,
-          ),
-        ],
-      ),
-    );
+        // child: Column(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: <Widget>[
+        //     //Text("Authorized : $_authOrNot"),
+        //     RaisedButton(
+        //       onPressed: _authorizeNow,
+        //       //child: Text("Sign In With FingerPrint",
+        //       //    style: TextStyle(color: Colors.white)),
+        //       //color: Color(THEME.PRIMARY_COLOR),
+        //       //shape: RoundedRectangleBorder(
+        //       //    borderRadius: BorderRadius.circular(5.0)),
+        //       //colorBrightness: Brightness.light,
+        //     ),
+        //   ],
+        // ),
+        );
   }
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -271,7 +374,7 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter your Email ID';
+                    return 'Please enter your Email ID/ Membership Id';
                   }
                   return null;
                 },
@@ -280,7 +383,7 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
                   icon: Icon(Icons.email, color: Color(THEME.PRIMARY_COLOR)),
-                  hintText: "Membership No.",
+                  hintText: "Membership No. / Email ID",
                   border: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
@@ -339,6 +442,18 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  dummySignIn(String email, pass) {
+    if ((email == username || email == mail) && (pass == password || pass)) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+          (Route<dynamic> route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+          (Route<dynamic> route) => false);
+    }
+  }
+
   Container buttonSection() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -351,7 +466,9 @@ class _LoginPageState extends State<LoginPage> {
             setState(() {
               _isLoading = true;
             });
-            signIn(emailController.text.trim(), passwordController.text.trim());
+            dummySignIn(
+                emailController.text.trim(), passwordController.text.trim());
+            //signIn(emailController.text.trim(), passwordController.text.trim());
           }
         },
         textColor: Colors.white,
@@ -368,19 +485,23 @@ class _LoginPageState extends State<LoginPage> {
       margin: EdgeInsets.only(top: 40.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        verticalDirection: VerticalDirection.down,
         children: <Widget>[
-          Text("Don't have an account?",
+          Text("New User? ",
               style: TextStyle(color: Color(THEME.PRIMARY_COLOR))),
           InkWell(
             onTap: () => {
               Navigator.of(context).pushNamed('/signup'),
             },
             child: Text(
-              'Sign up',
+              'Join Voyager',
+              //'Sign up',
               style: TextStyle(
-                  color: Color(THEME.SECONDARY_COLOR),
-                  decoration: TextDecoration.underline,
-                  fontWeight: FontWeight.bold),
+                color: Color(THEME.SECONDARY_COLOR),
+                decoration: TextDecoration.underline,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
           )
         ],

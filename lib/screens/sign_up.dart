@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:ui';
 import 'package:chameleon/main.dart';
+import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,21 +20,32 @@ class _SignUpPageState extends State<SignUpPage> {
   final _signupFormKey = GlobalKey<FormState>();
   final _signupScaffold = GlobalKey<ScaffoldState>();
   bool _isLoading = false;
+
+  final TextEditingController initialController = new TextEditingController();
+  final TextEditingController areaController = new TextEditingController();
+  final TextEditingController dob = new TextEditingController();
+  final TextEditingController nationalityController =
+      new TextEditingController();
+  final TextEditingController genderController = new TextEditingController();
+
   final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passController = new TextEditingController();
+  //final TextEditingController passController = new TextEditingController();
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
   final TextEditingController phoneController = new TextEditingController();
-  final TextEditingController confirmPassController =
-      new TextEditingController();
+  //final TextEditingController confirmPassController =
+  //    new TextEditingController();
   String _fName;
   String _lName;
   String _email;
   String _phone;
-  String _confPassword;
+  //String _confPassword;
+  String _selectedLocation;
+  List<String> _locations = ['A', 'B', 'C', 'D'];
 
   void initState() {
     super.initState();
+    getAreaCode();
     emailController.addListener(() {
       final text = emailController.text.toLowerCase();
       emailController.value = emailController.value.copyWith(
@@ -42,6 +55,12 @@ class _SignUpPageState extends State<SignUpPage> {
         composing: TextRange.empty,
       );
     });
+  }
+
+  getAreaCode() async {
+    http.Response response = await http.get('http://country.io/phone.json');
+    Map code = jsonDecode(response.body);
+    print(code);
   }
 
   @override
@@ -54,27 +73,41 @@ class _SignUpPageState extends State<SignUpPage> {
         height: double.infinity,
         width: double.infinity,
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Color(THEME.BG_GRADIENT_COLOR_1),
-            Color(THEME.BG_GRADIENT_COLOR_2)
-          ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+          image: DecorationImage(
+            image: ExactAssetImage("assets/images/saa2.jpg"),
+            fit: BoxFit.fill,
+            //gradient: LinearGradient(colors: [
+            //  Color(THEME.BG_GRADIENT_COLOR_1),
+            //  Color(THEME.BG_GRADIENT_COLOR_2)
+            //], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+          ),
         ),
-        child: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(
-                    Color(THEME.PRIMARY_COLOR)),
-              ))
-            : ListView(
-                children: <Widget>[
-                  logoSection(),
-                  //logoTitle(),
-                  headerSection(),
-                  textSection(),
-                  buttonSection(),
-                  //goBackSection()
-                ],
-              ),
+        child: ClipRRect(
+          // make sure we apply clip it properly
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colors.grey.withOpacity(0.1),
+              child: _isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                          Color(THEME.PRIMARY_COLOR)),
+                    ))
+                  : ListView(
+                      children: <Widget>[
+                        logoSection(),
+                        //logoTitle(),
+                        // headerSection(),
+                        textSection(),
+                        buttonSection(),
+                        //goBackSection()
+                      ],
+                    ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -256,81 +289,67 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
               SizedBox(height: 30.0),
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter a Phone Number';
-                  }
-                  return null;
-                },
-                onSaved: (String value) {
-                  _phone = value;
-                },
-                controller: phoneController,
-                cursorColor: Color(THEME.PRIMARY_COLOR),
-                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
-                decoration: InputDecoration(
-                  icon: Icon(Icons.phone, color: Color(THEME.PRIMARY_COLOR)),
-                  hintText: "Phone",
-                  border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70)),
-                  focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
-                ),
-              ),
-              SizedBox(height: 30.0),
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter a Password';
-                  }
-                  return null;
-                },
-                controller: passController,
-                cursorColor: Color(THEME.PRIMARY_COLOR),
-                obscureText: true,
-                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
-                decoration: InputDecoration(
-                  icon: Icon(Icons.lock, color: Color(THEME.PRIMARY_COLOR)),
-                  hintText: "Password",
-                  border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70)),
-                  focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
-                ),
-              ),
-              SizedBox(height: 30.0),
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter a Confirm Password';
-                  }
-                  if (value != passController.text) {
-                    return 'Password doesn\'t match';
-                  }
-                  return null;
-                },
-                onSaved: (String value) {
-                  _confPassword = value;
-                },
-                controller: confirmPassController,
-                cursorColor: Color(THEME.PRIMARY_COLOR),
-                obscureText: true,
-                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
-                decoration: InputDecoration(
-                  icon: Icon(Icons.lock, color: Color(THEME.PRIMARY_COLOR)),
-                  hintText: "Confirm Password",
-                  border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70)),
-                  focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
-                ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: DropDownFormField(
+                      titleText: 'Area Code',
+                      hintText: ' ',
+                      value: _selectedLocation,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedLocation = value;
+                        });
+                      },
+                      onSaved: (value) {
+                        setState(() {
+                          _selectedLocation = value;
+                        });
+                      },
+                      dataSource: [
+                        {
+                          "display": "India +91",
+                          "value": "+91",
+                        },
+                        {
+                          "display": "Indonesia 72",
+                          "value": "72",
+                        },
+                      ],
+                      textField: 'value',
+                      valueField: 'display',
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a Phone Number';
+                        }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        _phone = value;
+                      },
+                      controller: phoneController,
+                      cursorColor: Color(THEME.PRIMARY_COLOR),
+                      style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.phone,
+                            color: Color(THEME.PRIMARY_COLOR)),
+                        hintText: "Phone",
+                        border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white70)),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                        hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 30.0),
             ],
@@ -378,7 +397,7 @@ class _SignUpPageState extends State<SignUpPage> {
               'firstName': _fName,
               'lastName': _lName,
               'phone': _phone,
-              'password': _confPassword
+              //'password': _confPassword
             };
             print(data);
             setState(() {
