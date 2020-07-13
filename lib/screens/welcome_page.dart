@@ -1,4 +1,4 @@
-import 'package:chameleon/screens/login_page.dart';
+import 'package:voyager/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -24,26 +24,28 @@ class WelcomePage extends StatelessWidget {
                     fit: BoxFit.fill)),
           )),
       Positioned(
-        top: 250,
+        bottom: 350,
         child: Text(
           "Welcome",
-          style: GoogleFonts.dancingScript(
-            textStyle: TextStyle(
-                color: Colors.white, fontSize: 90.0, letterSpacing: 3),
-          ),
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 90.0,
+              letterSpacing: 3,
+              fontFamily: 'DancingScript'),
         ),
       ),
       Positioned(
-        top: 350,
+        bottom: 250,
         left: 30,
         child: Text(
           "to SAA Voyager ",
-          style: GoogleFonts.dancingScript(
-            textStyle: TextStyle(
-                color: Colors.white, fontSize: 55.0, letterSpacing: 3),
-          ),
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 55.0,
+              letterSpacing: 3,
+              fontFamily: 'DancingScript'),
         ),
-      ),
+      )
     ]));
   }
 }

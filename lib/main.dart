@@ -1,13 +1,13 @@
 import 'dart:ui';
 
-import 'package:chameleon/screens/login_options.dart';
-import 'package:chameleon/screens/login_page.dart';
-import 'package:chameleon/screens/welcome_page.dart';
+import 'package:voyager/screens/login_options.dart';
+import 'package:voyager/screens/login_page.dart';
+import 'package:voyager/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:chameleon/screens/sign_up.dart';
-import 'package:chameleon/theme/theme.dart' as THEME;
+import 'package:voyager/screens/sign_up.dart';
+import 'package:voyager/theme/theme.dart' as THEME;
 
 void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,

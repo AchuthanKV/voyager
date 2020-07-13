@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:ui';
-import 'package:chameleon/main.dart';
+import 'package:voyager/main.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:chameleon/services/api.dart' as API;
+import 'package:voyager/services/api.dart' as API;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:chameleon/theme/theme.dart' as THEME;
+import 'package:voyager/theme/theme.dart' as THEME;
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -23,25 +24,30 @@ class _SignUpPageState extends State<SignUpPage> {
 
   final TextEditingController initialController = new TextEditingController();
   final TextEditingController areaController = new TextEditingController();
-  final TextEditingController dob = new TextEditingController();
+  final TextEditingController dobController = new TextEditingController();
   final TextEditingController nationalityController =
       new TextEditingController();
   final TextEditingController genderController = new TextEditingController();
 
   final TextEditingController emailController = new TextEditingController();
-  //final TextEditingController passController = new TextEditingController();
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
   final TextEditingController phoneController = new TextEditingController();
-  //final TextEditingController confirmPassController =
-  //    new TextEditingController();
+
+  final FocusNode _lastNameFocus = FocusNode();
+  final FocusNode _dobFocus = FocusNode();
+
   String _fName;
   String _lName;
   String _email;
   String _phone;
-  //String _confPassword;
-  String _selectedLocation;
-  List<String> _locations = ['A', 'B', 'C', 'D'];
+  String _area;
+  String _gender;
+  String _dobString = "Select date of birth";
+  String _nationality;
+  List _locations = ['+91', '72'];
+  List _nations = ['India', 'USA', 'China'];
+  List _genders = ['Male', 'Female', 'Other'];
 
   void initState() {
     super.initState();
@@ -91,10 +97,11 @@ class _SignUpPageState extends State<SignUpPage> {
               color: Colors.grey.withOpacity(0.1),
               child: _isLoading
                   ? Center(
-                      child: CircularProgressIndicator(
-                      valueColor: new AlwaysStoppedAnimation<Color>(
-                          Color(THEME.PRIMARY_COLOR)),
-                    ))
+                      child: SpinKitCubeGrid(
+                        color: Colors.white,
+                        size: 100.0,
+                      ),
+                    )
                   : ListView(
                       children: <Widget>[
                         logoSection(),
@@ -161,7 +168,7 @@ class _SignUpPageState extends State<SignUpPage> {
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Text(
-        "Chameleon",
+        "Voyager",
         style: GoogleFonts.raleway(
           textStyle: TextStyle(color: Colors.white, fontSize: 35.0),
         ),
@@ -221,23 +228,28 @@ class _SignUpPageState extends State<SignUpPage> {
                   _fName = value;
                 },
                 controller: firstNameController,
-                cursorColor: Color(THEME.PRIMARY_COLOR),
-                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                onFieldSubmitted: (term) {
+                  FocusScope.of(context).requestFocus(_lastNameFocus);
+                },
+                cursorColor: Colors.white,
+                style: TextStyle(color: Colors.white70),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.account_circle,
-                      color: Color(THEME.PRIMARY_COLOR)),
+                  icon: Icon(Icons.account_circle, color: Colors.white70),
                   hintText: "First Name",
                   border: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                      borderSide: BorderSide(color: Colors.white70)),
                   focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                      borderSide: BorderSide(color: Colors.white70)),
+                  hintStyle: TextStyle(color: Colors.white70),
+		  //Color(THEME.PRIMARY_COLOR)
                 ),
               ),
               SizedBox(height: 30.0),
               TextFormField(
+                focusNode: _lastNameFocus,
+                onFieldSubmitted: (term) {
+                  FocusScope.of(context).requestFocus(_dobFocus);
+                },
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter Last Name';
@@ -248,19 +260,102 @@ class _SignUpPageState extends State<SignUpPage> {
                   _lName = value;
                 },
                 controller: lastNameController,
-                cursorColor: Color(THEME.PRIMARY_COLOR),
-                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                cursorColor: Colors.white,
+                style: TextStyle(color: Colors.white70),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.account_circle,
-                      color: Color(THEME.PRIMARY_COLOR)),
+                  icon: Icon(Icons.account_circle, color: Colors.white70),
+		  //Color(THEME.PRIMARY_COLOR)
                   hintText: "Last Name",
                   border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white70)),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                  hintStyle: TextStyle(color: Colors.white70),
                 ),
+              ),
+              SizedBox(height: 30.0),
+              TextFormField(
+                focusNode: _dobFocus,
+                //  onFieldSubmitted: (term) {
+                //   FocusScope.of(context).requestFocus(_genderFocus);
+                // },
+                validator: (value) {
+                  if (_dobString == "Select date of birth") {
+                    return 'Please select date of Birth';
+                  }
+                  return null;
+                },
+                onTap: () async {
+                  final datePick = await showDatePicker(
+                      context: context,
+                      initialDate: new DateTime.now(),
+                      firstDate: new DateTime(1900),
+                      lastDate: new DateTime.now());
+                  if (datePick != null) {
+                    setState(() {
+                      _dobString =
+                          "${datePick.month}/${datePick.day}/${datePick.year}";
+                    });
+                  }
+                },
+                onChanged: (value) {
+                  setState(() {
+                    _dobString = "Select date of birth";
+                  });
+                },
+                onSaved: (String value) {},
+                controller: dobController,
+                cursorColor: Colors.white,
+                style: TextStyle(color: Colors.white70),
+                decoration: InputDecoration(
+                  icon: Icon(Icons.calendar_today, color: Colors.white70),
+                  hintText: _dobString,
+                  border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white70)),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                  hintStyle: TextStyle(color: Colors.white70),
+                ),
+              ),
+              SizedBox(height: 30.0),
+              Theme(
+                data: Theme.of(context).copyWith(
+                  canvasColor: Colors.blueGrey,
+                ),
+                child: DropdownButtonFormField(
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select gender';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _gender = value;
+                    },
+                    style: TextStyle(color: Colors.white70),
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.person, color: Colors.white70),
+                      hintText: "Select Gender",
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white70)),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                      hintStyle: TextStyle(color: Colors.white70),
+                    ),
+                    items: _genders.map((value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _gender = value;
+                      });
+                    }),
               ),
               SizedBox(height: 30.0),
               TextFormField(
@@ -274,56 +369,67 @@ class _SignUpPageState extends State<SignUpPage> {
                   _email = value;
                 },
                 controller: emailController,
-                cursorColor: Color(THEME.PRIMARY_COLOR),
-                style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                cursorColor: Colors.white,
+                style: TextStyle(color: Colors.white70),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.email, color: Color(THEME.PRIMARY_COLOR)),
+                  icon: Icon(Icons.email, color: Colors.white70),
                   hintText: "Email",
                   border: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                      borderSide: BorderSide(color: Colors.white70)),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                  hintStyle: TextStyle(color: Colors.white70),
+		  //Color(THEME.PRIMARY_COLOR)
                 ),
               ),
               SizedBox(height: 30.0),
               Row(
                 children: <Widget>[
                   Expanded(
-                    flex: 2,
-                    child: DropDownFormField(
-                      titleText: 'Area Code',
-                      hintText: ' ',
-                      value: _selectedLocation,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedLocation = value;
-                        });
-                      },
-                      onSaved: (value) {
-                        setState(() {
-                          _selectedLocation = value;
-                        });
-                      },
-                      dataSource: [
-                        {
-                          "display": "India +91",
-                          "value": "+91",
-                        },
-                        {
-                          "display": "Indonesia 72",
-                          "value": "72",
-                        },
-                      ],
-                      textField: 'value',
-                      valueField: 'display',
-                    ),
-                  ),
+                      flex: 2,
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          canvasColor: Colors.blueGrey,
+                        ),
+                        child: DropdownButtonFormField(
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Please select an area';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _area = value;
+                            },
+                            style: TextStyle(color: Colors.white70),
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.map, color: Colors.white70),
+                              hintText: "Area Code",
+                              border: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.white70)),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color(THEME.PRIMARY_COLOR))),
+                              hintStyle: TextStyle(color: Colors.white70),
+                            ),
+                            items: _locations.map((value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _area = value;
+                              });
+                            }),
+                      )),
                   Expanded(
                     flex: 4,
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter a Phone Number';
@@ -334,24 +440,61 @@ class _SignUpPageState extends State<SignUpPage> {
                         _phone = value;
                       },
                       controller: phoneController,
-                      cursorColor: Color(THEME.PRIMARY_COLOR),
-                      style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                      cursorColor: Colors.white70,
+                      style: TextStyle(color: Colors.white70),
                       decoration: InputDecoration(
-                        icon: Icon(Icons.phone,
-                            color: Color(THEME.PRIMARY_COLOR)),
+                        icon: Icon(Icons.phone, color: Colors.white70),
                         hintText: "Phone",
                         border: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.white70)),
                         focusedBorder: UnderlineInputBorder(
                             borderSide:
                                 BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                        hintStyle: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
+                        hintStyle: TextStyle(color: Colors.white70),
+			//Color(THEME.PRIMARY_COLOR)
                       ),
                     ),
                   ),
                 ],
               ),
               SizedBox(height: 30.0),
+              Theme(
+                data: Theme.of(context).copyWith(
+                  canvasColor: Colors.blueGrey,
+                ),
+                child: DropdownButtonFormField(
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select Nationality';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _nationality = value;
+                    },
+                    style: TextStyle(color: Colors.white70),
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.language, color: Colors.white70),
+                      hintText: "Select Nationality",
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white70)),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                      hintStyle: TextStyle(color: Colors.white70),
+                    ),
+                    items: _nations.map((value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _nationality = value;
+                      });
+                    }),
+              ),
             ],
           ),
         ),
@@ -397,7 +540,9 @@ class _SignUpPageState extends State<SignUpPage> {
               'firstName': _fName,
               'lastName': _lName,
               'phone': _phone,
-              //'password': _confPassword
+              'code': _area,
+              'nation': _nationality,
+              'gender': _gender,
             };
             print(data);
             setState(() {
@@ -409,7 +554,7 @@ class _SignUpPageState extends State<SignUpPage> {
         textColor: Colors.white,
         elevation: 0.0,
         color: Color(THEME.PRIMARY_COLOR),
-        child: Text("Sign Up", style: TextStyle(color: Colors.white)),
+        child: Text("Sign Up", style: TextStyle(color: Colors.white70)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
