@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:ui';
-import 'package:chameleon/main.dart';
+import 'package:voyager/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:chameleon/services/api.dart' as API;
+import 'package:voyager/services/api.dart' as API;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:chameleon/theme/theme.dart' as THEME;
+import 'package:voyager/theme/theme.dart' as THEME;
 import 'package:local_auth/local_auth.dart';
+import 'package:local_auth/error_codes.dart' as auth_error;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -68,13 +69,29 @@ class _LoginPageState extends State<LoginPage> {
       if (_canChkBiomeric) {
         isAuthorized = await _autherization.authenticateWithBiometrics(
           localizedReason: "Please authenticate to complete your transaction",
-          useErrorDialogs: true,
+          useErrorDialogs: false,
           stickyAuth: true,
         );
       }
     } on PlatformException catch (e) {
       print(e);
+      if (e.code == auth_error.passcodeNotSet) {
+        // Handle this exception here.
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Authentication Alert !"),
+                content: Text("Fingerprint not recorded or not provided."),
+              );
+            });
+      }
+    } on Exception catch (e) {
+      print(e);
     }
+
+    print('----- Autherised ? ' + isAuthorized.toString());
+    print('-----    mounted ? ' + mounted.toString());
 
     if (!mounted) return;
 
@@ -84,9 +101,20 @@ class _LoginPageState extends State<LoginPage> {
         dummySignIn('admin', true);
         _isLoading = true;
       } else {
-        _authOrNot = "Not Authorized";
+        setState(() {
+          _authOrNot = "Not Authorized";
+        });
+        // showDialog(
+        //     context: context,
+        //     builder: (BuildContext context) {
+        //       return AlertDialog(
+        //         title: Text("Authentication Alert !"),
+        //         content: Text("Fingerprint not recorded or not porvided."),
+        //       );
+        //     });
       }
     });
+
     // call dummySignIn
     //if (_loginFormKey.currentState.validate()) {
   }
@@ -97,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
-
+  final FocusNode _pinFocus = FocusNode();
   void initState() {
     super.initState();
     emailController.addListener(() {
@@ -201,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
           } else {
             try {
               //bool isAuthorized = false;
-              //print(asyncCall());
+              _autherization.stopAuthentication();
               //print('Authorize: ' + isAuthorized);
             } on PlatformException catch (e) {
               print(e);
@@ -211,15 +239,6 @@ class _LoginPageState extends State<LoginPage> {
           }
         })
       },
-    );
-  }
-
-  Future<void> asyncCall() async {
-    return await _autherization.authenticateWithBiometrics(
-      //sensitiveTransaction: true,
-      localizedReason: "Please authenticate to complete your transaction",
-      useErrorDialogs: true,
-      stickyAuth: true,
     );
   }
 
@@ -311,7 +330,7 @@ class _LoginPageState extends State<LoginPage> {
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Text(
-        "Chameleon",
+        "Voyager",
         style: GoogleFonts.raleway(
           textStyle: TextStyle(color: Colors.white, fontSize: 35.0),
         ),
@@ -379,6 +398,9 @@ class _LoginPageState extends State<LoginPage> {
                   return null;
                 },
                 controller: emailController,
+                onFieldSubmitted: (term) {
+                  FocusScope.of(context).requestFocus(_pinFocus);
+                },
                 cursorColor: Colors.white,
                 style: TextStyle(color: Color(THEME.PRIMARY_COLOR)),
                 decoration: InputDecoration(
@@ -395,6 +417,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 30.0),
               TextFormField(
+                focusNode: _pinFocus,
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter your password';
@@ -485,7 +508,6 @@ class _LoginPageState extends State<LoginPage> {
       margin: EdgeInsets.only(top: 40.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        verticalDirection: VerticalDirection.down,
         children: <Widget>[
           Text("New User? ",
               style: TextStyle(color: Color(THEME.PRIMARY_COLOR))),
@@ -495,13 +517,10 @@ class _LoginPageState extends State<LoginPage> {
             },
             child: Text(
               'Join Voyager',
-              //'Sign up',
               style: TextStyle(
-                color: Color(THEME.SECONDARY_COLOR),
-                decoration: TextDecoration.underline,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
+                  color: Color(THEME.SECONDARY_COLOR),
+                  decoration: TextDecoration.underline,
+                  fontWeight: FontWeight.bold),
             ),
           )
         ],

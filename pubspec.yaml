@@ -1,4 +1,4 @@
-name: chameleon
+name: voyager
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -62,13 +62,11 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Bowhouse
-  #     fonts:
-  #       - asset: assets/fonts/bowhouse/Bowhouse-Regular.ttf
-  #       - asset: assets/fonts/bowhouse/Bowhouse-Bold.ttf
-  #       - asset: assets/fonts/bowhouse/Bowhouse-Light.ttf
-  #       - asset: assets/fonts/bowhouse/Bowhouse-Black.ttf
+  fonts:
+    - family: DancingScript
+      fonts:
+        - asset: assets/fonts/dancing_script.ttf
+         
   # style: assets/italic
   # - family: Trajan Pro
   #   fonts:
