@@ -3,50 +3,22 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:voyager/services/background.dart';
 
-class AuthenticateFingerprint extends StatefulWidget {
-  AuthenticateFingerprint({Key key}) : super(key: key);
+class LoginOptions extends StatefulWidget {
+  LoginOptions({Key key}) : super(key: key);
+  bool isInstructionView = false;
 
   @override
-  _AuthenticateFingerprintState createState() =>
-      _AuthenticateFingerprintState();
+  _LoginOptionsState createState() => _LoginOptionsState();
 }
 
-class _AuthenticateFingerprintState extends State<AuthenticateFingerprint> {
-  LocalAuthentication auth = LocalAuthentication();
-  final _storage = FlutterSecureStorage();
+class _LoginOptionsState extends State<LoginOptions> {
   String usingBio = "false";
-  Map data = {};
-  bool _canCheckBiometrics = false;
-  List<BiometricType> _availableBiometrics;
-  String _authorized = "Not Authorized";
-  Future<void> _checkBiometrics() async {
-    bool canCheckBiometrics;
-    try {
-      canCheckBiometrics = await auth.canCheckBiometrics;
-    } on PlatformException catch (e) {
-      print(e);
-    }
-    if (!mounted) return;
-    setState(() {
-      _canCheckBiometrics = canCheckBiometrics;
-    });
-  }
-
-  Future<void> _getAvailableBiometrics() async {
-    List<BiometricType> availableBiometrics;
-    try {
-      availableBiometrics = await auth.getAvailableBiometrics();
-    } on PlatformException catch (e) {
-      print(e);
-    }
-    if (!mounted) return;
-    setState(() {
-      _availableBiometrics = availableBiometrics;
-    });
-  }
+  final _storage = FlutterSecureStorage();
+  LocalAuthentication auth = LocalAuthentication();
 
   Future<void> _authenticate() async {
     bool authenticated = false;
@@ -55,40 +27,20 @@ class _AuthenticateFingerprintState extends State<AuthenticateFingerprint> {
           localizedReason: "Scan your Fingerprint to authenticate",
           useErrorDialogs: true,
           stickyAuth: true);
+      _storage.write(key: 'biometric', value: 'true');
     } on PlatformException catch (e) {
       print("Exception $e");
     }
-    if (!mounted) return;
-    setState(() {
-      _authorized = authenticated ? "Authorized" : "Not Authorized";
-    });
-    if (_canCheckBiometrics) {
-      _storage.write(key: 'biometric', value: 'true');
-    }
+
+    return authenticated;
   }
 
   @override
   Widget build(BuildContext context) {
+    getStoredVal();
     return Stack(
       children: <Widget>[
-        Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: ExactAssetImage("assets/images/saa2.jpg"),
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: ClipRRect(
-              // make sure we apply clip it properly
-              child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    alignment: Alignment.center,
-                    color: Colors.grey.withOpacity(0.1),
-                  ))),
-        ),
+        BackgroundClass(),
         Scaffold(
           appBar: AppBar(
             title: Text('Login Options'),
@@ -101,36 +53,42 @@ class _AuthenticateFingerprintState extends State<AuthenticateFingerprint> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text('Can check Biometrics : $_canCheckBiometrics\n '),
-                  RaisedButton(
-                    child: Text('Check Biometrics'),
-                    onPressed: () {
-                      print("Hello: $usingBio");
-                      _checkBiometrics();
-                    },
+                  Icon(
+                    Icons.lock_outline,
+                    color: Colors.white70,
+                    size: 80,
                   ),
-                  Text('Available Biometrics : $_availableBiometrics\n '),
-                  RaisedButton(
-                    child: Text('Get available Biometrics : '),
-                    onPressed: () {
-                      _getAvailableBiometrics();
-                    },
-                  ),
-                  Text('Current State :  $_authorized\n '),
-                  RaisedButton(
-                    child: Text('Authenticate'),
-                    onPressed: () {
-                      _authenticate();
-                      getStoredVal();
-                    },
-                  ),
-                  RaisedButton(
-                    child: Text('Back'),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Text(usingBio),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'Enable Fingerprint',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 50,
+                      ),
+                      Switch(
+                        value: widget.isInstructionView,
+                        onChanged: (bool isOn) {
+                          setState(() {
+                            widget.isInstructionView = isOn;
+                          });
+                          if (isOn == true) {
+                            _authenticate();
+                          } else {
+                            setStoredVal();
+                          }
+                        },
+                        activeColor: Colors.yellow[100],
+                        inactiveTrackColor: Colors.white70,
+                        inactiveThumbColor: Colors.white70,
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -140,11 +98,26 @@ class _AuthenticateFingerprintState extends State<AuthenticateFingerprint> {
     );
   }
 
-  getStoredVal() async {
-    usingBio = await (_storage.read(key: 'biometric'));
-
+  setStoredVal() async {
+    await _storage.write(key: 'biometric', value: 'false');
     setState(() {
       usingBio = usingBio;
+      widget.isInstructionView = false;
     });
+  }
+
+  getStoredVal() async {
+    usingBio = await (_storage.read(key: 'biometric'));
+    if (usingBio == 'false') {
+      setState(() {
+        usingBio = usingBio;
+        widget.isInstructionView = false;
+      });
+    } else {
+      setState(() {
+        usingBio = usingBio;
+        widget.isInstructionView = true;
+      });
+    }
   }
 }
