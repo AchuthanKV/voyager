@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:ui';
 import 'package:voyager/main.dart';
-import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -35,6 +34,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController phoneController = new TextEditingController();
 
   final FocusNode _lastNameFocus = FocusNode();
+  final FocusNode _mailFocus = FocusNode();
   final FocusNode _dobFocus = FocusNode();
 
   String _fName;
@@ -241,14 +241,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white70)),
                   hintStyle: TextStyle(color: Colors.white70),
-		  //Color(THEME.PRIMARY_COLOR)
+                  //Color(THEME.PRIMARY_COLOR)
                 ),
               ),
               SizedBox(height: 30.0),
               TextFormField(
                 focusNode: _lastNameFocus,
                 onFieldSubmitted: (term) {
-                  FocusScope.of(context).requestFocus(_dobFocus);
+                  FocusScope.of(context).requestFocus(_mailFocus);
                 },
                 validator: (value) {
                   if (value.isEmpty) {
@@ -264,7 +264,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 style: TextStyle(color: Colors.white70),
                 decoration: InputDecoration(
                   icon: Icon(Icons.account_circle, color: Colors.white70),
-		  //Color(THEME.PRIMARY_COLOR)
+                  //Color(THEME.PRIMARY_COLOR)
                   hintText: "Last Name",
                   border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white70)),
@@ -276,7 +276,38 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               SizedBox(height: 30.0),
               TextFormField(
+                focusNode: _mailFocus,
+                onFieldSubmitted: (term) {
+                  FocusScope.of(context).requestFocus(_dobFocus);
+                },
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter a Email';
+                  }
+                  return null;
+                },
+                onSaved: (String value) {
+                  _email = value;
+                },
+                controller: emailController,
+                cursorColor: Colors.white,
+                style: TextStyle(color: Colors.white70),
+                decoration: InputDecoration(
+                  icon: Icon(Icons.email, color: Colors.white70),
+                  hintText: "Email",
+                  border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white70)),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                  hintStyle: TextStyle(color: Colors.white70),
+                  //Color(THEME.PRIMARY_COLOR)
+                ),
+              ),
+              SizedBox(height: 30.0),
+              TextFormField(
                 focusNode: _dobFocus,
+                readOnly: true,
                 //  onFieldSubmitted: (term) {
                 //   FocusScope.of(context).requestFocus(_genderFocus);
                 // },
@@ -358,32 +389,6 @@ class _SignUpPageState extends State<SignUpPage> {
                     }),
               ),
               SizedBox(height: 30.0),
-              TextFormField(
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter a Email';
-                  }
-                  return null;
-                },
-                onSaved: (String value) {
-                  _email = value;
-                },
-                controller: emailController,
-                cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white70),
-                decoration: InputDecoration(
-                  icon: Icon(Icons.email, color: Colors.white70),
-                  hintText: "Email",
-                  border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70)),
-                  focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
-		  //Color(THEME.PRIMARY_COLOR)
-                ),
-              ),
-              SizedBox(height: 30.0),
               Row(
                 children: <Widget>[
                   Expanded(
@@ -451,7 +456,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             borderSide:
                                 BorderSide(color: Color(THEME.PRIMARY_COLOR))),
                         hintStyle: TextStyle(color: Colors.white70),
-			//Color(THEME.PRIMARY_COLOR)
+                        //Color(THEME.PRIMARY_COLOR)
                       ),
                     ),
                   ),

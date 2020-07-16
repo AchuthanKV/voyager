@@ -417,6 +417,9 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 30.0),
               TextFormField(
+                onFieldSubmitted: (term) {
+                  _pinFocus.unfocus();
+                },
                 focusNode: _pinFocus,
                 validator: (value) {
                   if (value.isEmpty) {
