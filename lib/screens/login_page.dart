@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:voyager/theme/theme.dart' as THEME;
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth/error_codes.dart' as auth_error;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,10 +20,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final FlutterSecureStorage _storage = FlutterSecureStorage();
+
   String errorMsg = '';
   final username = 'admin';
-  final mail = 'admin@gmail.com';
+  String mail = 'admin@gmail.com';
   final password = 'admin';
+  String mailNew;
 
   bool _isNormalSignIn = true;
   String _nextSignInText = "SignIn With FingerPrint";
@@ -139,8 +143,17 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  Future newUserAdd() async {
+    mailNew = await (_storage.read(key: 'mail_id'));
+    if (mailNew != null)
+      print(mailNew);
+    else
+      print("Null");
+  }
+
   @override
   Widget build(BuildContext context) {
+    newUserAdd();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
@@ -339,7 +352,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   signIn(String email, pass) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    /* SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map data = {'email': email, 'password': pass};
     var jsonResponse;
     var response = await http.post(API.LOGIN_API,
@@ -365,7 +378,7 @@ class _LoginPageState extends State<LoginPage> {
       jsonResponse = json.decode(response.body);
       _displaySnackBar(context, jsonResponse);
       //print(response.body);
-    }
+    } */
   }
 
 //Header Section
@@ -469,6 +482,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   dummySignIn(String email, pass) {
+    if (mailNew != null) {
+      setState(() {
+        mail = mailNew;
+      });
+    }
     if ((email == username || email == mail) && (pass == password || pass)) {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => HomePage()),
