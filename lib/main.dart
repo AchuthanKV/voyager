@@ -41,8 +41,7 @@ class _HomePageState extends State<HomePage> {
           resizeToAvoidBottomPadding: false,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
-            title: Text("South African Airlines",
-                style: TextStyle(color: Colors.white)),
+            title: Text("SAA Voyager", style: TextStyle(color: Colors.white)),
             actions: <Widget>[
               FlatButton(
                 onPressed: () {

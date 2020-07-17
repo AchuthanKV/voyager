@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:voyager/services/background.dart';
+import 'package:voyager/theme/theme.dart' as THEME;
 
 class LoginOptions extends StatefulWidget {
   LoginOptions({Key key}) : super(key: key);
@@ -28,7 +29,24 @@ class _LoginOptionsState extends State<LoginOptions> {
           useErrorDialogs: true,
           stickyAuth: true);
       _storage.write(key: 'biometric', value: 'true');
+      // show popup
+      print('show popup.......');
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.white70,
+              title: Text("Fingerprint",
+                  style: TextStyle(color: Color(THEME.PRIMARY_COLOR))),
+              content: Text(
+                  "The Fingerprint is " +
+                      // ignore: unrelated_type_equality_checks
+                      ((authenticated == true) ? 'Enabled' : 'Disabled'),
+                  style: TextStyle(color: Color(THEME.TERTIARY_COLOUR))),
+            );
+          });
     } on PlatformException catch (e) {
+      auth.stopAuthentication();
       print("Exception $e");
     }
 
@@ -81,6 +99,21 @@ class _LoginOptionsState extends State<LoginOptions> {
                             _authenticate();
                           } else {
                             setStoredVal();
+                            // show popup
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    backgroundColor: Colors.white70,
+                                    title: Text("Fingerprint",
+                                        style: TextStyle(
+                                            color: Color(THEME.PRIMARY_COLOR))),
+                                    content: Text("The Fingerprint is Disabled",
+                                        style: TextStyle(
+                                            color: Color(
+                                                THEME.QUATERNARY_COLOUR))),
+                                  );
+                                });
                           }
                         },
                         activeColor: Colors.yellow[100],
