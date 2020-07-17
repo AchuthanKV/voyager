@@ -10,6 +10,8 @@ import 'package:voyager/services/api.dart' as API;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:voyager/theme/theme.dart' as THEME;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:voyager/screens/login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -17,9 +19,13 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final FlutterSecureStorage _storage = FlutterSecureStorage();
+
   final _signupFormKey = GlobalKey<FormState>();
   final _signupScaffold = GlobalKey<ScaffoldState>();
   bool _isLoading = false;
+  bool isSignUp = false;
+  bool signedUp = false;
 
   final TextEditingController initialController = new TextEditingController();
   final TextEditingController areaController = new TextEditingController();
@@ -69,6 +75,27 @@ class _SignUpPageState extends State<SignUpPage> {
     print(code);
   }
 
+  Future<void> go(BuildContext context) async {
+    await new Future.delayed(const Duration(seconds: 3));
+
+    go1(context);
+    setState(() {
+      _isLoading = false;
+      isSignUp = true;
+      signedUp = true;
+    });
+  }
+
+  Future<void> go1(BuildContext context) async {
+    await new Future.delayed(const Duration(seconds: 4));
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+        (Route<dynamic> route) => false);
+    setState(() {
+      isSignUp = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
@@ -116,6 +143,30 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ),
       ),
+      floatingActionButton: isSignUp
+          ? Container(
+              alignment: Alignment(0, 0),
+              width: 380,
+              height: 60,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.lightGreen[300],
+              ),
+              child: signedUp
+                  ? Text("New User is Enrolled!!",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white))
+                  : Text(
+                      "Enrolling New user....",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+            )
+          : null,
     );
   }
 
@@ -134,7 +185,12 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   signUpPage(Map data) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    isSignUp = true;
+    _storage.write(key: "mail_id", value: emailController.text);
+    print("Mail_Id in sign up page :" + emailController.text);
+    go(context);
+
+    /* SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse;
     var response = await http.post(API.REGISTER_API,
         headers: {"Content-Type": "application/json"}, body: json.encode(data));
@@ -160,7 +216,7 @@ class _SignUpPageState extends State<SignUpPage> {
       jsonResponse = json.decode(response.body);
       _displaySnackBar(context, jsonResponse);
       print(response.body);
-    }
+    } */
   }
 
   Container logoTitle() {
