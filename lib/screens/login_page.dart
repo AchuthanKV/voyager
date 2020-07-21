@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'dart:ui';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:passcode_screen/circle.dart';
+import 'package:passcode_screen/keyboard.dart';
+import 'package:passcode_screen/passcode_screen.dart';
 import 'package:voyager/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,6 +37,9 @@ class _LoginPageState extends State<LoginPage> {
   String _nextSignInText = "SignIn With FingerPrint";
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   final LocalAuthentication _autherization = LocalAuthentication();
+  final StreamController<bool> _verificationNotifier =
+      StreamController<bool>.broadcast();
+  bool isAuthenticated = false;
   bool _canChkBiomeric = false;
   String _authOrNot = "Not Authorized";
   List<BiometricType> _availBiometrics = List<BiometricType>();
@@ -222,6 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                         //listBiometrics(_availBiometrics),
                         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                         logoSection(),
+                        pinLogin(),
                         //logoTitle(),
                         // headerSection(),
                         SizedBox(
@@ -237,6 +245,12 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  Container pinLogin() {
+    return Container(
+        alignment: Alignment(1, 0.0),
+        child: inkWellSection('Sign in with pin', '/pinLogin'));
   }
 
   Container normalOrBio() {
@@ -504,11 +518,11 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.0),
       alignment: Alignment(1.0, 0.0),
-      child: inkWellSection("Forgot Password?"),
+      child: inkWellSection("Forgot Password?", '/forgotPass'),
     );
   }
 
-  InkWell inkWellSection(String title) {
+  InkWell inkWellSection(String title, String path) {
     return InkWell(
       child: Text(
         title,
@@ -516,6 +530,7 @@ class _LoginPageState extends State<LoginPage> {
             color: Color(THEME.PRIMARY_COLOR),
             decoration: TextDecoration.underline),
       ),
+      onTap: () => Navigator.pushNamed(context, path),
     );
   }
 
