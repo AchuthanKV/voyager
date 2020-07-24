@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'package:pin_code_view/pin_code_view.dart';
 import 'package:voyager/main.dart';
 import 'package:voyager/services/background.dart';
