@@ -97,20 +97,20 @@ class _LoginOptionsState extends State<LoginOptions> {
                           } else {
                             setStoredVal();
                             // show popup
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    backgroundColor: Colors.white70,
-                                    title: Text("Fingerprint",
-                                        style: TextStyle(
-                                            color: Color(THEME.PRIMARY_COLOR))),
-                                    content: Text("The Fingerprint is Disabled",
-                                        style: TextStyle(
-                                            color: Color(
-                                                THEME.QUATERNARY_COLOUR))),
-                                  );
-                                });
+                            // showDialog(
+                            //     context: context,
+                            //     builder: (BuildContext context) {
+                            //       return AlertDialog(
+                            //         backgroundColor: Colors.white70,
+                            //         title: Text("Fingerprint",
+                            //             style: TextStyle(
+                            //                 color: Color(THEME.PRIMARY_COLOR))),
+                            //         content: Text("The Fingerprint is Disabled",
+                            //             style: TextStyle(
+                            //                 color: Color(
+                            //                     THEME.QUATERNARY_COLOUR))),
+                            //       );
+                            //     });
                           }
                         },
                         activeColor: Colors.green,

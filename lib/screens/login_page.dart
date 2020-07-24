@@ -103,8 +103,8 @@ class _LoginPageState extends State<LoginPage> {
       print(e);
     }
 
-    print('----- Autherised ? ' + isAuthorized.toString());
-    print('-----    mounted ? ' + mounted.toString());
+    //print('----- Autherised ? ' + isAuthorized.toString());
+    //print('-----    mounted ? ' + mounted.toString());
 
     if (!mounted) return;
 
@@ -154,8 +154,8 @@ class _LoginPageState extends State<LoginPage> {
 
   getStoredVal() async {
     var isBio = await (_storage.read(key: 'biometric'));
-    print('bio...:');
-    print(isBio);
+    //print('bio...:');
+    //print(isBio);
     if (isBio != null && isBio != 'undefined') {
       setState(() {
         if (isBio == 'false')
@@ -169,6 +169,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     getStoredVal();
+    newUserAdd();
     emailController.addListener(() {
       final text = emailController.text.toLowerCase();
       emailController.value = emailController.value.copyWith(
@@ -183,14 +184,14 @@ class _LoginPageState extends State<LoginPage> {
   Future newUserAdd() async {
     mailNew = await (_storage.read(key: 'mail_id'));
     if (mailNew != null)
-      print(mailNew);
+      print('mailNew: ' + mailNew);
     else
-      print("Null");
+      print("Not mailNew Null");
   }
 
   @override
   Widget build(BuildContext context) {
-    newUserAdd();
+    //print('build execution...');
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
