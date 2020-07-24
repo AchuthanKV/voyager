@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:ui';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:voyager/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -90,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
               );
             });
       }
+      _autherization.stopAuthentication();
     } on Exception catch (e) {
       print(e);
     }
@@ -130,8 +132,36 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
   final FocusNode _pinFocus = FocusNode();
+
+  bool isBiometric = false;
+
+  setStoredVal(val) async {
+    await _storage.write(key: 'biometric', value: val);
+    setState(() {
+      if (val == 'false')
+        isBiometric = false;
+      else
+        isBiometric = true;
+    });
+  }
+
+  getStoredVal() async {
+    var isBio = await (_storage.read(key: 'biometric'));
+    print('bio...:');
+    print(isBio);
+    if (isBio != null && isBio != 'undefined') {
+      setState(() {
+        if (isBio == 'false')
+          isBiometric = false;
+        else
+          isBiometric = true;
+      });
+    }
+  }
+
   void initState() {
     super.initState();
+    getStoredVal();
     emailController.addListener(() {
       final text = emailController.text.toLowerCase();
       emailController.value = emailController.value.copyWith(
@@ -185,12 +215,6 @@ class _LoginPageState extends State<LoginPage> {
                         size: 100.0,
                       ),
                     )
-                  //child: _isLoading
-                  //   ? Center(
-                  //   child: CircularProgressIndicator(
-                  //   valueColor: new AlwaysStoppedAnimation<Color>(
-                  //       Color(THEME.PRIMARY_COLOR)),
-                  //  ))
                   : ListView(
                       children: <Widget>[
                         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -216,12 +240,26 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Container normalOrBio() {
-    _checkBiometric();
-    //_authorizeNow();
+    if (isBiometric) {
+      _checkBiometric();
+      if (_canChkBiomeric) {
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.0),
+          alignment: Alignment(1.0, 0.0),
+          child: normalSignInLnk(),
+        );
+      } else {
+        return plainContainer();
+      }
+    } else {
+      return plainContainer();
+    }
+  }
+
+  Container plainContainer() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.0),
       alignment: Alignment(1.0, 0.0),
-      child: normalSignInLnk(),
     );
   }
 
