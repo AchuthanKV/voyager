@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:voyager/screens/invite_page.dart';
 
 class DrawerClass extends StatelessWidget {
   const DrawerClass({Key key}) : super(key: key);
@@ -54,7 +55,32 @@ class DrawerClass extends StatelessWidget {
                           'Login Options',
                           style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
-                      ))
+                      )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                      width: 280,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(blurRadius: 10, color: Colors.transparent)
+                          ],
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: RaisedButton(
+                        color: Colors.transparent,
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => InvitePage()));
+                        },
+                        child: Text(
+                          'Invite Others',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                      )),
                 ],
               ),
             ),
