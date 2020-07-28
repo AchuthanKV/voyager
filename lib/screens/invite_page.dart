@@ -6,12 +6,13 @@ import 'dart:ui';
 import 'package:contacts_service/contacts_service.dart';
 
 //import 'package:flutter/cupertino.dart';
+import 'package:voyager/services/api.dart' as API;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
-
+import 'dart:io';
 class InvitePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -23,7 +24,7 @@ class _InvitePageState extends State<InvitePage> {
   final _invitePageState = GlobalKey<ScaffoldState>();
   List<Contact> contacts = [];
   List<Contact> listOfContactsFilttered = [];
-  List<int> listOfSelectedItem = [];
+  /*List<int> listOfSelectedItem = [];*/
   //TextEditingController phoneEditingController = new TextEditingController();
   TextEditingController nameEditingController = new TextEditingController();
   String _name;
@@ -33,8 +34,9 @@ class _InvitePageState extends State<InvitePage> {
   int imageIndex;
   Uint8List imagedata;
   Map<int, Uint8List> selectedImageData;
-  Color selectedContactColor;
-  Map<int, Color> mapContactClolorList;
+ /* Color selectedContactColor;
+  Map<int, Color> mapContactClolorList;*/
+  Map<int, Contact> mapFilterItem;
 
   @override
   void initState() {
@@ -46,8 +48,9 @@ class _InvitePageState extends State<InvitePage> {
       filterContacts();
     });
     selectedImageData = new HashMap<int, Uint8List>();
-    mapContactClolorList = new HashMap<int, Color>();
-    selectedContactColor = Colors.transparent;
+    //mapContactClolorList = new HashMap<int, Color>();
+    mapFilterItem = new HashMap<int, Contact>();
+    //selectedContactColor = Colors.transparent;
   }
 
   setSelectedState() async {
@@ -82,33 +85,34 @@ class _InvitePageState extends State<InvitePage> {
   }
 
   _sendSMS() async {
-    if (contacts.elementAt(imageIndex) != null)
-      print('image index $imageIndex');
-    print('name $_name');
-    print('phone $_phone');
-    String number = contacts.elementAt(imageIndex).phones.elementAt(0).value;
-    number = '9131062031';
-    print('phone number $number');
-    String name = contacts.elementAt(imageIndex).displayName;
-    var response = await http.post(/*"https://www.fast2sms.com/dev/bulk"*/"https://voyagermobile.flysaa.com/saamobile/SendSMS",
-        headers: {
-         /* "authorization":
-              "TYE9wNnL6v3gVczSsRoHFrU4f10d2b5JCXhIpeK8uax7OPkAZjrqLuaY2sQHE7kynZjRwF8x5mPfTWoB",*/
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        //.header("Content-Type", "application/x-www-form-urlencoded")
-        body:
-            (/*"sender_id=FSTSMS&message=This%20is%20a%20test%20message%20$name&language=english&route=p&*/"{"+"numbers"+":"+"[$number]"+"}"));
+    if(await isInternetEnable()){
+    List<String> contactNumbers = [];
+    Map<String, List<String>> data = new HashMap<String, List<String>>();
+    print(mapFilterItem.length);
+    mapFilterItem.forEach((index, contact) {
+      print(contact.phones.elementAt(0).value);
+      contactNumbers.add(contact.phones.elementAt(0).value);
+    });
+    if(_phone != null){
+      print("Phone Field : $_phone");
+      contactNumbers.add(_phone);
+    }
+    data.putIfAbsent("numbers", () => contactNumbers);
+    var response = await http.post(API.SMS_API,
+        headers: {"Content-Type": "application/json"}, body: json.encode(data));
+
     print('without status $response');
-    var jsonResponse = json.decode(response.body);
-    print(jsonResponse['detail']);
-    print(response.body.toString());
+    var jsonResponse;
     if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
       print('in status');
       print(response.body.toString());
-      showWarningMessage(jsonResponse['detail'].toString());
+      showWarningMessage(jsonResponse['sendStatus'].toString() +
+          ":" +
+          jsonResponse['detail'].toString());
     } else {
-      showWarningMessage(jsonResponse['detail']);
+      showWarningMessage("Something went wrong!! Try again.");
+    }
     }
   }
 
@@ -121,16 +125,16 @@ class _InvitePageState extends State<InvitePage> {
       builder: (BuildContext context) {
         return new AlertDialog(
           title: new Text(
-            message.contains('successfully') ? 'Success..' : 'Warning!!',
+            message.contains('true') ? 'Success..' : 'Warning!!',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           content: new SingleChildScrollView(
             child: new ListBody(
               children: [
                 new Text(
-                  '$message',
+                  message.contains(":") ? message.split(":")[1] : message,
                   style: TextStyle(
-                      color: message.contains('successfully')
+                      color: message.contains('true')
                           ? Colors.green
                           : Colors.red,
                       fontWeight: FontWeight.bold),
@@ -269,25 +273,23 @@ class _InvitePageState extends State<InvitePage> {
                               //focusColor: isSelected? Colors.green: Colors.white,
                               onTap: () {
                                 setState(() {
-                                  //isSelected = true;
-                                  imageIndex = index;
-                                  if (listOfSelectedItem.contains(index)) {
-                                    listOfSelectedItem.remove(index);
-                                    contact.avatar =
-                                        selectedImageData.remove(index);
-                                    selectedContactColor =
-                                        mapContactClolorList.remove(index);
-                                    isSelected = false;
+                                  if (isContactSelected(contact)) {
+                                    if (imageIndex != null) {
+                                      contact.avatar =
+                                          selectedImageData.remove(imageIndex);
+                                      mapFilterItem.remove(imageIndex);
+                                      imageIndex = null;
+                                      isSelected = false;
+                                    }
                                   } else {
                                     isSelected = true;
-                                    listOfSelectedItem.add(index);
                                     selectedImageData.putIfAbsent(
                                         index, () => contact.avatar);
-                                    mapContactClolorList.putIfAbsent(
-                                        index, () => selectedContactColor);
-                                    selectedContactColor = Colors.amber;
+                                    mapFilterItem.putIfAbsent(
+                                        index, () => contact);
                                     contact.avatar = imagedata;
                                   }
+
                                   //listOfSelectedItem.add(index);
                                   print(index);
                                 });
@@ -393,12 +395,24 @@ class _InvitePageState extends State<InvitePage> {
     return widgetList;
   }
 
+  bool isContactSelected(Contact contact) {
+    mapFilterItem.forEach((key, selectedContact) {
+      if (selectedContact == contact) {
+        imageIndex = key;
+      }
+    });
+    if (imageIndex != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   _fieldValidation() {
-    if (listOfSelectedItem.length > 0) {
+    if (mapFilterItem.length > 0 || contactCheck()) {
       //service call method
       print('Service Call');
       _sendSMS();
-      print(listOfSelectedItem.length);
     } else if ((_name == null || _name.isEmpty) &&
         (_phone == null || _phone.isEmpty)) {
       showWarningMessage('Please enter contact number and name!!');
@@ -409,6 +423,17 @@ class _InvitePageState extends State<InvitePage> {
       showWarningMessage('Please enter contact number!');
     }
   }
+
+  bool contactCheck() {
+    if (_name != null &&
+        _name.isNotEmpty &&
+        _phone != null &&
+        _phone.isNotEmpty) {
+      return true;
+    }
+    return false;
+  }
+
   Container buildButtonContainer() {
     return Container(
       height: 56.0,
@@ -438,5 +463,19 @@ class _InvitePageState extends State<InvitePage> {
 
       ),
     );
+  }
+
+  Future<bool> isInternetEnable() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print('Connected..');
+        return true;
+      }
+    } on SocketException catch (_) {
+      print('not connected to the internet');
+      showWarningMessage("Internet connection is not enabled!!");
+      return false;
+    }
   }
 }
