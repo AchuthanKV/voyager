@@ -1,16 +1,17 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class LoginOptions extends StatefulWidget {
   LoginOptions({Key key}) : super(key: key);
-  bool isInstructionView = false;
+  bool isfingerprintOn = false;
+  bool isPinOn = false;
 
   @override
   _LoginOptionsState createState() => _LoginOptionsState();
@@ -18,6 +19,7 @@ class LoginOptions extends StatefulWidget {
 
 class _LoginOptionsState extends State<LoginOptions> {
   String usingBio = "false";
+  bool pinSet = false;
   final _storage = FlutterSecureStorage();
   LocalAuthentication auth = LocalAuthentication();
 
@@ -28,23 +30,9 @@ class _LoginOptionsState extends State<LoginOptions> {
           localizedReason: "Scan your Fingerprint to authenticate",
           useErrorDialogs: true,
           stickyAuth: true);
-      _storage.write(key: 'biometric', value: 'true');
-      // show popup
-      print('show popup.......');
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: Colors.white70,
-              title: Text("Fingerprint",
-                  style: TextStyle(color: Color(THEME.PRIMARY_COLOR))),
-              content: Text(
-                  "The Fingerprint is " +
-                      // ignore: unrelated_type_equality_checks
-                      ((authenticated == true) ? 'Enabled' : 'Disabled'),
-                  style: TextStyle(color: Color(THEME.TERTIARY_COLOUR))),
-            );
-          });
+      if (authenticated == true) {
+        _storage.write(key: 'biometric', value: 'true');
+      }
     } on PlatformException catch (e) {
       auth.stopAuthentication();
       print("Exception $e");
@@ -56,6 +44,7 @@ class _LoginOptionsState extends State<LoginOptions> {
   @override
   Widget build(BuildContext context) {
     getStoredVal();
+
     return Stack(
       children: <Widget>[
         BackgroundClass(),
@@ -68,57 +57,109 @@ class _LoginOptionsState extends State<LoginOptions> {
           backgroundColor: Colors.transparent,
           body: Container(
             child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Wrap(
                 children: <Widget>[
-                  Icon(
-                    Icons.lock_outline,
-                    color: Colors.white70,
-                    size: 80,
+                  Container(
+                    height: MediaQuery.of(context).size.height / 3,
+                    child: Center(
+                      child: Icon(
+                        Icons.lock_outline,
+                        color: Colors.white70,
+                        size: 80,
+                      ),
+                    ),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        'Enable Fingerprint',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
+                      SizedBox(width: 50),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Text(
+                          'Enable Fingerprint',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                       SizedBox(
                         width: 50,
                       ),
                       Switch(
-                        value: widget.isInstructionView,
+                        value: widget.isfingerprintOn,
                         onChanged: (bool isOn) {
                           setState(() {
-                            widget.isInstructionView = isOn;
+                            widget.isfingerprintOn = isOn;
                           });
                           if (isOn == true) {
                             _authenticate();
                           } else {
                             setStoredVal();
                             // show popup
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    backgroundColor: Colors.white70,
-                                    title: Text("Fingerprint",
-                                        style: TextStyle(
-                                            color: Color(THEME.PRIMARY_COLOR))),
-                                    content: Text("The Fingerprint is Disabled",
-                                        style: TextStyle(
-                                            color: Color(
-                                                THEME.QUATERNARY_COLOUR))),
-                                  );
-                                });
+                            // showDialog(
+                            //     context: context,
+                            //     builder: (BuildContext context) {
+                            //       return AlertDialog(
+                            //         backgroundColor: Colors.white70,
+                            //         title: Text("Fingerprint",
+                            //             style: TextStyle(
+                            //                 color: Color(THEME.PRIMARY_COLOR))),
+                            //         content: Text("The Fingerprint is Disabled",
+                            //             style: TextStyle(
+                            //                 color: Color(
+                            //                     THEME.QUATERNARY_COLOUR))),
+                            //       );
+                            //     });
                           }
                         },
-                        activeColor: Colors.yellow[100],
-                        inactiveTrackColor: Colors.white70,
-                        inactiveThumbColor: Colors.white70,
+                        activeColor: Colors.green,
+                        inactiveTrackColor: Colors.grey,
+                        inactiveThumbColor: Colors.redAccent,
+                        activeTrackColor: Colors.green,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(width: 50),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Text(
+                          'Enable Pin',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 50,
+                      ),
+                      Switch(
+                        value: widget.isPinOn,
+                        onChanged: (bool isOn) async {
+                          setState(() {
+                            widget.isPinOn = isOn;
+                          });
+                          if (isOn == true) {
+                            await Navigator.pushNamed(context, '/setPin');
+                            var pin = await _storage.read(key: 'pin');
+
+                            if (pin != null) {
+                              widget.isPinOn = true;
+                            } else {
+                              widget.isPinOn = false;
+                            }
+                          } else if (isOn == false) {
+                            await _storage.delete(key: 'pin');
+                          }
+                        },
+                        activeColor: Colors.green,
+                        inactiveTrackColor: Colors.grey,
+                        inactiveThumbColor: Colors.redAccent,
+                        activeTrackColor: Colors.green,
                       ),
                     ],
                   )
@@ -135,21 +176,29 @@ class _LoginOptionsState extends State<LoginOptions> {
     await _storage.write(key: 'biometric', value: 'false');
     setState(() {
       usingBio = usingBio;
-      widget.isInstructionView = false;
+      widget.isfingerprintOn = false;
     });
   }
 
   getStoredVal() async {
+    var pin = await _storage.read(key: 'pin');
+
+    if (pin != null) {
+      setState(() {
+        widget.isPinOn = true;
+      });
+    }
+
     usingBio = await (_storage.read(key: 'biometric'));
     if (usingBio == 'false') {
       setState(() {
         usingBio = usingBio;
-        widget.isInstructionView = false;
+        widget.isfingerprintOn = false;
       });
     } else {
       setState(() {
         usingBio = usingBio;
-        widget.isInstructionView = true;
+        widget.isfingerprintOn = true;
       });
     }
   }

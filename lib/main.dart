@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:voyager/screens/login_options.dart';
 import 'package:voyager/screens/login_page.dart';
+import 'package:voyager/screens/pin_login.dart';
+import 'package:voyager/screens/set_pin.dart';
 import 'package:voyager/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +24,8 @@ void main() => runApp(MaterialApp(
         '/signup': (BuildContext context) => SignUpPage(),
         '/loginoptions': (BuildContext context) => LoginOptions(),
         '/getfingerprint': (BuildContext context) => AuthenticateFingerPrint(),
+        '/setPin': (BuildContext context) => SetPin(),
+        '/pinLogin': (BuildContext context) => PinLogin(),
       },
     ));
 
@@ -45,7 +49,7 @@ class _HomePageState extends State<HomePage> {
             actions: <Widget>[
               FlatButton(
                 onPressed: () {
-                  removeSharedPreferenceKeys();
+                  //removeSharedPreferenceKeys();
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                           builder: (BuildContext context) => LoginPage()),
