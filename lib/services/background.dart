@@ -13,18 +13,16 @@ class BackgroundClass extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: ExactAssetImage("assets/images/saa2.jpg"),
+            image: ExactAssetImage("assets/images/plainbackground.png"),
             fit: BoxFit.fill,
           ),
         ),
         child: ClipRRect(
             // make sure we apply clip it properly
-            child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  alignment: Alignment.center,
-                  color: Colors.grey.withOpacity(0.1),
-                ))),
+            child: Container(
+          alignment: Alignment.center,
+          color: Colors.grey.withOpacity(0.1),
+        )),
       ),
     );
   }
