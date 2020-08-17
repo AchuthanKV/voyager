@@ -14,12 +14,14 @@ import 'package:voyager/services/drawer.dart';
 import 'package:voyager/services/getFingerprint.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
+import 'modules/splash/pages/splash_screen.dart';
+
 void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Color(THEME.PRIMARY_COLOR),
       ),
-      home: WelcomePage(),
+      home: SplashScreen(),
       routes: {
         '/signup': (BuildContext context) => SignUpPage(),
         '/loginoptions': (BuildContext context) => LoginOptions(),
