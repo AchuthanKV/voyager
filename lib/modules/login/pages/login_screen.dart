@@ -6,7 +6,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:voyager/main.dart';
 import 'package:voyager/screens/login_page.dart';
-import 'package:voyager/services/background.dart';
+import 'package:voyager/theme/theme.dart' as THEME;
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key}) : super(key: key);
@@ -19,7 +19,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _pinEditingController =
       new TextEditingController();
   int _pinLength = 6;
-  final LocalAuthentication _autherization = LocalAuthentication();
   bool isAuthenticated = false;
   final FlutterSecureStorage _storage = FlutterSecureStorage();
   LocalAuthentication auth = LocalAuthentication();
@@ -117,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
               (Route<dynamic> route) => false);
         },
         elevation: 0.0,
-        color: Color(0xff926C1B),
+        color: Color(THEME.BUTTON_COLOR),
         child: Text("Sign In", style: TextStyle(color: Colors.white)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
@@ -188,20 +187,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Container fingerPrint() {
-  //   return Container(
-  //     alignment: Alignment(-0.08, 0.0),
-  //     child: IconButton(
-  //       icon: new Icon(
-  //         Icons.fingerprint,
-  //         size: 70,
-  //       ),
-  //       onPressed: () {
-  //         _authenticate();
-  //       },
-  //     ),
-  //   );
-  // }
   Container fingerPrint() {
     return Container(
         child: Row(
@@ -236,39 +221,22 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               backGround(),
               Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  SizedBox(
-                    height: 80,
-                  ),
                   logoSection(),
-                  SizedBox(
-                    height: 50,
-                  ),
                   forgotPasswordSection(),
-                  SizedBox(
-                    height: 50,
-                  ),
                   pinSection(),
                   buttonSection(),
-                  SizedBox(
-                    height: 50,
-                  ),
                   isAuthenticated
                       ? Column(
                           children: <Widget>[
                             Text("OR"),
-                            SizedBox(
-                              height: 60,
-                            ),
                             fingerPrint(),
                           ],
                         )
                       : SizedBox(
-                          height: 70,
+                          height: 0,
                         ),
-                  SizedBox(
-                    height: 55,
-                  ),
                   otherAccountLogin(),
                 ],
               )

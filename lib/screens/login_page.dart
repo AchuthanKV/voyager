@@ -269,6 +269,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  setStoredVal(String membershipid) async {
+    await _storage.write(key: 'membershipId', value: membershipid);
+  }
+
   dummySignIn(String membership, _pin) {
     print("membership, _pin" + membership + " " + _pin);
     print("membership_no, pin" + membership_no + " " + pin);
@@ -278,6 +282,7 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
     if ((membership == membership_no) && (_pin == pin)) {
+      setStoredVal(membership);
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => HomePage()),
           (Route<dynamic> route) => false);
