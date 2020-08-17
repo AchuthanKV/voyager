@@ -26,12 +26,16 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isLoading = false;
   bool isSignUp = false;
   bool signedUp = false;
+  bool isEmailOn = false;
+  bool isNotificationOn = false;
 
   final TextEditingController initialController = new TextEditingController();
   final TextEditingController areaController = new TextEditingController();
   final TextEditingController dobController = new TextEditingController();
   final TextEditingController nationalityController =
       new TextEditingController();
+  final TextEditingController titleController = new TextEditingController();
+
   final TextEditingController genderController = new TextEditingController();
 
   final TextEditingController emailController = new TextEditingController();
@@ -54,6 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
   List _locations = ['+91', '72'];
   List _nations = ['India', 'USA', 'China'];
   List _genders = ['Male', 'Female', 'Other'];
+  List _title = ['Mr', 'Miss', 'Mrs', 'Ms', 'Major'];
 
   void initState() {
     super.initState();
@@ -70,9 +75,9 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   getAreaCode() async {
-    http.Response response = await http.get('http://country.io/phone.json');
-    Map code = jsonDecode(response.body);
-    print(code);
+    //http.Response response = await http.get('http://country.io/phone.json');
+    // Map code = jsonDecode(response.body);
+    // print(code);
   }
 
   Future<void> go(BuildContext context) async {
@@ -107,63 +112,66 @@ class _SignUpPageState extends State<SignUpPage> {
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: ExactAssetImage("assets/images/saa2.jpg"),
+            image: ExactAssetImage("assets/images/plainbackground.png"),
             fit: BoxFit.fill,
-            //gradient: LinearGradient(colors: [
-            //  Color(THEME.BG_GRADIENT_COLOR_1),
-            //  Color(THEME.BG_GRADIENT_COLOR_2)
-            //], begin: Alignment.topCenter, end: Alignment.bottomCenter),
           ),
         ),
-        child: ClipRRect(
-          // make sure we apply clip it properly
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              alignment: Alignment.center,
-              color: Colors.grey.withOpacity(0.1),
-              child: _isLoading
-                  ? Center(
-                      child: SpinKitCubeGrid(
-                        color: Colors.white,
-                        size: 100.0,
-                      ),
-                    )
-                  : ListView(
-                      children: <Widget>[
-                        logoSection(),
-                        //logoTitle(),
-                        // headerSection(),
-                        textSection(),
-                        buttonSection(),
-                        //goBackSection()
-                      ],
-                    ),
-            ),
-          ),
+        child: Container(
+          alignment: Alignment.center,
+          child: _isLoading
+              ? Center(
+                  child: SpinKitCubeGrid(
+                    color: Colors.white,
+                    size: 100.0,
+                  ),
+                )
+              : ListView(
+                  children: <Widget>[
+                    logoSection(),
+                    textSection(),
+                    buttonSection(),
+                  ],
+                ),
         ),
       ),
       floatingActionButton: isSignUp
           ? Container(
-              alignment: Alignment(0, 0),
-              width: 380,
-              height: 60,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.lightGreen[300],
-              ),
               child: signedUp
-                  ? Text("New User is Enrolled!!",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white))
-                  : Text(
-                      "Enrolling New user....",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                  ? Container(
+                      width: 500,
+                      height: 100,
+                      padding: EdgeInsets.all(20),
+                      margin: EdgeInsets.only(left: 30),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.grey[500],
+                      ),
+                      child: Text(
+                        "Successfully enroled. Membership number and your login pin have been sent to your registered email id,",
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  : Container(
+                      width: 500,
+                      height: 100,
+                      padding: EdgeInsets.all(20),
+                      margin: EdgeInsets.only(left: 30),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.black,
+                      ),
+                      child: Text(
+                        "Enrolling New user....",
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
             )
           : null,
@@ -173,9 +181,9 @@ class _SignUpPageState extends State<SignUpPage> {
   Container logoSection() {
     return Container(
       alignment: Alignment(0.0, 0.0),
-      height: 130.0,
+      height: 100.0,
       //width: 100.0,
-      margin: EdgeInsets.only(top: 50.0),
+      margin: EdgeInsets.only(top: 10.0),
       decoration: BoxDecoration(
           image: DecorationImage(
         image: AssetImage('assets/images/logo.png'),
@@ -186,7 +194,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   signUpPage(Map data) async {
     isSignUp = true;
-    _storage.write(key: "mail_id", value: emailController.text);
+    //_storage.write(key: "mail_id", value: emailController.text);
     print("Mail_Id in sign up page :" + emailController.text);
     go(context);
 
@@ -268,11 +276,59 @@ class _SignUpPageState extends State<SignUpPage> {
   SingleChildScrollView textSection() {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+        padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
         child: Form(
           key: _signupFormKey,
           child: Column(
             children: <Widget>[
+              SizedBox(height: 20.0),
+              Container(
+                child: Text(
+                  "JOIN VOYAGER",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 30.0),
+              Theme(
+                data: Theme.of(context).copyWith(
+                  canvasColor: Colors.grey[300],
+                ),
+                child: DropdownButtonFormField(
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select Title';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _gender = value;
+                    },
+                    style: TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.account_circle, color: Colors.black),
+                      hintText: "Title",
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white70)),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black)),
+                      hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                    items: _title.map((value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _title = value;
+                      });
+                    }),
+              ),
+              SizedBox(height: 30.0),
               TextFormField(
                 validator: (value) {
                   if (value.isEmpty) {
@@ -288,16 +344,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   FocusScope.of(context).requestFocus(_lastNameFocus);
                 },
                 cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.account_circle, color: Colors.white70),
+                  icon: Icon(Icons.account_circle, color: Colors.black),
                   hintText: "First Name",
                   border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70)),
+                      borderSide:
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
                   focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white70)),
-                  hintStyle: TextStyle(color: Colors.white70),
-                  //Color(THEME.PRIMARY_COLOR)
+                      borderSide: BorderSide(color: Colors.black)),
+                  hintStyle: TextStyle(color: Colors.grey),
                 ),
               ),
               SizedBox(height: 30.0),
@@ -317,18 +373,89 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
                 controller: lastNameController,
                 cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.account_circle, color: Colors.white70),
+                  icon: Icon(Icons.account_circle, color: Colors.black),
                   //Color(THEME.PRIMARY_COLOR)
                   hintText: "Last Name",
                   border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white70)),
                   focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                      borderSide: BorderSide(color: Colors.black)),
+                  hintStyle: TextStyle(color: Colors.grey),
                 ),
+              ),
+              SizedBox(height: 30.0),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                      flex: 2,
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          canvasColor: Colors.grey[300],
+                        ),
+                        child: DropdownButtonFormField(
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Please select an area';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _area = value;
+                            },
+                            style: TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.map, color: Colors.black),
+                              hintText: "Area Code",
+                              border: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.white70)),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black)),
+                              hintStyle: TextStyle(color: Colors.grey),
+                            ),
+                            items: _locations.map((value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _area = value;
+                              });
+                            }),
+                      )),
+                  Expanded(
+                    flex: 4,
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a Phone Number';
+                        }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        _phone = value;
+                      },
+                      controller: phoneController,
+                      cursorColor: Colors.white70,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.phone, color: Colors.black),
+                        hintText: "Phone",
+                        border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white70)),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black)),
+                        hintStyle: TextStyle(color: Colors.grey),
+                        //Color(THEME.PRIMARY_COLOR)
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 30.0),
               TextFormField(
@@ -347,16 +474,15 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
                 controller: emailController,
                 cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.email, color: Colors.white70),
-                  hintText: "Email",
+                  icon: Icon(Icons.email, color: Colors.black),
+                  hintText: "Email Address",
                   border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white70)),
                   focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                      borderSide: BorderSide(color: Colors.black)),
+                  hintStyle: TextStyle(color: Colors.grey),
                   //Color(THEME.PRIMARY_COLOR)
                 ),
               ),
@@ -388,28 +514,27 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
                 onChanged: (value) {
                   setState(() {
-                    _dobString = "Select date of birth";
+                    _dobString = "Date of birth";
                   });
                 },
                 onSaved: (String value) {},
                 controller: dobController,
                 cursorColor: Colors.white,
-                style: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.calendar_today, color: Colors.white70),
+                  icon: Icon(Icons.calendar_today, color: Colors.black),
                   hintText: _dobString,
                   border: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white70)),
                   focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                  hintStyle: TextStyle(color: Colors.white70),
+                      borderSide: BorderSide(color: Colors.black)),
+                  hintStyle: TextStyle(color: Colors.grey),
                 ),
               ),
               SizedBox(height: 30.0),
               Theme(
                 data: Theme.of(context).copyWith(
-                  canvasColor: Colors.blueGrey,
+                  canvasColor: Colors.grey[300],
                 ),
                 child: DropdownButtonFormField(
                     validator: (value) {
@@ -421,16 +546,15 @@ class _SignUpPageState extends State<SignUpPage> {
                     onSaved: (value) {
                       _gender = value;
                     },
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
-                      icon: Icon(Icons.person, color: Colors.white70),
-                      hintText: "Select Gender",
+                      icon: Icon(Icons.person, color: Colors.black),
+                      hintText: "Gender",
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white70)),
                       focusedBorder: UnderlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                      hintStyle: TextStyle(color: Colors.white70),
+                          borderSide: BorderSide(color: Colors.black)),
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                     items: _genders.map((value) {
                       return DropdownMenuItem(
@@ -445,83 +569,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     }),
               ),
               SizedBox(height: 30.0),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                      flex: 2,
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          canvasColor: Colors.blueGrey,
-                        ),
-                        child: DropdownButtonFormField(
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please select an area';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _area = value;
-                            },
-                            style: TextStyle(color: Colors.white70),
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.map, color: Colors.white70),
-                              hintText: "Area Code",
-                              border: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.white70)),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color(THEME.PRIMARY_COLOR))),
-                              hintStyle: TextStyle(color: Colors.white70),
-                            ),
-                            items: _locations.map((value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _area = value;
-                              });
-                            }),
-                      )),
-                  Expanded(
-                    flex: 4,
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter a Phone Number';
-                        }
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        _phone = value;
-                      },
-                      controller: phoneController,
-                      cursorColor: Colors.white70,
-                      style: TextStyle(color: Colors.white70),
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.phone, color: Colors.white70),
-                        hintText: "Phone",
-                        border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white70)),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                        hintStyle: TextStyle(color: Colors.white70),
-                        //Color(THEME.PRIMARY_COLOR)
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30.0),
               Theme(
                 data: Theme.of(context).copyWith(
-                  canvasColor: Colors.blueGrey,
+                  canvasColor: Colors.grey[300],
                 ),
                 child: DropdownButtonFormField(
                     validator: (value) {
@@ -533,16 +583,15 @@ class _SignUpPageState extends State<SignUpPage> {
                     onSaved: (value) {
                       _nationality = value;
                     },
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
-                      icon: Icon(Icons.language, color: Colors.white70),
+                      icon: Icon(Icons.language, color: Colors.black),
                       hintText: "Select Nationality",
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white70)),
                       focusedBorder: UnderlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(THEME.PRIMARY_COLOR))),
-                      hintStyle: TextStyle(color: Colors.white70),
+                          borderSide: BorderSide(color: Colors.black)),
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                     items: _nations.map((value) {
                       return DropdownMenuItem(
@@ -556,6 +605,62 @@ class _SignUpPageState extends State<SignUpPage> {
                       });
                     }),
               ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(width: 10),
+                  Container(
+                    child: Text(
+                      'Email me Promotions',
+                      style: TextStyle(color: Colors.black, fontSize: 15),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 130,
+                  ),
+                  Switch(
+                    value: isEmailOn,
+                    onChanged: (bool isOn) {
+                      setState(() {
+                        isEmailOn = isOn;
+                      });
+                    },
+                    activeColor: Colors.green,
+                    inactiveTrackColor: Colors.grey[400],
+                    inactiveThumbColor: Colors.grey,
+                    activeTrackColor: Colors.grey[400],
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(width: 10),
+                  Container(
+                    child: Text(
+                      'Enable Notification',
+                      style: TextStyle(color: Colors.black, fontSize: 15),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 150,
+                  ),
+                  Switch(
+                    value: isNotificationOn,
+                    onChanged: (bool isOn) {
+                      setState(() {
+                        isNotificationOn = isOn;
+                      });
+                    },
+                    activeColor: Colors.green,
+                    inactiveTrackColor: Colors.grey[400],
+                    inactiveThumbColor: Colors.grey,
+                    activeTrackColor: Colors.grey[400],
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -584,84 +689,62 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Container buttonSection() {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50.0,
-      padding: EdgeInsets.symmetric(horizontal: 20.0),
-      margin: EdgeInsets.only(top: 30.0),
-      child: RaisedButton(
-        onPressed: () {
-          // Validate returns true if the form is valid, otherwise false.
-          if (_signupFormKey.currentState.validate()) {
-            // If the form is valid, display a snackbar. In the real world,
-            // you'd often call a server or save the information in a database.
-            _signupFormKey.currentState.save();
-            print(_fName);
-            Map data = {
-              'email': _email,
-              'firstName': _fName,
-              'lastName': _lName,
-              'phone': _phone,
-              'code': _area,
-              'nation': _nationality,
-              'gender': _gender,
-            };
-            print(data);
-            setState(() {
-              _isLoading = true;
-            });
-            signUpPage(data);
-          }
-        },
-        textColor: Colors.white,
-        elevation: 0.0,
-        color: Color(THEME.PRIMARY_COLOR),
-        child: Text("Sign Up", style: TextStyle(color: Colors.white70)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 45.0,
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            margin: EdgeInsets.only(top: 30.0, bottom: 30),
+            child: RaisedButton(
+              onPressed: () {
+                // Validate returns true if the form is valid, otherwise false.
+                if (_signupFormKey.currentState.validate()) {
+                  // If the form is valid, display a snackbar. In the real world,
+                  // you'd often call a server or save the information in a database.
+                  _signupFormKey.currentState.save();
+                  print(_fName);
+                  Map data = {
+                    'title': _title,
+                    'email': _email,
+                    'firstName': _fName,
+                    'lastName': _lName,
+                    'phone': _phone,
+                    'code': _area,
+                    'nation': _nationality,
+                    'gender': _gender,
+                  };
+                  print(data);
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  signUpPage(data);
+                }
+              },
+              textColor: Colors.white,
+              elevation: 0.0,
+              color: Color(THEME.BUTTON_COLOR),
+              child: Text(
+                "SUBMIT",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17),
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0)),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            child: Text(
+              "By signing up, I agree to the Terms of use and Privacy Policy of SAA Voyager.",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 15),
+            ),
+          )
+        ],
       ),
     );
-  }
-
-  // Container goBackSection() {
-  //   return Container(
-  //     margin: EdgeInsets.only(top: 40.0),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: <Widget>[
-  //         InkWell(
-  //           onTap: () => {
-  //             Navigator.of(context).pop(context),
-  //           },
-  //           child: Text(
-  //             'Go back',
-  //             style: TextStyle(
-  //                 color: Color(THEME.PRIMARY_COLOR),
-  //                 decoration: TextDecoration.underline,
-  //                 fontWeight: FontWeight.bold),
-  //           ),
-  //         )
-  //       ],
-  //       //teinkWellSection("Don't have an account? Sign up"
-  //     ),
-  //   );
-  // }
-
-  _displaySnackBar(BuildContext context, var response) {
-    print(response);
-    var jsonObj = response['errors']['msg'];
-    var msg;
-    if (jsonObj.isEmpty) {
-      msg = jsonObj;
-    } else {
-      msg = 'Something went wrong!';
-    }
-    final snackBar = SnackBar(
-      content: Text(
-        msg,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        textAlign: TextAlign.center,
-      ),
-      backgroundColor: Colors.red,
-    );
-    _signupScaffold.currentState.showSnackBar(snackBar);
   }
 }
