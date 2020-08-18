@@ -2,15 +2,13 @@ import 'dart:ui';
 
 import 'package:voyager/screens/login_options.dart';
 import 'package:voyager/screens/login_page.dart';
+import 'package:voyager/modules/home/pages/page_view_left.dart';
 import 'package:voyager/screens/pin_login.dart';
 import 'package:voyager/screens/set_pin.dart';
-import 'package:voyager/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voyager/screens/sign_up.dart';
 import 'package:voyager/services/background.dart';
-import 'package:voyager/services/drawer.dart';
 import 'package:voyager/services/getFingerprint.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -38,49 +36,70 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   SharedPreferences sharedPreferences;
+  int selectedIndex = 0;
+  final widgetOptions = [
+    PageViewSwipe(),
+    Text('Explore'),
+    Text('Miles'),
+    Text('Hot Deals'),
+    Text('Vouchers'),
+    Text('My acc'),
+  ];
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         BackgroundClass(),
         Scaffold(
-          resizeToAvoidBottomPadding: false,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            title: Text("SAA Voyager", style: TextStyle(color: Colors.white)),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () {
-                  //removeSharedPreferenceKeys();
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => LoginPage()),
-                      (Route<dynamic> route) => false);
-                },
-                child: Text("Log Out", style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
-          drawer: Drawer(child: DrawerClass()),
-          backgroundColor: Colors.transparent,
-          body: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.light,
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Welcome to Dashboard",
-                    style: TextStyle(
-                        color: Color(THEME.PRIMARY_COLOR),
-                        fontSize: 30,
-                        fontWeight: FontWeight.normal),
-                  ),
+            resizeToAvoidBottomPadding: false,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              title: Text("South African Airlines",
+                  style: TextStyle(color: Colors.white)),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    removeSharedPreferenceKeys();
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => LoginPage()),
+                        (Route<dynamic> route) => false);
+                  },
+                  child: Text("Log Out", style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
-          ),
-        )
+            backgroundColor: Colors.transparent,
+            body: Center(
+              child: widgetOptions.elementAt(selectedIndex),
+            ),
+            bottomNavigationBar: new Theme(
+              data: Theme.of(context).copyWith(
+                  textTheme: Theme.of(context)
+                      .textTheme
+                      .copyWith(caption: new TextStyle(color: Colors.white))),
+              child: new BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                items: <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.home), title: Text('Home')),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.explore), title: Text('Explore')),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.directions_walk), title: Text('Miles')),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.whatshot), title: Text('Hot Deals')),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.card_giftcard), title: Text('Vouchers')),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.person), title: Text('Account')),
+                ],
+                currentIndex: selectedIndex,
+                backgroundColor: Colors.grey[600],
+                fixedColor: Colors.brown,
+                onTap: onItemTapped,
+              ),
+            ))
       ],
     );
   }
@@ -88,5 +107,11 @@ class _HomePageState extends State<HomePage> {
   removeSharedPreferenceKeys() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.clear();
+  }
+
+  void onItemTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
   }
 }
