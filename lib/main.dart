@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:voyager/modules/login/pages/login_screen.dart';
 import 'package:voyager/screens/login_options.dart';
 import 'package:voyager/screens/login_page.dart';
 import 'package:voyager/modules/home/pages/page_view_left.dart';
@@ -56,13 +57,14 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: Colors.transparent,
               title: Text("South African Airlines",
                   style: TextStyle(color: Colors.white)),
+              centerTitle: true,
               actions: <Widget>[
                 FlatButton(
                   onPressed: () {
                     removeSharedPreferenceKeys();
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
-                            builder: (BuildContext context) => LoginPage()),
+                            builder: (BuildContext context) => LoginScreen()),
                         (Route<dynamic> route) => false);
                   },
                   child: Text("Log Out", style: TextStyle(color: Colors.white)),

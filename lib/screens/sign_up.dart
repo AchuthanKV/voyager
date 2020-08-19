@@ -121,38 +121,59 @@ class _SignUpPageState extends State<SignUpPage> {
           child: _isLoading
               ? Center(
                   child: SpinKitCubeGrid(
-                    color: Colors.white,
+                    color: Colors.black26,
                     size: 100.0,
                   ),
                 )
-              : ListView(
-                  children: <Widget>[
-                    logoSection(),
-                    textSection(),
-                    buttonSection(),
-                  ],
-                ),
+              : isSignUp
+                  ? Stack(children: <Widget>[
+                      ListView(
+                        children: <Widget>[
+                          logoSection(),
+                          textSection(),
+                          buttonSection(),
+                        ],
+                      ),
+                      Positioned.fill(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: 5,
+                            sigmaY: 5,
+                          ),
+                          child: Container(color: Colors.black.withOpacity(0)),
+                        ),
+                      )
+                    ])
+                  : ListView(
+                      children: <Widget>[
+                        logoSection(),
+                        textSection(),
+                        buttonSection(),
+                      ],
+                    ),
         ),
       ),
       floatingActionButton: isSignUp
           ? Container(
               child: signedUp
-                  ? Container(
-                      width: 500,
-                      height: 100,
-                      padding: EdgeInsets.all(20),
-                      margin: EdgeInsets.only(left: 30),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[500],
-                      ),
-                      child: Text(
-                        "Successfully enroled. Membership number and your login pin have been sent to your registered email id,",
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                        textAlign: TextAlign.center,
+                  ? Center(
+                      child: Container(
+                        width: 500,
+                        height: 100,
+                        padding: EdgeInsets.all(20),
+                        margin: EdgeInsets.only(left: 30),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey[600],
+                        ),
+                        child: Text(
+                          "Successfully enroled. Membership number and your login pin have been sent to your registered email id.",
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     )
                   : Container(
@@ -164,13 +185,15 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.black,
                       ),
-                      child: Text(
-                        "Enrolling New user....",
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                        textAlign: TextAlign.center,
+                      child: Center(
+                        child: Text(
+                          "Enrolling New user....",
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
             )
@@ -181,9 +204,9 @@ class _SignUpPageState extends State<SignUpPage> {
   Container logoSection() {
     return Container(
       alignment: Alignment(0.0, 0.0),
-      height: 100.0,
+      height: 75.0,
       //width: 100.0,
-      margin: EdgeInsets.only(top: 10.0),
+      margin: EdgeInsets.only(top: 40.0),
       decoration: BoxDecoration(
           image: DecorationImage(
         image: AssetImage('assets/images/logo.png'),
@@ -607,17 +630,14 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  SizedBox(width: 10),
+                  //SizedBox(width: 10),
                   Container(
                     child: Text(
                       'Email me Promotions',
                       style: TextStyle(color: Colors.black, fontSize: 15),
                     ),
-                  ),
-                  SizedBox(
-                    width: 130,
                   ),
                   Switch(
                     value: isEmailOn,
@@ -635,17 +655,14 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               SizedBox(height: 10),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  SizedBox(width: 10),
+                  //SizedBox(width: 10),
                   Container(
                     child: Text(
-                      'Enable Notification',
+                      'Enable my Notification',
                       style: TextStyle(color: Colors.black, fontSize: 15),
                     ),
-                  ),
-                  SizedBox(
-                    width: 150,
                   ),
                   Switch(
                     value: isNotificationOn,

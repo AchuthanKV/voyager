@@ -18,8 +18,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _pinEditingController =
       new TextEditingController();
-  int _pinLength = 6;
+
+  int _pinLength = 4;
+  String _pin;
   bool isAuthenticated = false;
+
   final FlutterSecureStorage _storage = FlutterSecureStorage();
   LocalAuthentication auth = LocalAuthentication();
   final FocusNode _pinFocus = FocusNode();
@@ -91,9 +94,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.number,
                 textCapitalization: TextCapitalization.characters,
                 onSubmit: (pin) {
-                  print(pin);
+                  if (pin == '1234') {
+                    _pin = pin;
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => HomePage()),
+                        (Route<dynamic> route) => false);
+                  } else {
+                    _pinEditingController.clear();
+                  }
                 },
                 onChanged: (pin) {
+                  _pin = pin;
                   print(pin);
                 },
                 enableInteractiveSelection: true,
@@ -111,9 +123,14 @@ class _LoginScreenState extends State<LoginScreen> {
       margin: EdgeInsets.only(top: 55.0),
       child: RaisedButton(
         onPressed: () {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-              (Route<dynamic> route) => false);
+          if (_pin == '1234') {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomePage()),
+                (Route<dynamic> route) => false);
+          } else {
+            _pinEditingController.clear();
+          }
         },
         elevation: 0.0,
         color: Color(THEME.BUTTON_COLOR),
@@ -156,13 +173,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   getStoredVal() async {
     var isBio = await (_storage.read(key: 'biometric'));
-    print(isBio);
-    if (isBio != null && isBio != 'undefined') {
+
+    if (isBio == 'true') {
       setState(() {
-        if (isBio == 'false')
-          isAuthenticated = false;
-        else
-          isAuthenticated = true;
+        isAuthenticated = true;
+      });
+    } else {
+      setState(() {
+        isAuthenticated = false;
       });
     }
   }

@@ -190,15 +190,15 @@ class _LoginOptionsState extends State<LoginOptions> {
     }
 
     usingBio = await (_storage.read(key: 'biometric'));
-    if (usingBio == 'false') {
+    if (usingBio == 'true') {
       setState(() {
         usingBio = usingBio;
-        widget.isfingerprintOn = false;
+        widget.isfingerprintOn = true;
       });
     } else {
       setState(() {
         usingBio = usingBio;
-        widget.isfingerprintOn = true;
+        widget.isfingerprintOn = false;
       });
     }
   }
