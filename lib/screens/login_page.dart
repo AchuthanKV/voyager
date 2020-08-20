@@ -196,8 +196,10 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       //padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       padding: EdgeInsets.only(left: 20, top: 10, right: 1),
-      alignment: Alignment(1.0, 0.0),
+      //alignment: Alignment(2.0, 10.0),
+
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           inkWellSection("Forgot PIN?", '/forgotPIN'),
           registerAccountSection()
@@ -221,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Container registerAccountSection() {
     return Container(
-      margin: EdgeInsets.only(left: 200, top: 10),
+      margin: EdgeInsets.only(right: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[

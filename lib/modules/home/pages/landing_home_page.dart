@@ -174,24 +174,6 @@ class _LandingPageState extends State<LandingPage> {
             Container(
               child: SizedBox(height: 40),
             ),
-            Container(
-              child: RichText(
-                text: TextSpan(
-                  children: [
-                    WidgetSpan(
-                      child: Icon(
-                        Icons.arrow_left,
-                        size: 18,
-                      ),
-                    ),
-                    TextSpan(
-                      text: " Swipe left for Membership Card",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ],
-                ),
-              ),
-            ),
             Expanded(
                 child: Align(
               alignment: FractionalOffset.bottomCenter,
@@ -212,6 +194,7 @@ class _LandingPageState extends State<LandingPage> {
                 ),
               ),
             )),
+            SizedBox(height: 25)
           ],
         ),
         onSwipeUp: () {
