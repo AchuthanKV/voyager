@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:voyager/modules/login/pages/login_screen.dart';
+import 'package:voyager/screens/forgot_pin.dart';
 import 'package:voyager/screens/login_options.dart';
 import 'package:voyager/screens/login_page.dart';
 import 'package:voyager/modules/home/pages/page_view_left.dart';
@@ -23,6 +24,7 @@ void main() => runApp(MaterialApp(
       home: SplashScreen(),
       routes: {
         '/signup': (BuildContext context) => SignUpPage(),
+        '/forgotpin': (BuildContext context) => ForgotPin(),
         '/loginoptions': (BuildContext context) => LoginOptions(),
         '/getfingerprint': (BuildContext context) => AuthenticateFingerPrint(),
         '/setPin': (BuildContext context) => SetPin(),

@@ -1,46 +1,31 @@
-import 'dart:async';
-import 'dart:convert';
 import 'dart:core';
-//import 'dart:js';
 import 'dart:ui';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:passcode_screen/circle.dart';
-import 'package:passcode_screen/keyboard.dart';
-import 'package:passcode_screen/passcode_screen.dart';
-import 'package:voyager/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:voyager/services/api.dart' as API;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
+import 'package:voyager/screens/set_pin.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
-import 'package:local_auth/local_auth.dart';
-import 'package:local_auth/error_codes.dart' as auth_error;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class LoginPage extends StatefulWidget {
-  LoginPage({Key key}) : super(key: key);
+class ForgotPin extends StatefulWidget {
+  ForgotPin({Key key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _ForgotPinState createState() => _ForgotPinState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ForgotPinState extends State<ForgotPin> {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
 
-  String errorMsg = '';
-  String membership_no = '0000000000';
-  String pin = '1234';
-  String membership_no_new;
+  String memberShipNo;
+  String email;
 
-  final _loginFormKey = GlobalKey<FormState>();
+  final _forgotPinKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = false;
   final TextEditingController membershipController =
-      new TextEditingController();
-  final TextEditingController pinController = new TextEditingController();
+  new TextEditingController();
+  final TextEditingController emailController = new TextEditingController();
   final FocusNode _pinFocus = FocusNode();
 
   void initState() {
@@ -49,8 +34,6 @@ class _LoginPageState extends State<LoginPage> {
       final text = membershipController.text.toLowerCase();
       membershipController.value = membershipController.value.copyWith(
         text: text,
-        // selection:
-        //     TextSelection(baseOffset: text.length, extentOffset: text.length),
         composing: TextRange.empty,
       );
     });
@@ -58,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    //print('build execution...');
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
@@ -76,22 +58,20 @@ class _LoginPageState extends State<LoginPage> {
           // make sure we apply clip it properly
           child: _isLoading
               ? Center(
-                  child: SpinKitHourGlass(
-                    color: Colors.white,
-                    size: 100.0,
-                  ),
-                )
+            child: SpinKitHourGlass(
+              color: Colors.white,
+              size: 100.0,
+            ),
+          )
               : ListView(
-                  children: <Widget>[
-                    logoSection(),
-                    //pinLogin(),
-
-                    SizedBox(
-                      height: 50,
-                    ),
-                    normalSignIn(),
-                  ],
-                ),
+            children: <Widget>[
+              logoSection(),
+              SizedBox(
+                height: 50,
+              ),
+              normalSignIn(),
+            ],
+          ),
         ),
       ),
     );
@@ -105,9 +85,9 @@ class _LoginPageState extends State<LoginPage> {
       margin: EdgeInsets.only(top: 40.0),
       decoration: BoxDecoration(
           image: DecorationImage(
-        image: AssetImage('assets/images/logo.png'),
-        fit: BoxFit.fitHeight,
-      )),
+            image: AssetImage('assets/images/logo.png'),
+            fit: BoxFit.fitHeight,
+          )),
     );
   }
 
@@ -118,7 +98,6 @@ class _LoginPageState extends State<LoginPage> {
         children: <Widget>[
           textSection(),
           buttonSection(),
-          forgotPasswordSection(),
         ],
       ),
     );
@@ -129,9 +108,30 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
         padding: EdgeInsets.fromLTRB(15, 30, 15, 40),
         child: Form(
-          key: _loginFormKey,
+          key: _forgotPinKey,
           child: Column(
             children: <Widget>[
+              SizedBox(height: 20.0),
+              Container(
+                child: Text(
+                  "FORGOT PIN",
+                  style: TextStyle(
+                      fontSize: 18,
+//                      fontWeight: FontWeight.w500,
+                      color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 30.0),
+              Container(
+                child: Text(
+                  "Please enter your Membership No. & Email Address registered with us.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black),
+                ),
+              ),
+              SizedBox(height: 30.0),
               TextFormField(
                 validator: (value) {
                   if (value.isEmpty) {
@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: "Membership No.",
                   border: UnderlineInputBorder(
                       borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                      BorderSide(color: Color(THEME.PRIMARY_COLOR))),
                   focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black)),
                   hintStyle: TextStyle(color: Colors.grey),
@@ -168,20 +168,20 @@ class _LoginPageState extends State<LoginPage> {
                 focusNode: _pinFocus,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return 'Please enter your PIN';
+                    return 'Please enter your Email Address';
                   }
                   return null;
                 },
-                controller: pinController,
+                controller: emailController,
                 cursorColor: Colors.white,
                 obscureText: true,
                 style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
-                  icon: Icon(Icons.lock, color: Colors.black),
-                  hintText: "PIN",
+                  icon: Icon(Icons.email, color: Colors.black),
+                  hintText: "Email Address",
                   border: UnderlineInputBorder(
                       borderSide:
-                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                      BorderSide(color: Color(THEME.PRIMARY_COLOR))),
                   focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black)),
                   hintStyle: TextStyle(color: Colors.grey),
@@ -192,60 +192,6 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Container forgotPasswordSection() {
-    return Container(
-      //padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      padding: EdgeInsets.only(left: 20, top: 10, right: 1),
-      //alignment: Alignment(2.0, 10.0),
-
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          inkWellSection("Forgot PIN?", '/forgotpin'),
-          registerAccountSection()
-        ],
-      ),
-    );
-  }
-
-  InkWell inkWellSection(String title, String path) {
-    return InkWell(
-      child: Text(
-        title,
-        style: TextStyle(
-            fontSize: 15,
-            color: Color(THEME.PRIMARY_COLOR),
-            decoration: TextDecoration.underline),
-      ),
-      onTap: () => Navigator.pushNamed(context, path),
-    );
-  }
-
-  Container registerAccountSection() {
-    return Container(
-      margin: EdgeInsets.only(right: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Text("New User? ",
-              style: TextStyle(color: Color(THEME.PRIMARY_COLOR))),
-          InkWell(
-            onTap: () => {
-              Navigator.of(context).pushNamed('/signup'),
-            },
-            child: Text(
-              'JOIN VOYAGER',
-              style: TextStyle(
-                color: Color(THEME.PRIMARY_COLOR),
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   Container buttonSection() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -253,45 +199,39 @@ class _LoginPageState extends State<LoginPage> {
       padding: EdgeInsets.only(left: 20, right: 15),
       child: RaisedButton(
         onPressed: () {
-          if (_loginFormKey.currentState.validate()) {
+          if (_forgotPinKey.currentState.validate()) {
             setState(() {
               _isLoading = true;
             });
-            dummySignIn(
-                membershipController.text.trim(), pinController.text.trim());
-            //signIn(emailController.text.trim(), passwordController.text.trim());
+            signInWithEmail(
+                membershipController.text.trim(), emailController.text.trim());
           }
         },
         textColor: Colors.white,
         elevation: 0.0,
         color: Color(THEME.BUTTON_COLOR),
-        child: Text("SIGN IN", style: TextStyle(color: Colors.black)),
+        child: Text("SUBMIT", style: TextStyle(color: Colors.black)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       ),
     );
   }
 
-  setStoredVal(String membershipid) async {
-    await _storage.write(key: 'membershipId', value: membershipid);
+  setStoredVal(String memberShipId) async {
+    await _storage.write(key: 'membershipId', value: memberShipId);
   }
 
-  dummySignIn(String membership, _pin) {
-    print("membership, _pin" + membership + " " + _pin);
-    print("membership_no, pin" + membership_no + " " + pin);
-    if (membership_no_new != null) {
-      setState(() {
-        membership_no = membership_no_new;
-      });
-    }
-    if ((membership == membership_no) && (_pin == pin)) {
+  signInWithEmail(String membership, _email) {
+    print("membership_no, email" + memberShipNo + " " + email);
+
+    if ((membership == memberShipNo) && (_email == email)) {
       setStoredVal(membership);
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-          (Route<dynamic> route) => false);
+          MaterialPageRoute(builder: (BuildContext context) => SetPin()),
+              (Route<dynamic> route) => false);
     } else {
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-          (Route<dynamic> route) => false);
+          MaterialPageRoute(builder: (BuildContext context) => ForgotPin()),
+              (Route<dynamic> route) => false);
     }
   }
 }
