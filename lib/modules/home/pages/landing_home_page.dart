@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipedetector/swipedetector.dart';
+import 'package:voyager/base/models/profile_model.dart';
+import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/transaction/pages/transaction_page.dart';
 
 class LandingPage extends StatefulWidget {
@@ -9,8 +14,14 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  go() async {
+    ProfileModel profileObject = LoginUser.obj;
+    print(profileObject.emailAddress);
+  }
+
   @override
   Widget build(BuildContext context) {
+    go();
     return Container(
       child: SwipeDetector(
         child: Column(

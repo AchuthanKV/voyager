@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/services/api.dart' as API;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -257,8 +258,7 @@ class _LoginPageState extends State<LoginPage> {
             setState(() {
               _isLoading = true;
             });
-            dummySignIn(
-                membershipController.text.trim(), pinController.text.trim());
+            signIn(membershipController.text.trim(), pinController.text.trim());
             //signIn(emailController.text.trim(), passwordController.text.trim());
           }
         },
@@ -271,8 +271,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  setStoredVal(String membershipid) async {
+  setStoredVal(String membershipid, String pin) async {
     await _storage.write(key: 'membershipId', value: membershipid);
+    await _storage.write(key: 'pin', value: pin);
   }
 
   dummySignIn(String membership, _pin) {
@@ -284,7 +285,21 @@ class _LoginPageState extends State<LoginPage> {
       });
     }
     if ((membership == membership_no) && (_pin == pin)) {
-      setStoredVal(membership);
+      setStoredVal(membership, _pin);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+          (Route<dynamic> route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+          (Route<dynamic> route) => false);
+    }
+  }
+
+  signIn(String membershipId, pin) async {
+    var response = await LoginUser().authenticateUser(membershipId, pin);
+    if (response == 'true') {
+      setStoredVal(membershipId, pin);
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => HomePage()),
           (Route<dynamic> route) => false);

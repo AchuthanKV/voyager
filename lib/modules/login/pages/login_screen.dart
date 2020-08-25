@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:voyager/main.dart';
+import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/screens/login_page.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -18,11 +20,13 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _pinEditingController =
       new TextEditingController();
+  bool _isLoading = false;
 
-  int _pinLength = 4;
+  int _pinLength = 6;
+  String storedPin;
   String _pin;
   bool isAuthenticated = false;
-
+  String membershipId;
   final FlutterSecureStorage _storage = FlutterSecureStorage();
   LocalAuthentication auth = LocalAuthentication();
   final FocusNode _pinFocus = FocusNode();
@@ -33,6 +37,21 @@ class _LoginScreenState extends State<LoginScreen> {
     radius: Radius.circular(10),
     enteredColor: Colors.yellow[800],
   );
+
+  userLogin() async {
+    var response = await LoginUser().authenticateUser(membershipId, _pin);
+    setState(() {
+      _isLoading = false;
+    });
+    if (response == 'true') {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+          (Route<dynamic> route) => false);
+    } else {
+      _pinEditingController.clear();
+    }
+  }
+
   Container backGround() {
     return Container(
       child: Container(
@@ -94,19 +113,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.number,
                 textCapitalization: TextCapitalization.characters,
                 onSubmit: (pin) {
-                  if (pin == '1234') {
-                    _pin = pin;
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => HomePage()),
-                        (Route<dynamic> route) => false);
+                  _pin = pin;
+                  if (pin.length == _pinLength) {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    userLogin();
                   } else {
-                    _pinEditingController.clear();
+                    _pinFocus.unfocus();
                   }
                 },
                 onChanged: (pin) {
                   _pin = pin;
-                  print(pin);
+                  if (pin.length == _pinLength) {
+                    _pinFocus.unfocus();
+                  }
                 },
                 enableInteractiveSelection: true,
               ),
@@ -122,15 +143,13 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: EdgeInsets.symmetric(horizontal: 20.0),
       margin: EdgeInsets.only(top: 55.0),
       child: RaisedButton(
-        onPressed: () {
-          if (_pin == '1234') {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                    builder: (BuildContext context) => HomePage()),
-                (Route<dynamic> route) => false);
-          } else {
-            _pinEditingController.clear();
-          }
+        onPressed: () async {
+          if (_pin.length == _pinLength) {
+            setState(() {
+              _isLoading = true;
+            });
+            userLogin();
+          } else {}
         },
         elevation: 0.0,
         color: Color(THEME.BUTTON_COLOR),
@@ -174,13 +193,19 @@ class _LoginScreenState extends State<LoginScreen> {
   getStoredVal() async {
     var isBio = await (_storage.read(key: 'biometric'));
 
+    var id = await _storage.read(key: 'membershipId');
+    var pin = await _storage.read(key: 'pin');
+    if (id != null && id != 'undefined') {
+      setState(() {
+        membershipId = id;
+        storedPin = pin;
+        _pinLength = pin.length;
+      });
+    }
+    // print(isBio);
     if (isBio == 'true') {
       setState(() {
         isAuthenticated = true;
-      });
-    } else {
-      setState(() {
-        isAuthenticated = false;
       });
     }
   }
@@ -196,8 +221,6 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => HomePage()),
             (Route<dynamic> route) => false);
-      } else {
-        print('no');
       }
     } on PlatformException catch (e) {
       auth.stopAuthentication();
@@ -229,37 +252,54 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     getStoredVal();
-    return Scaffold(
-        resizeToAvoidBottomPadding: false,
-        body: GestureDetector(
-          onTap: () {
-            _pinFocus.unfocus();
-          },
-          child: Stack(
-            children: <Widget>[
-              backGround(),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return _isLoading
+        ? Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: ExactAssetImage("assets/images/background.png"),
+                fit: BoxFit.fill,
+              ),
+            ),
+            child: Center(
+              child: SpinKitHourGlass(
+                color: Colors.white,
+                size: 100.0,
+              ),
+            ),
+          )
+        : Scaffold(
+            resizeToAvoidBottomPadding: false,
+            body: GestureDetector(
+              onTap: () {
+                _pinFocus.unfocus();
+              },
+              child: Stack(
                 children: <Widget>[
-                  logoSection(),
-                  forgotPasswordSection(),
-                  pinSection(),
-                  buttonSection(),
-                  isAuthenticated
-                      ? Column(
-                          children: <Widget>[
-                            Text("OR"),
-                            fingerPrint(),
-                          ],
-                        )
-                      : SizedBox(
-                          height: 0,
-                        ),
-                  otherAccountLogin(),
+                  backGround(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      logoSection(),
+                      forgotPasswordSection(),
+                      pinSection(),
+                      buttonSection(),
+                      isAuthenticated
+                          ? Column(
+                              children: <Widget>[
+                                Text("OR"),
+                                fingerPrint(),
+                              ],
+                            )
+                          : SizedBox(
+                              height: 0,
+                            ),
+                      otherAccountLogin(),
+                    ],
+                  )
                 ],
-              )
-            ],
-          ),
-        ));
+              ),
+            ));
   }
 }

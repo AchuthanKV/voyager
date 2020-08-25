@@ -108,14 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       key: _signupScaffold,
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: ExactAssetImage("assets/images/plainbackground.png"),
-            fit: BoxFit.fill,
-          ),
-        ),
+        color: signedUp ? Colors.red : Colors.transparent,
         child: Container(
           alignment: Alignment.center,
           child: _isLoading

@@ -11,7 +11,6 @@ import 'package:voyager/theme/theme.dart' as THEME;
 class LoginOptions extends StatefulWidget {
   LoginOptions({Key key}) : super(key: key);
   bool isfingerprintOn = false;
-  bool isPinOn = false;
 
   @override
   _LoginOptionsState createState() => _LoginOptionsState();
@@ -19,7 +18,7 @@ class LoginOptions extends StatefulWidget {
 
 class _LoginOptionsState extends State<LoginOptions> {
   String usingBio = "false";
-  bool pinSet = false;
+
   final _storage = FlutterSecureStorage();
   LocalAuthentication auth = LocalAuthentication();
 
@@ -120,49 +119,6 @@ class _LoginOptionsState extends State<LoginOptions> {
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(width: 50),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: Text(
-                          'Enable Pin',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      Switch(
-                        value: widget.isPinOn,
-                        onChanged: (bool isOn) async {
-                          setState(() {
-                            widget.isPinOn = isOn;
-                          });
-                          if (isOn == true) {
-                            await Navigator.pushNamed(context, '/setPin');
-                            var pin = await _storage.read(key: 'pin');
-
-                            if (pin != null) {
-                              widget.isPinOn = true;
-                            } else {
-                              widget.isPinOn = false;
-                            }
-                          } else if (isOn == false) {
-                            await _storage.delete(key: 'pin');
-                          }
-                        },
-                        activeColor: Colors.green,
-                        inactiveTrackColor: Colors.grey,
-                        inactiveThumbColor: Colors.redAccent,
-                        activeTrackColor: Colors.green,
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),
@@ -181,14 +137,6 @@ class _LoginOptionsState extends State<LoginOptions> {
   }
 
   getStoredVal() async {
-    var pin = await _storage.read(key: 'pin');
-
-    if (pin != null) {
-      setState(() {
-        widget.isPinOn = true;
-      });
-    }
-
     usingBio = await (_storage.read(key: 'biometric'));
     if (usingBio == 'true') {
       setState(() {
