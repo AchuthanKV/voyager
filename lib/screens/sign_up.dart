@@ -108,7 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       key: _signupScaffold,
       body: Container(
-        color: signedUp ? Colors.red : Colors.transparent,
+        //color: signedUp ? Colors.red : Colors.transparent,
         child: Container(
           alignment: Alignment.center,
           child: _isLoading
