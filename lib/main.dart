@@ -48,6 +48,14 @@ class _HomePageState extends State<HomePage> {
     Text('Vouchers'),
     Text('My acc'),
   ];
+  List nav_button_color = [
+    Color(0xffCB8A03),
+    Colors.white,
+    Colors.white,
+    Colors.white,
+    Colors.white,
+    Colors.white
+  ];
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -56,7 +64,7 @@ class _HomePageState extends State<HomePage> {
         Scaffold(
             resizeToAvoidBottomPadding: false,
             appBar: AppBar(
-              backgroundColor: Colors.transparent,
+              backgroundColor: Color(THEME.PRIMARY_COLOR),
               title: Text("South African Airlines",
                   style: TextStyle(color: Colors.white)),
               centerTitle: true,
@@ -86,21 +94,54 @@ class _HomePageState extends State<HomePage> {
                 type: BottomNavigationBarType.fixed,
                 items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.home), title: Text('Home')),
+                      icon: Image.asset(
+                        "assets/images/home1.png",
+                        width: 37.0,
+                        color: nav_button_color[0],
+                      ),
+                      title: Text('Home')),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.explore), title: Text('Explore')),
+                      icon: Image.asset(
+                        "assets/images/redeem.png",
+                        width: 40.0,
+                        color: nav_button_color[1],
+                      ),
+                      title: Text(
+                        'Rewards',
+                        textAlign: TextAlign.start,
+                      )),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.directions_walk), title: Text('Miles')),
+                      icon: Image.asset(
+                        "assets/images/donate_points.png",
+                        width: 40.0,
+                        color: nav_button_color[2],
+                      ),
+                      title: Text('Miles')),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.whatshot), title: Text('Hot Deals')),
+                      icon: Image.asset(
+                        "assets/images/hotdeals.png",
+                        width: 40.0,
+                        color: nav_button_color[3],
+                      ),
+                      title: Text('Hot Deals')),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.card_giftcard), title: Text('Vouchers')),
+                      icon: Icon(
+                        Icons.explore,
+                        size: 40,
+                      ),
+                      title: Text('Explore')),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.person), title: Text('Account')),
+                      icon: Image.asset(
+                        "assets/images/account.png",
+                        width: 40.0,
+                        height: 40,
+                        color: nav_button_color[5],
+                      ),
+                      title: Text('Account')),
                 ],
                 currentIndex: selectedIndex,
-                backgroundColor: Colors.grey[600],
-                fixedColor: Colors.brown,
+                backgroundColor: Color(THEME.PRIMARY_COLOR),
+                fixedColor: Colors.yellow,
                 onTap: onItemTapped,
               ),
             ))
@@ -113,9 +154,16 @@ class _HomePageState extends State<HomePage> {
     sharedPreferences.clear();
   }
 
+  int i;
   void onItemTapped(int index) {
     setState(() {
       selectedIndex = index;
+      nav_button_color[selectedIndex] = Colors.yellow;
+      i = 0;
+      while (i < 6) {
+        if (i != selectedIndex) nav_button_color[i] = Colors.white;
+        i++;
+      }
     });
   }
 }
