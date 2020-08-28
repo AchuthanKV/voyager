@@ -1,24 +1,26 @@
 class ProfileModel {
   //from MemberProfileDetailsResponse innertag
-  int _membershipId;
+  String _membershipId;
   String _accountStatus;
   String _enrolmentSource;
-  List _enrollmentSourceCode;
+  String _enrollmentSourceCode;
   String _enrolmentDate;
   String _periodType;
   String _period;
   String _extendToDay;
   String _extendToMonth;
-  int _tier;
+  String _tier;
   String _tierFromDate;
-  List _tierToDate;
-  String _tierColor;
+  String _tierToDate;
+  int _tierColor;
+  String _tierName;
+
 //from memberprofile inner tag
-  int _customerNumber;
+  String _customerNumber;
   String _membershipType;
   String _membershipStatus;
-  List _secretQues;
-  List _secretAns;
+  String _secretQues;
+  String _secretAns;
 //from individual info inner tag
   String _title;
   String _memberNationality;
@@ -26,11 +28,11 @@ class ProfileModel {
   String _familyName;
   String _initials;
   String _gender;
-  List _maritalStatus;
+  String _maritalStatus;
   String _dateOfBirth;
-  int _passportNumber;
-  List _idNumber;
-  List _companyName;
+  String _passportNumber;
+  String _idNumber;
+  String _companyName;
   String _preferredLanguage;
   String _preferredAddress;
 
@@ -41,22 +43,21 @@ class ProfileModel {
   String _city;
   String _state;
   String _country;
-  int _zipCode;
+  String _zipCode;
   String _emailAddress;
   String _phoneISDCode;
   String _phoneAreaCode;
-  int _phoneNumber;
+  String _phoneNumber;
   String _mobileISDCode;
-  int _mobileAreaCode;
-  int _mobileNumber;
+  String _mobileAreaCode;
+  String _mobileNumber;
   String _faxISDCode;
   String _faxAreaCode;
   String _fax;
   String _skypeID;
+  String get membershipId => _membershipId;
 
-  int get membershipId => _membershipId;
-
-  set membershipId(int value) => _membershipId = value;
+  set membershipId(String value) => _membershipId = value;
 
   String get accountStatus => _accountStatus;
 
@@ -66,9 +67,9 @@ class ProfileModel {
 
   set enrolmentSource(String value) => _enrolmentSource = value;
 
-  List get enrollmentSourceCode => _enrollmentSourceCode;
+  String get enrollmentSourceCode => _enrollmentSourceCode;
 
-  set enrollmentSourceCode(List value) => _enrollmentSourceCode = value;
+  set enrollmentSourceCode(String value) => _enrollmentSourceCode = value;
 
   String get enrolmentDate => _enrolmentDate;
 
@@ -90,25 +91,29 @@ class ProfileModel {
 
   set extendToMonth(String value) => _extendToMonth = value;
 
-  int get tier => _tier;
+  String get tier => _tier;
 
-  set tier(int value) => _tier = value;
+  set tier(String value) => _tier = value;
 
   String get tierFromDate => _tierFromDate;
 
   set tierFromDate(String value) => _tierFromDate = value;
 
-  List get tierToDate => _tierToDate;
+  String get tierToDate => _tierToDate;
 
-  set tierToDate(List value) => _tierToDate = value;
+  set tierToDate(String value) => _tierToDate = value;
 
-  String get tierColor => _tierColor;
+  int get tierColor => _tierColor;
 
-  set tierColor(String value) => _tierColor = value;
+  set tierColor(int value) => _tierColor = value;
 
-  int get customerNumber => _customerNumber;
+  String get tierName => _tierName;
 
-  set customerNumber(int value) => _customerNumber = value;
+  set tierName(String value) => _tierName = value;
+
+  String get customerNumber => _customerNumber;
+
+  set customerNumber(String value) => _customerNumber = value;
 
   String get membershipType => _membershipType;
 
@@ -118,13 +123,13 @@ class ProfileModel {
 
   set membershipStatus(String value) => _membershipStatus = value;
 
-  List get secretQues => _secretQues;
+  String get secretQues => _secretQues;
 
-  set secretQues(List value) => _secretQues = value;
+  set secretQues(String value) => _secretQues = value;
 
-  List get secretAns => _secretAns;
+  String get secretAns => _secretAns;
 
-  set secretAns(List value) => _secretAns = value;
+  set secretAns(String value) => _secretAns = value;
 
   String get title => _title;
 
@@ -150,25 +155,25 @@ class ProfileModel {
 
   set gender(String value) => _gender = value;
 
-  List get maritalStatus => _maritalStatus;
+  String get maritalStatus => _maritalStatus;
 
-  set maritalStatus(List value) => _maritalStatus = value;
+  set maritalStatus(String value) => _maritalStatus = value;
 
   String get dateOfBirth => _dateOfBirth;
 
   set dateOfBirth(String value) => _dateOfBirth = value;
 
-  int get passportNumber => _passportNumber;
+  String get passportNumber => _passportNumber;
 
-  set passportNumber(int value) => _passportNumber = value;
+  set passportNumber(String value) => _passportNumber = value;
 
-  List get idNumber => _idNumber;
+  String get idNumber => _idNumber;
 
-  set idNumber(List value) => _idNumber = value;
+  set idNumber(String value) => _idNumber = value;
 
-  List get companyName => _companyName;
+  String get companyName => _companyName;
 
-  set companyName(List value) => _companyName = value;
+  set companyName(String value) => _companyName = value;
 
   String get preferredLanguage => _preferredLanguage;
 
@@ -202,9 +207,9 @@ class ProfileModel {
 
   set country(String value) => _country = value;
 
-  int get zipCode => _zipCode;
+  String get zipCode => _zipCode;
 
-  set zipCode(int value) => _zipCode = value;
+  set zipCode(String value) => _zipCode = value;
 
   String get emailAddress => _emailAddress;
 
@@ -218,21 +223,21 @@ class ProfileModel {
 
   set phoneAreaCode(String value) => _phoneAreaCode = value;
 
-  int get phoneNumber => _phoneNumber;
+  String get phoneNumber => _phoneNumber;
 
-  set phoneNumber(int value) => _phoneNumber = value;
+  set phoneNumber(String value) => _phoneNumber = value;
 
   String get mobileISDCode => _mobileISDCode;
 
   set mobileISDCode(String value) => _mobileISDCode = value;
 
-  int get mobileAreaCode => _mobileAreaCode;
+  String get mobileAreaCode => _mobileAreaCode;
 
-  set mobileAreaCode(int value) => _mobileAreaCode = value;
+  set mobileAreaCode(String value) => _mobileAreaCode = value;
 
-  int get mobileNumber => _mobileNumber;
+  String get mobileNumber => _mobileNumber;
 
-  set mobileNumber(int value) => _mobileNumber = value;
+  set mobileNumber(String value) => _mobileNumber = value;
 
   String get faxISDCode => _faxISDCode;
 

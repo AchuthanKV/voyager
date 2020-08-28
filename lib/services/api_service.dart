@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:api_handler/api_handler.dart';
 import 'package:voyager/app_config.dart';
+import 'package:voyager/modules/login/services/response.dart';
 
 class ApiService {
   final apiHandler = ApiHandler(AppConfig.baseURL);
@@ -17,6 +18,7 @@ class ApiService {
       int code = response.code;
 
       if (code == 200) {
+        Response().setLoginAuth = response;
         Map res = json.decode(response.body);
         if (response.body.contains("AuthenticateMemberResponse")) {
           Map member = res['AuthenticateMemberResponse'];
@@ -28,8 +30,8 @@ class ApiService {
           Map member = res['Fault'];
           return 'false';
         }
-      } else {
-        return null;
+      } else if (code == 500) {
+        return 'connectionRefused';
       }
     }
   }

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:api_handler/api_handler.dart';
 import 'package:voyager/app_config.dart';
 import 'package:voyager/base/models/profile_model.dart';
+import 'package:voyager/modules/login/services/response.dart';
+import 'package:voyager/modules/login/services/tier_name.dart';
 
 class MembershipProfile {
   final apiHandler = ApiHandler(AppConfig.baseURL);
@@ -40,15 +42,23 @@ class MembershipProfile {
     }
   }
 
-  Future<ProfileModel> memberProfile(String path, body) async {
-    ApiResponse response = await apiHandler.requestWith(
-      path: "$path",
-      type: RequestType.post,
-      body: body,
-    );
-    if (response != null) {
-      int code = response.code;
+  isNil(item) {
+    return item.toString().contains("nil");
+  }
 
+  Future<ProfileModel> memberProfile(String path, body) async {
+    int code = 500;
+    ApiResponse response;
+    while (code == 500) {
+      response = await apiHandler.requestWith(
+        path: "$path",
+        type: RequestType.post,
+        body: body,
+      );
+      code = response.code;
+    }
+    if (response != null) {
+      Response().setMemberProfile = response;
       if (code == 200) {
         Map responseBody = json.decode(response.body);
         if (response.body.contains("MemberProfileDetailsResponse")) {
@@ -56,27 +66,69 @@ class MembershipProfile {
 
           Map memberAccount = profileResponse['memberAccount'];
 
-          profileModel.membershipId = (memberAccount['membershipNumber']);
-          profileModel.accountStatus = (memberAccount['accountStatus']);
-          profileModel.enrolmentSource = (memberAccount['enrolmentSource']);
-          profileModel.enrollmentSourceCode =
-              (memberAccount['enrollmentSourceCode']);
-          profileModel.enrolmentDate = (memberAccount['enrolmentDate']);
+          profileModel.membershipId =
+              (memberAccount['membershipNumber'].toString());
+          profileModel.accountStatus =
+              (memberAccount['accountStatus'].toString());
+
+          if (isNil(memberAccount['enrolmentSource'])) {
+            profileModel.enrolmentSource = "NA";
+          } else {
+            profileModel.enrolmentSource =
+                (memberAccount['enrolmentSource'].toString());
+          }
+          if (isNil(memberAccount['enrollmentSourceCode'])) {
+            profileModel.enrollmentSourceCode = "NA";
+          } else {
+            profileModel.enrollmentSourceCode =
+                (memberAccount['enrollmentSourceCode'].toString());
+          }
+
+          if (isNil(memberAccount['enrolmentDate'])) {
+            profileModel.enrolmentDate = "NA";
+          } else {
+            profileModel.enrolmentDate = (memberAccount['enrolmentDate']);
+          }
+
           profileModel.periodType = (memberAccount['periodType']);
           profileModel.period = (memberAccount['period']);
           profileModel.extendToDay = (memberAccount['extendToDay']);
           profileModel.extendToMonth = (memberAccount['extendToMonth']);
-          profileModel.tier = (memberAccount['tier']);
-          profileModel.tierFromDate = (memberAccount['tierFromDate']);
-          profileModel.tierToDate = (memberAccount['tierToDate']);
+          profileModel.tier = (memberAccount['tier'].toString());
 
+          if (isNil(memberAccount['tierFromDate'])) {
+            profileModel.tierFromDate = "NA";
+          } else {
+            profileModel.tierFromDate = (memberAccount['tierFromDate']);
+          }
+
+          if (isNil(memberAccount['tierToDate'])) {
+            profileModel.tierToDate = "NA";
+          } else {
+            profileModel.tierToDate = (memberAccount['tierToDate']);
+          }
+
+          profileModel.tierName = TierName().getTierName(memberAccount['tier']);
+          profileModel.tierColor =
+              TierName().getTierColor(memberAccount['tier']);
+          print(profileModel.tierColor);
           Map memberProfile = memberAccount['memberProfile'];
 
-          profileModel.customerNumber = (memberProfile['customerNumber']);
+          profileModel.customerNumber =
+              (memberProfile['customerNumber'].toString());
           profileModel.membershipType = (memberProfile['membershipType']);
           profileModel.membershipStatus = (memberProfile['membershipStatus']);
-          profileModel.secretQues = (memberProfile['secretQuestion']);
-          profileModel.secretAns = (memberProfile['secretAnswer']);
+
+          if (isNil(memberProfile['secretQuestion'])) {
+            profileModel.secretQues = "NA";
+          } else {
+            profileModel.secretQues = (memberProfile['secretQuestion']);
+          }
+          if (isNil(memberProfile['secretAnswer'])) {
+            profileModel.secretAns = "NA";
+          } else {
+            profileModel.secretAns = (memberProfile['secretAnswer']);
+          }
 
           Map individualInfo = memberProfile['individualInfo'];
 
@@ -87,23 +139,44 @@ class MembershipProfile {
           profileModel.familyName = (individualInfo['familyName']);
           profileModel.initials = (individualInfo['initials']);
           profileModel.gender = (individualInfo['gender']);
-          profileModel.maritalStatus = (individualInfo['maritalStatus']);
+
+          if (isNil(individualInfo['maritalStatus'])) {
+            profileModel.maritalStatus = "NA";
+          } else {
+            profileModel.maritalStatus = (individualInfo['maritalStatus']);
+          }
+
           profileModel.dateOfBirth = (individualInfo['dateOfBirth']);
-          profileModel.passportNumber = (individualInfo['passportNumber']);
-          profileModel.idNumber = (individualInfo['idNumber']);
-          profileModel.companyName = (individualInfo['companyName']);
+          profileModel.passportNumber =
+              (individualInfo['passportNumber'].toString());
+          if (isNil(individualInfo['idNumber'])) {
+            profileModel.idNumber = "NA";
+          } else {
+            profileModel.idNumber = (individualInfo['idNumber'].toString());
+          }
+
+          if (isNil(individualInfo['companyName'])) {
+            profileModel.companyName = "NA";
+          } else {
+            profileModel.companyName = (individualInfo['companyName']);
+          }
+
           profileModel.preferredAddress = (individualInfo['preferredAddress']);
           profileModel.preferredLanguage =
               (individualInfo['preferredLanguage']);
 
-          List memberContactInfos = individualInfo['memberContactInfos'];
+          var memberContactInfos = individualInfo['memberContactInfos'];
           Map memberContactInfo = null;
-          for (int i = 0; i < memberContactInfos.length; i++) {
-            Map contactInfo = memberContactInfos[i];
-            String addressType = contactInfo['addressType'];
-            if (addressType == 'H') {
-              memberContactInfo = contactInfo;
+          if (memberContactInfos is List) {
+            for (int i = 0; i < memberContactInfos.length; i++) {
+              Map contactInfo = memberContactInfos[i];
+              String addressType = contactInfo['addressType'];
+              if (addressType == 'H') {
+                memberContactInfo = contactInfo;
+              }
             }
+          } else if (memberContactInfos is Map) {
+            memberContactInfo = memberContactInfos;
           }
           if (memberContactInfo != null) {
             profileModel.addressType = memberContactInfo['addressType'];
@@ -112,17 +185,34 @@ class MembershipProfile {
             profileModel.city = memberContactInfo['city'];
             profileModel.state = memberContactInfo['state'];
             profileModel.country = memberContactInfo['country'];
-            profileModel.zipCode = memberContactInfo['zipCode'];
+            profileModel.zipCode = memberContactInfo['zipCode'].toString();
             profileModel.emailAddress = memberContactInfo['emailAddress'];
-            profileModel.phoneAreaCode = memberContactInfo['phoneAreaCode'];
-            profileModel.phoneISDCode = memberContactInfo['phoneISDCode'];
-            profileModel.phoneNumber = memberContactInfo['phoneNumber'];
-            profileModel.mobileISDCode = memberContactInfo['mobileISDCode'];
-            profileModel.mobileAreaCode = memberContactInfo['mobileAreaCode'];
-            profileModel.mobileNumber = memberContactInfo['mobileNumber'];
-            profileModel.faxISDCode = memberContactInfo['faxISDCode'];
-            profileModel.faxAreaCode = memberContactInfo['faxAreaCode'];
-            profileModel.fax = memberContactInfo['fax'];
+            profileModel.phoneAreaCode =
+                memberContactInfo['phoneAreaCode'].toString();
+            profileModel.phoneISDCode =
+                memberContactInfo['phoneISDCode'].toString();
+            profileModel.phoneNumber =
+                memberContactInfo['phoneNumber'].toString();
+            profileModel.mobileISDCode =
+                memberContactInfo['mobileISDCode'].toString();
+            profileModel.mobileAreaCode =
+                memberContactInfo['mobileAreaCode'].toString();
+            profileModel.mobileNumber =
+                memberContactInfo['mobileNumber'].toString();
+            profileModel.faxISDCode =
+                memberContactInfo['faxISDCode'].toString();
+
+            if (isNil(memberContactInfo['faxAreaCode'])) {
+              profileModel.faxAreaCode = "NA";
+            } else {
+              profileModel.faxAreaCode =
+                  (memberContactInfo['faxAreaCode'].toString());
+            }
+            if (isNil(memberContactInfo['fax'])) {
+              profileModel.fax = "NA";
+            } else {
+              profileModel.fax = (memberContactInfo['fax'].toString());
+            }
           } else {
             profileModel.addressType = "";
             profileModel.addressLine1 = "";
@@ -130,18 +220,19 @@ class MembershipProfile {
             profileModel.city = "";
             profileModel.state = "";
             profileModel.country = "";
-            profileModel.zipCode = 0;
+            profileModel.zipCode = "";
             profileModel.emailAddress = "";
             profileModel.phoneAreaCode = "";
             profileModel.phoneISDCode = "";
-            profileModel.phoneNumber = 0;
+            profileModel.phoneNumber = "";
             profileModel.mobileISDCode = "";
-            profileModel.mobileAreaCode = 0;
-            profileModel.mobileNumber = 0;
-            profileModel.faxISDCode = "";
+            profileModel.mobileAreaCode = "";
+            profileModel.mobileNumber = "";
+            profileModel.faxISDCode = '';
             profileModel.faxAreaCode = "";
             profileModel.fax = "";
           }
+
           return profileModel;
         } else if (response.body.contains('Fault')) {
           Map memberAccount = responseBody['Fault'];
@@ -150,6 +241,8 @@ class MembershipProfile {
       } else {
         return null;
       }
+    } else {
+      return null;
     }
   }
 }

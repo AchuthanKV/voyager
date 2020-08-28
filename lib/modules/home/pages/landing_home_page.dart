@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipedetector/swipedetector.dart';
+import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/transaction/pages/transaction_page.dart';
@@ -15,9 +16,16 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  ProfileModel profileObject;
   go() async {
-    ProfileModel profileObject = LoginUser.obj;
-    print(profileObject.emailAddress);
+    ProfileModel profileObject = LoginUser.profileModel;
+    print(profileObject.tierName);
+    print(profileObject.tierColor);
+    AccountModel accountModel = LoginUser.accountModel;
+    print(accountModel.getMembershipNumber);
+    print(accountModel.getTierCode);
+    print(accountModel.getTierPoints);
+    print(accountModel.getTierName);
   }
 
   @override
@@ -37,14 +45,16 @@ class _LandingPageState extends State<LandingPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         IconButton(
-                            icon: Image.asset("assets/images/wishlist.png", color: Colors.indigo[900]),
+                            icon: Image.asset("assets/images/wishlist.png",
+                                color: Colors.indigo[900]),
                             onPressed: () {
                               //Wishlist method has to be called here
                               //Navigator
                             }),
                         Text(
                           'Wishlist',
-                          style: TextStyle(color: Colors.indigo[900], fontSize: 11),
+                          style: TextStyle(
+                              color: Colors.indigo[900], fontSize: 11),
                         ),
                       ],
                     )),
