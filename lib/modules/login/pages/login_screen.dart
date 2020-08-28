@@ -196,17 +196,21 @@ class _LoginScreenState extends State<LoginScreen> {
     var id = await _storage.read(key: 'membershipId');
     var pin = await _storage.read(key: 'pin');
     if (id != null && id != 'undefined') {
-      setState(() {
-        membershipId = id;
-        storedPin = pin;
-        _pinLength = pin.length;
-      });
+      if (mounted == true) {
+        setState(() {
+          membershipId = id;
+          storedPin = pin;
+          _pinLength = pin.length;
+        });
+      }
     }
     // print(isBio);
     if (isBio == 'true') {
-      setState(() {
-        isAuthenticated = true;
-      });
+      if (mounted == true) {
+        setState(() {
+          isAuthenticated = true;
+        });
+      }
     }
   }
 
