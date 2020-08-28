@@ -141,6 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                   return null;
                 },
                 controller: membershipController,
+                keyboardType: TextInputType.number,
                 onFieldSubmitted: (term) {
                   FocusScope.of(context).requestFocus(_pinFocus);
                 },
@@ -163,6 +164,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
+                keyboardType: TextInputType.number,
                 onFieldSubmitted: (term) {
                   _pinFocus.unfocus();
                 },

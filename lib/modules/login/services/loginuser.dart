@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voyager/app_config.dart';
+import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
+import 'package:voyager/modules/login/services/accountsummary.dart';
 import 'package:voyager/modules/login/services/memberprofile.dart';
+import 'package:voyager/modules/login/services/response.dart';
 import 'package:voyager/services/api_service.dart';
 
 class LoginUser {
@@ -12,7 +15,8 @@ class LoginUser {
   String membershipId;
   String pin;
   var body;
-  static ProfileModel obj;
+  static ProfileModel profileModel;
+  static AccountModel accountModel;
 
   getStoredValue() async {
     membershipId = await _storage.read(key: 'membershipId');
@@ -20,8 +24,6 @@ class LoginUser {
   }
 
   authenticateUser(String membershipId, String pin) async {
-    Map<String, String> header = {"Content-Type": "application/json"};
-
     Map txnheader = {
       "transactionID": "",
       "userName": "mob-app",
@@ -37,11 +39,16 @@ class LoginUser {
     };
     Map head = {"AuthenticateMemberRequest": data};
     body = jsonEncode(head);
-    var response = await ApiService().userStatus(AppConfig.loginAuthURL, body);
+    var response = "connectionRefused";
+    while (response == "connectionRefused") {
+      response = await ApiService().userStatus(AppConfig.loginAuthURL, body);
+    }
 
     if (response == 'true') {
-      obj = await MembershipProfile().getMembershipProfile(membershipId);
-      print(obj.emailAddress);
+      profileModel =
+          await MembershipProfile().getMembershipProfile(membershipId);
+      accountModel = await AccountSummary().getAccountSummary(membershipId);
+
       return 'true';
     } else {
       return 'false';
