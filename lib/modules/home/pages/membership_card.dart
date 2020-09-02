@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:voyager/base/models/account_model.dart';
+import 'package:voyager/base/models/profile_model.dart';
+import 'package:voyager/modules/home/widgets/barcodegenerator.dart';
+import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class MembershipCardPage extends StatefulWidget {
@@ -8,69 +12,120 @@ class MembershipCardPage extends StatefulWidget {
   _MembershipCardPageState createState() => _MembershipCardPageState();
 }
 
-Container logoSection() {
-  return Container(
-    alignment: Alignment(0.0, 0.0),
-    height: 120.0,
-    //width: 100.0,
-    margin: EdgeInsets.only(top: 40.0, bottom: 50),
-    decoration: BoxDecoration(
-        image: DecorationImage(
-      image: AssetImage('assets/images/Logo_SAAVBlue.png'),
-      fit: BoxFit.fitHeight,
-    )),
-  );
-}
+class _MembershipCardPageState extends State<MembershipCardPage> {
+  ProfileModel profileObject = LoginUser.profileModel;
+  AccountModel accountModel = LoginUser.accountModel;
+  String url;
+  int tierColor;
 
-Container userData() {
-  return Container(
-      alignment: Alignment(0.0, 0.0),
-      height: 120.0,
-      child: Container(
-        color: Color(0xff104174).withOpacity(0.8),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "MR JOHN DOE",
+  Container logoSection() {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Container(
+            alignment: Alignment(0.0, 0.0),
+            height: 120.0,
+            //width: 100.0,
+
+            decoration: BoxDecoration(
+                image: DecorationImage(
+              image: AssetImage('assets/images/card_logo.png'),
+              fit: BoxFit.fitHeight,
+            )),
+          ),
+          Container(
+            child: Text("${profileObject.tierName}",
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.white,
+                )),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container userData() {
+    return Container(
+        alignment: Alignment(0.0, 0.0),
+        width: MediaQuery.of(context).size.width - 10,
+        height: 120.0,
+        child: Container(
+          color: Color(tierColor).withOpacity(0.8),
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    "${profileObject.title} ${profileObject.givenName} ${profileObject.familyName}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Colors.white),
+                  ),
+                  Text(
+                    "MEMBER NO:  ${profileObject.membershipId}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: Colors.white),
+                  )
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text(
+                  "Exp: ${accountModel.getTierValidityDate}",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                       color: Colors.white),
                 ),
-                Text(
-                  "MEMBER NO: 0000000000",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.white),
-                )
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.only(bottom: 10),
-              child: Text(
-                "Exp: NA",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: Colors.white),
-              ),
-            )
-          ],
-        ),
-      ));
-}
+              )
+            ],
+          ),
+        ));
+  }
 
-class _MembershipCardPageState extends State<MembershipCardPage> {
+  getCardDetails() {
+    String tierName = profileObject.tierName;
+
+    switch (tierName) {
+      case "Blue":
+        url = "blue_card";
+        tierColor = THEME.TIER_BLUE;
+        break;
+      case "Silver":
+        url = "silver_card";
+        tierColor = THEME.TIER_SILVER;
+        break;
+      case "Gold":
+        url = "gold_card";
+        tierColor = THEME.TIER_GOLD;
+        break;
+      case "Platinum":
+        url = "plat_card";
+        tierColor = THEME.TIER_PLATINUM;
+        break;
+      case "LifetimePlatinum":
+        tierColor = THEME.TIER_LIFETIMEPLATINUM;
+        url = "plat_card";
+        break;
+      default:
+        url = "blue_card";
+        tierColor = THEME.TIER_BLUE;
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getCardDetails();
     return Stack(
       children: <Widget>[
         Container(
@@ -79,7 +134,7 @@ class _MembershipCardPageState extends State<MembershipCardPage> {
             width: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: ExactAssetImage("assets/images/membershipcard.png"),
+                image: ExactAssetImage("assets/images/${url}.png"),
                 fit: BoxFit.fill,
               ),
             ),
@@ -92,9 +147,11 @@ class _MembershipCardPageState extends State<MembershipCardPage> {
           ),
         ),
         Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             logoSection(),
             userData(),
+            BarcodeGen(),
           ],
         )
       ],

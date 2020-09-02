@@ -14,6 +14,7 @@ class ProfileModel {
   String _tierToDate;
   int _tierColor;
   String _tierName;
+  String _nextTierName;
 
 //from memberprofile inner tag
   String _customerNumber;
@@ -110,6 +111,9 @@ class ProfileModel {
   String get tierName => _tierName;
 
   set tierName(String value) => _tierName = value;
+  String get nextTierName => _nextTierName;
+
+  set nextTierName(String value) => _nextTierName = value;
 
   String get customerNumber => _customerNumber;
 
