@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:voyager/modules/login/pages/login_screen.dart';
+import 'package:voyager/modules/rewards_voucher/pages/reward_voucher_home.dart';
 import 'package:voyager/screens/forgot_pin.dart';
 import 'package:voyager/screens/login_options.dart';
 import 'package:voyager/screens/login_page.dart';
@@ -40,9 +41,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   SharedPreferences sharedPreferences;
   int selectedIndex = 0;
+  String appbarTitle = "SAA Voyager";
   final widgetOptions = [
     PageViewSwipe(),
-    Text('Explore'),
+    RewardVoucherScreen(),
     Text('Miles'),
     Text('Hot Deals'),
     Text('Vouchers'),
@@ -65,8 +67,7 @@ class _HomePageState extends State<HomePage> {
             resizeToAvoidBottomPadding: false,
             appBar: AppBar(
               backgroundColor: Color(THEME.PRIMARY_COLOR),
-              title: Text("South African Airlines",
-                  style: TextStyle(color: Colors.white)),
+              title: Text(appbarTitle, style: TextStyle(color: Colors.white)),
               centerTitle: true,
               actions: <Widget>[
                 FlatButton(
@@ -163,6 +164,38 @@ class _HomePageState extends State<HomePage> {
       while (i < 6) {
         if (i != selectedIndex) nav_button_color[i] = Colors.white;
         i++;
+      }
+      switch (selectedIndex) {
+        case 0:
+          setState(() {
+            appbarTitle = "SAA Voyager";
+          });
+          break;
+        case 1:
+          setState(() {
+            appbarTitle = "Rewards and Vouchers";
+          });
+          break;
+        case 2:
+          setState(() {
+            appbarTitle = "Miles";
+          });
+          break;
+        case 3:
+          setState(() {
+            appbarTitle = "Hot Deals";
+          });
+          break;
+        case 4:
+          setState(() {
+            appbarTitle = "Explore";
+          });
+          break;
+        case 5:
+          setState(() {
+            appbarTitle = "Account";
+          });
+          break;
       }
     });
   }
