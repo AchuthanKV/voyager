@@ -44,6 +44,7 @@ class _BarcodeReaderState extends State<BarcodeReader> {
         result = "Unknown error. $ex";
       });
     }
+    print(result);
   }
 
   @override
