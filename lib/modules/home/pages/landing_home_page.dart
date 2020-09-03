@@ -16,21 +16,11 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  ProfileModel profileObject;
-  go() async {
-    ProfileModel profileObject = LoginUser.profileModel;
-    print(profileObject.tierName);
-    print(profileObject.tierColor);
-    AccountModel accountModel = LoginUser.accountModel;
-    print(accountModel.getMembershipNumber);
-    print(accountModel.getTierCode);
-    print(accountModel.getTierPoints);
-    print(accountModel.getTierName);
-  }
+  ProfileModel profileObject = LoginUser.profileModel;
+  AccountModel accountModel = LoginUser.accountModel;
 
   @override
   Widget build(BuildContext context) {
-    go();
     return Container(
       child: SwipeDetector(
         child: Column(
@@ -67,7 +57,7 @@ class _LandingPageState extends State<LandingPage> {
                       radius: 50,
                       backgroundColor: Colors.white,
                       backgroundImage:
-                          AssetImage('assets/images/DefaultProfilePic.jpg'),
+                          AssetImage('assets/images/DefaultMaleProfile.jpg'),
                     ),
                   ),
                 ),
@@ -75,7 +65,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             Container(
                 child: Text(
-              'Welcome John',
+              'Welcome ${profileObject.title} ${profileObject.givenName} ${profileObject.familyName}',
               style: TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             )),
@@ -85,11 +75,10 @@ class _LandingPageState extends State<LandingPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: LinearPercentIndicator(
-                    lineHeight: 15.0,
-                    percent: 0.74,
-                    backgroundColor: Colors.grey[400],
-                    progressColor: Colors.indigo[900],
-                  ),
+                      lineHeight: 15.0,
+                      percent: 0.74,
+                      backgroundColor: Colors.grey[400],
+                      progressColor: Color(profileObject.tierColor)),
                 ),
                 new Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,7 +86,7 @@ class _LandingPageState extends State<LandingPage> {
                       Padding(
                         padding: const EdgeInsets.only(left: 15.0),
                         child: Text(
-                          "   Blue",
+                          "${profileObject.tierName}",
                           style: TextStyle(fontStyle: FontStyle.italic),
                         ),
                       ),
@@ -105,7 +94,7 @@ class _LandingPageState extends State<LandingPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "10000 miles to go",
+                            "get ${accountModel.getPointsToNextTier} more points",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontStyle: FontStyle.italic),
@@ -115,7 +104,7 @@ class _LandingPageState extends State<LandingPage> {
                       Padding(
                         padding: const EdgeInsets.only(right: 15.0),
                         child: Text(
-                          "Silver   ",
+                          "${profileObject.nextTierName}",
                           style: TextStyle(fontStyle: FontStyle.italic),
                         ),
                       ),
@@ -168,7 +157,7 @@ class _LandingPageState extends State<LandingPage> {
                         Column(children: [
                           Center(
                               child: Text(
-                            '5001453267',
+                            "${profileObject.membershipId}",
                             style: TextStyle(color: Colors.black),
                             textAlign: TextAlign.center,
                           ))
@@ -196,7 +185,7 @@ class _LandingPageState extends State<LandingPage> {
                         Column(children: [
                           Center(
                               child: Text(
-                            '10000',
+                            "${accountModel.getPoints}",
                             style: TextStyle(color: Colors.black),
                             textAlign: TextAlign.center,
                           ))
@@ -224,7 +213,7 @@ class _LandingPageState extends State<LandingPage> {
                         Column(children: [
                           Center(
                               child: Text(
-                            'Blue',
+                            "${profileObject.tierName}",
                             style: TextStyle(color: Colors.black),
                             textAlign: TextAlign.center,
                           ))
@@ -252,7 +241,7 @@ class _LandingPageState extends State<LandingPage> {
                         Column(children: [
                           Center(
                               child: Text(
-                            'NA',
+                            "${accountModel.getTierValidityDate}",
                             style: TextStyle(color: Colors.black),
                             textAlign: TextAlign.center,
                           ))

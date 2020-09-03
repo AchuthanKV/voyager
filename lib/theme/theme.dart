@@ -12,8 +12,8 @@ const TERTIARY_COLOUR = 0xff4b9b66; // saa green
 const QUATERNARY_COLOUR = 0xffdf5f3e; // saa light red
 const BUTTON_COLOR = 0xff936C1A;
 
-const TIER_BLUE = 0xff224a8a;
-const TIER_SILVER = 0xffdbd3d3;
-const TIER_GOLD = 0xffed9e0c;
-const TIER_PLATINUM = 0xffd6d6d6;
-const TIER_LIFETIMEPLATINUM = 0xffd6d6d6;
+const TIER_BLUE = 0xff002E61;
+const TIER_SILVER = 0xff6C767C;
+const TIER_GOLD = 0xff906B1D;
+const TIER_PLATINUM = 0xff3D464B;
+const TIER_LIFETIMEPLATINUM = 0xff3D464B;

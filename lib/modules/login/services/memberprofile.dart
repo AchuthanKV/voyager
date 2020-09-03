@@ -111,7 +111,8 @@ class MembershipProfile {
           profileModel.tierName = TierName().getTierName(memberAccount['tier']);
           profileModel.tierColor =
               TierName().getTierColor(memberAccount['tier']);
-          print(profileModel.tierColor);
+          profileModel.nextTierName =
+              TierName().getNextTier(memberAccount['tier']);
           Map memberProfile = memberAccount['memberProfile'];
 
           profileModel.customerNumber =
