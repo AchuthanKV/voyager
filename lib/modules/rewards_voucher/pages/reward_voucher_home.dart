@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:flutter/services.dart';
 import 'package:voyager/modules/vouchers/pages/flight_voucher.dart';
+import 'package:voyager/modules/vouchers/pages/car_voucher.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -271,8 +272,10 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                 children: [
                                   FlatButton(
                                     onPressed: () {
-                                      Navigator.of(context).push(MaterialPageRoute(
-                                          builder: (BuildContext context) => FlightVoucher()));
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  FlightVoucher()));
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -313,7 +316,12 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                     ),
                                   ),
                                   FlatButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  CarVoucher()));
+                                    },
                                     child: Container(
                                       decoration: BoxDecoration(
                                           boxShadow: [

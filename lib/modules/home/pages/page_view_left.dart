@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:voyager/modules/home/pages/landing_home_page.dart';
 import 'package:voyager/modules/home/pages/membership_card.dart';
-import 'package:voyager/screens/barcode_scan.dart';
-import 'package:voyager/screens/login_options.dart';
 import 'package:page_indicator/page_indicator.dart';
 
 class PageViewSwipe extends StatefulWidget {
