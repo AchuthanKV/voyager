@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:flutter/services.dart';
+import 'package:voyager/modules/vouchers/pages/dine_voucher.dart';
 import 'package:voyager/modules/vouchers/pages/flight_voucher.dart';
 import 'package:voyager/modules/vouchers/pages/car_voucher.dart';
 import 'package:voyager/services/background.dart';
@@ -365,7 +366,12 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   FlatButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  DineVoucher()));
+                                    },
                                     child: Container(
                                       decoration: BoxDecoration(
                                           boxShadow: [
