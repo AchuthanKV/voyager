@@ -10,12 +10,29 @@ class CarVoucher extends StatefulWidget {
 
 class _CarVoucherState extends State<CarVoucher> {
   final formKey = new GlobalKey<FormState>();
+
+  final TextEditingController lastNameController = new TextEditingController();
+  final TextEditingController pickupDateController =
+      new TextEditingController();
+  final TextEditingController reservationController =
+      new TextEditingController();
+
+  final FocusNode _lastNameFocus = FocusNode();
+  final FocusNode _pickupDateFocus = FocusNode();
+
   List _select = ['First', 'Second', 'Third', 'Fourth'];
+  List _selectGroup = ['Group1', 'Group2', 'Group3', 'Group4'];
+  List _selectOption = ['Option1', 'Option2', 'Option3', 'Option4'];
   String _reservationNumber;
   String _lastName;
   String _pickupDate = "Pick Up Date";
+  List _pickupLocation = [
+    'Johannesburg',
+    'Cape Town',
+    'Pretoria',
+    'Bloemfontein'
+  ];
   bool _isChecked = false;
-  final FocusNode _pickupDateFocus = FocusNode();
 
   _saveForm() {
     var form = formKey.currentState;
@@ -119,7 +136,7 @@ class _CarVoucherState extends State<CarVoucher> {
                       return null;
                     },
                     onSaved: (value) {
-                      _select = value;
+                      _selectGroup = value;
                     },
                     style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
@@ -130,7 +147,7 @@ class _CarVoucherState extends State<CarVoucher> {
                           borderSide: BorderSide(color: Colors.black)),
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
-                    items: _select.map((value) {
+                    items: _selectGroup.map((value) {
                       return DropdownMenuItem(
                         value: value,
                         child: Text(value),
@@ -138,7 +155,7 @@ class _CarVoucherState extends State<CarVoucher> {
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _select = value;
+                        _selectGroup = value;
                       });
                     },
                   ),
@@ -158,7 +175,7 @@ class _CarVoucherState extends State<CarVoucher> {
                       return null;
                     },
                     onSaved: (value) {
-                      _select = value;
+                      _selectOption = value;
                     },
                     style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
@@ -169,7 +186,7 @@ class _CarVoucherState extends State<CarVoucher> {
                           borderSide: BorderSide(color: Colors.black)),
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
-                    items: _select.map((value) {
+                    items: _selectOption.map((value) {
                       return DropdownMenuItem(
                         value: value,
                         child: Text(value),
@@ -177,7 +194,7 @@ class _CarVoucherState extends State<CarVoucher> {
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _select = value;
+                        _selectOption = value;
                       });
                     },
                   ),
@@ -195,10 +212,7 @@ class _CarVoucherState extends State<CarVoucher> {
                   onSaved: (String value) {
                     _reservationNumber = value;
                   },
-                  //controller: firstNameController,
-                  // onFieldSubmitted: (term) {
-                  //   FocusScope.of(context).requestFocus(_lastNameFocus);
-                  // },
+                  controller: reservationController,
                   cursorColor: Colors.black,
                   keyboardType: TextInputType.number,
                   style: TextStyle(color: Colors.black),
@@ -225,10 +239,10 @@ class _CarVoucherState extends State<CarVoucher> {
                   onSaved: (String value) {
                     _lastName = value;
                   },
-                  //controller: firstNameController,
-                  // onFieldSubmitted: (term) {
-                  //   FocusScope.of(context).requestFocus(_lastNameFocus);
-                  // },
+                  controller: lastNameController,
+                  onFieldSubmitted: (term) {
+                    FocusScope.of(context).requestFocus(_lastNameFocus);
+                  },
                   cursorColor: Colors.black,
                   keyboardType: TextInputType.name,
                   style: TextStyle(color: Colors.black),
@@ -257,7 +271,7 @@ class _CarVoucherState extends State<CarVoucher> {
                       return null;
                     },
                     onSaved: (value) {
-                      _select = value;
+                      _pickupLocation = value;
                     },
                     style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
@@ -268,7 +282,7 @@ class _CarVoucherState extends State<CarVoucher> {
                           borderSide: BorderSide(color: Colors.black)),
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
-                    items: _select.map((value) {
+                    items: _pickupLocation.map((value) {
                       return DropdownMenuItem(
                         value: value,
                         child: Text(value),
@@ -276,7 +290,7 @@ class _CarVoucherState extends State<CarVoucher> {
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _select = value;
+                        _pickupLocation = value;
                       });
                     },
                   ),
@@ -287,9 +301,6 @@ class _CarVoucherState extends State<CarVoucher> {
                 child: TextFormField(
                   focusNode: _pickupDateFocus,
                   readOnly: true,
-                  //  onFieldSubmitted: (term) {
-                  //   FocusScope.of(context).requestFocus(_genderFocus);
-                  // },
                   validator: (value) {
                     if (_pickupDate == "Pick Up Date") {
                       return 'Please select a pick up date';
@@ -315,7 +326,7 @@ class _CarVoucherState extends State<CarVoucher> {
                     });
                   },
                   onSaved: (String value) {},
-                  // controller: dobController,
+                  controller: pickupDateController,
                   cursorColor: Colors.black,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
@@ -328,33 +339,29 @@ class _CarVoucherState extends State<CarVoucher> {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(bottom: 10.0),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  Transform.scale(
-                    scale: 1,
-                    child: Checkbox(
-                      value: _isChecked,
-                      onChanged: (value) {
-                        setState(() {
-                          _isChecked = value;
-                        });
-                      },
-                      checkColor: Colors.white,
-                      activeColor: Colors.indigo[900],
-                      tristate: false,
-                    ),
+              Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Transform.scale(
+                  scale: 1,
+                  child: Checkbox(
+                    value: _isChecked,
+                    onChanged: (value) {
+                      setState(() {
+                        _isChecked = value;
+                      });
+                    },
+                    checkColor: Colors.white,
+                    activeColor: Colors.indigo[900],
+                    tristate: false,
                   ),
-                  Text('The information provided above is correct')
-                ]),
-              ),
+                ),
+                Text('The information provided above is correct')
+              ]),
               Container(
                   child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(left: 15.0),
+                    padding: const EdgeInsets.only(left: 10.0),
                     child: InkWell(
                       child: Text(
                         "Terms and Conditions",
@@ -370,7 +377,7 @@ class _CarVoucherState extends State<CarVoucher> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(right: 15.0),
+                    padding: const EdgeInsets.only(right: 10.0),
                     child: InkWell(
                       child: Text(
                         "Make a Booking",
@@ -389,8 +396,9 @@ class _CarVoucherState extends State<CarVoucher> {
               )),
               Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                margin: EdgeInsets.only(top: 30.0, bottom: 30),
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                margin: EdgeInsets.only(top: 10.0, bottom: 30),
+                height: 40.0,
                 child: RaisedButton(
                   child: Text(
                     'Submit',
