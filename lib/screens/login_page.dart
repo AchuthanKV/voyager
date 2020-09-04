@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
+import 'package:voyager/modules/login/widgets/login_error.dart';
 import 'package:voyager/services/api.dart' as API;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -305,10 +306,18 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => HomePage()),
           (Route<dynamic> route) => false);
-    } else {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
-          (Route<dynamic> route) => false);
+    } else if (response == null) {
+      setState(() {
+        _isLoading = false;
+      });
+      LoginErrorAlert.displaySnackBar(_scaffoldKey);
+    } else if (response == 'false') {
+      await LoginErrorAlert.showAlertDialog(_scaffoldKey.currentContext);
+      membershipController.clear();
+      pinController.clear();
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 }
