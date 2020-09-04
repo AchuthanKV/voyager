@@ -18,8 +18,6 @@ class _DineVoucherState extends State<DineVoucher> {
     'Select Group3',
     'Select Group4'
   ];
-
-  bool isChecked = false;
   bool _isChecked = false;
 
   _saveForm() {
