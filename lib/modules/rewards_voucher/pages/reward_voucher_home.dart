@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:core';
 import 'package:flutter/services.dart';
 import 'package:voyager/modules/vouchers/pages/cruise_voucher.dart';
+import 'package:voyager/modules/reward_catalogue/pages/car_reward_catalogue.dart';
+import 'package:voyager/modules/reward_catalogue/pages/cruise_reward_catalogue.dart';
+import 'package:voyager/modules/reward_catalogue/pages/dine_reward_catalogue.dart';
 import 'package:voyager/modules/vouchers/pages/dine_voucher.dart';
 import 'package:voyager/modules/reward_catalogue/pages/flight_reward_catalogue.dart';
 import 'package:voyager/modules/vouchers/pages/flight_voucher.dart';
@@ -115,7 +118,12 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                     ),
                                   ),
                                   FlatButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  CarRewardCataloguePage()));
+                                    },
                                     child: Container(
                                       decoration: BoxDecoration(
                                           boxShadow: [
@@ -159,7 +167,12 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   FlatButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  DineRewardCataloguePage()));
+                                    },
                                     child: Container(
                                       decoration: BoxDecoration(
                                           boxShadow: [
@@ -198,7 +211,12 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                     ),
                                   ),
                                   FlatButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  CruiseRewardCataloguePage()));
+                                    },
                                     child: Container(
                                       decoration: BoxDecoration(
                                           boxShadow: [

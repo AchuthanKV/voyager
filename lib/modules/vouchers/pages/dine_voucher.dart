@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:voyager/screens/login_page.dart';
+import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class DineVoucher extends StatefulWidget {

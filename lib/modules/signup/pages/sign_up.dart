@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:voyager/theme/theme.dart' as THEME;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:voyager/screens/login_page.dart';
+import 'package:voyager/modules/login/pages/login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   @override

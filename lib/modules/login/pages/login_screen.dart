@@ -8,7 +8,7 @@ import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:voyager/main.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/login/widgets/login_error.dart';
-import 'package:voyager/screens/login_page.dart';
+import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class LoginScreen extends StatefulWidget {

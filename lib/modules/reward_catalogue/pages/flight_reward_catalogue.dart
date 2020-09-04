@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voyager/modules/vouchers/pages/flight_voucher.dart';
-import 'package:voyager/screens/login_page.dart';
+import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 

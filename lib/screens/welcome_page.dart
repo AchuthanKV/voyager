@@ -1,4 +1,4 @@
-import 'package:voyager/screens/login_page.dart';
+import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

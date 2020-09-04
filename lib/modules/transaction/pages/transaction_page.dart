@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:voyager/modules/presentation/filter_icon_icons.dart';
-
-import '../../../screens/login_page.dart';
+import 'package:voyager/modules/login/pages/login_page.dart';
 
 class TransactionPage extends StatefulWidget {
   TransactionPage({Key key}) : super(key: key);
