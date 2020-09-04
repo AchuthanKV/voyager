@@ -6,6 +6,7 @@ import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/login/services/response.dart';
+import 'package:voyager/modules/login/widgets/login_error.dart';
 
 class AccountSummary {
   final apiHandler = ApiHandler(AppConfig.baseURL);
@@ -146,6 +147,7 @@ class AccountSummary {
     totalPoints = 0;
     int code = 500;
     ApiResponse response;
+    Response respObj = Response();
     var body = getBody(membershipId);
     String path = AppConfig.accountSummaryURL;
     while (code == 500) {
@@ -158,9 +160,12 @@ class AccountSummary {
     }
 
     if (response != null) {
-      Response().setAccountSummary = response;
+      respObj.setAccountSummary = response;
       if (code == 200) {
         Map responseBody = json.decode(response.body);
+        if (response.body.contains("Fault")) {
+          LoginErrorAlert.setError(respObj);
+        }
         if (response.body.contains("AccountSummaryResponse")) {
           Map accountSummaryResponse = responseBody['AccountSummaryResponse'];
           if (accountSummaryResponse != null) {

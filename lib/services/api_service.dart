@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'package:api_handler/api_handler.dart';
 import 'package:voyager/app_config.dart';
 import 'package:voyager/modules/login/services/response.dart';
+import 'package:voyager/modules/login/widgets/login_error.dart';
 
 class ApiService {
   final apiHandler = ApiHandler(AppConfig.baseURL);
 
   Future<String> userStatus(String path, body) async {
-    ApiResponse response = await apiHandler.requestWith(
+    ApiResponse response;
+    Response respObj = Response();
+    response = await apiHandler.requestWith(
       path: "$path",
       type: RequestType.post,
       body: body,
@@ -18,7 +21,7 @@ class ApiService {
       int code = response.code;
 
       if (code == 200) {
-        Response().setLoginAuth = response;
+        respObj.setLoginAuth = response;
         Map res = json.decode(response.body);
         if (response.body.contains("AuthenticateMemberResponse")) {
           Map member = res['AuthenticateMemberResponse'];
@@ -27,7 +30,7 @@ class ApiService {
             return 'true';
           }
         } else if (response.body.contains('Fault')) {
-          Map member = res['Fault'];
+          LoginErrorAlert.setError(respObj);
           return 'false';
         }
       } else if (code == 500) {

@@ -7,6 +7,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 import 'package:voyager/main.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
+import 'package:voyager/modules/login/widgets/login_error.dart';
 import 'package:voyager/screens/login_page.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -21,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _pinEditingController =
       new TextEditingController();
   bool _isLoading = false;
-
+  bool showSnackBar = false;
   int _pinLength = 6;
   String storedPin;
   String _pin;
@@ -30,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
   LocalAuthentication auth = LocalAuthentication();
   final FocusNode _pinFocus = FocusNode();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final PinDecoration _pinDecoration = BoxLooseDecoration(
     solidColor: Colors.white60,
@@ -40,15 +42,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
   userLogin() async {
     var response = await LoginUser().authenticateUser(membershipId, _pin);
+
     setState(() {
       _isLoading = false;
     });
-    if (response == 'true') {
+
+    if (response == null) {
+      _pin = "";
+      _pinEditingController.clear();
+      LoginErrorAlert.displaySnackBar(_scaffoldKey);
+    } else if (response == 'false') {
+      await LoginErrorAlert.showAlertDialog(_scaffoldKey.currentContext);
+      _pinEditingController.clear();
+      setState(() {
+        _isLoading = false;
+      });
+    } else if (response == 'true') {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => HomePage()),
           (Route<dynamic> route) => false);
-    } else {
-      _pinEditingController.clear();
     }
   }
 
@@ -144,12 +156,13 @@ class _LoginScreenState extends State<LoginScreen> {
       margin: EdgeInsets.only(top: 55.0),
       child: RaisedButton(
         onPressed: () async {
-          if (_pin.length == _pinLength) {
+          if (_pin == null) {
+          } else if (_pin.length == _pinLength) {
             setState(() {
               _isLoading = true;
             });
             userLogin();
-          } else {}
+          }
         },
         elevation: 0.0,
         color: Color(THEME.BUTTON_COLOR),
@@ -256,54 +269,58 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     getStoredVal();
-    return _isLoading
-        ? Container(
-            height: double.infinity,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: ExactAssetImage("assets/images/background.png"),
-                fit: BoxFit.fill,
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      key: _scaffoldKey,
+      body: _isLoading
+          ? Container(
+              height: double.infinity,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: ExactAssetImage("assets/images/background.png"),
+                  fit: BoxFit.fill,
+                ),
               ),
-            ),
-            child: Center(
-              child: SpinKitHourGlass(
-                color: Colors.white,
-                size: 100.0,
+              child: Center(
+                child: SpinKitHourGlass(
+                  color: Colors.white,
+                  size: 100.0,
+                ),
               ),
-            ),
-          )
-        : Scaffold(
-            resizeToAvoidBottomPadding: false,
-            body: GestureDetector(
-              onTap: () {
-                _pinFocus.unfocus();
-              },
-              child: Stack(
-                children: <Widget>[
-                  backGround(),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      logoSection(),
-                      forgotPasswordSection(),
-                      pinSection(),
-                      buttonSection(),
-                      isAuthenticated
-                          ? Column(
-                              children: <Widget>[
-                                Text("OR"),
-                                fingerPrint(),
-                              ],
-                            )
-                          : SizedBox(
-                              height: 0,
-                            ),
-                      otherAccountLogin(),
-                    ],
-                  )
-                ],
-              ),
-            ));
+            )
+          : Scaffold(
+              resizeToAvoidBottomPadding: false,
+              body: GestureDetector(
+                onTap: () {
+                  _pinFocus.unfocus();
+                },
+                child: Stack(
+                  children: <Widget>[
+                    backGround(),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        logoSection(),
+                        forgotPasswordSection(),
+                        pinSection(),
+                        buttonSection(),
+                        isAuthenticated
+                            ? Column(
+                                children: <Widget>[
+                                  Text("OR"),
+                                  fingerPrint(),
+                                ],
+                              )
+                            : SizedBox(
+                                height: 0,
+                              ),
+                        otherAccountLogin(),
+                      ],
+                    )
+                  ],
+                ),
+              )),
+    );
   }
 }

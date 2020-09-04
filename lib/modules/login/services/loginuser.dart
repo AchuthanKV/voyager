@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:api_handler/api_handler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voyager/app_config.dart';
@@ -17,6 +18,7 @@ class LoginUser {
   var body;
   static ProfileModel profileModel;
   static AccountModel accountModel;
+  static String errorMsg = "";
 
   getStoredValue() async {
     membershipId = await _storage.read(key: 'membershipId');
@@ -40,18 +42,29 @@ class LoginUser {
     Map head = {"AuthenticateMemberRequest": data};
     body = jsonEncode(head);
     var response = "connectionRefused";
-    while (response == "connectionRefused") {
-      response = await ApiService().userStatus(AppConfig.loginAuthURL, body);
-    }
 
-    if (response == 'true') {
-      profileModel =
-          await MembershipProfile().getMembershipProfile(membershipId);
-      accountModel = await AccountSummary().getAccountSummary(membershipId);
+    try {
+      while (response == "connectionRefused") {
+        response = await ApiService().userStatus(AppConfig.loginAuthURL, body);
+      }
 
-      return 'true';
-    } else {
-      return 'false';
+      if (response == 'true') {
+        profileModel =
+            await MembershipProfile().getMembershipProfile(membershipId);
+        accountModel = await AccountSummary().getAccountSummary(membershipId);
+
+        return 'true';
+      } else if (response == "fault") {
+        errorMsg = "invalid username or pin";
+        return 'fault';
+      } else {
+        return "false";
+      }
+    } on CommonError catch (e) {
+      print(e.description);
+      errorMsg = e.description;
+    } on Exception catch (e) {
+      errorMsg = "Something unexpected Occurred! Please try again!";
     }
   }
 }

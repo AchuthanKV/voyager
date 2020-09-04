@@ -5,6 +5,7 @@ import 'package:voyager/app_config.dart';
 import 'package:voyager/base/models/profile_model.dart';
 import 'package:voyager/modules/login/services/response.dart';
 import 'package:voyager/modules/login/services/tier_name.dart';
+import 'package:voyager/modules/login/widgets/login_error.dart';
 
 class MembershipProfile {
   final apiHandler = ApiHandler(AppConfig.baseURL);
@@ -49,6 +50,7 @@ class MembershipProfile {
   Future<ProfileModel> memberProfile(String path, body) async {
     int code = 500;
     ApiResponse response;
+    Response respObj = Response();
     while (code == 500) {
       response = await apiHandler.requestWith(
         path: "$path",
@@ -58,9 +60,13 @@ class MembershipProfile {
       code = response.code;
     }
     if (response != null) {
-      Response().setMemberProfile = response;
+      respObj.setMemberProfile = response;
       if (code == 200) {
         Map responseBody = json.decode(response.body);
+        if (response.body.contains("Fault")) {
+          LoginErrorAlert.setError(respObj);
+        }
+
         if (response.body.contains("MemberProfileDetailsResponse")) {
           Map profileResponse = responseBody['MemberProfileDetailsResponse'];
 
