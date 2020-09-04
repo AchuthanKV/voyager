@@ -101,7 +101,7 @@ class _FlightVoucherState extends State<FlightVoucher> {
                           isChecked = value;
                         });
                       },
-                      activeColor: Colors.pink,
+                      activeColor: Color(THEME.PRIMARY_COLOR),
                       checkColor: Colors.white,
                       tristate: false,
                     ),
