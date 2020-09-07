@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:voyager/modules/home/pages/membership_card.dart';
 import 'package:voyager/modules/home/widgets/barcodegenerator.dart';
 import 'package:voyager/modules/login/pages/login_screen.dart';
+import 'package:voyager/modules/my_account/pages/my_account.dart';
 import 'package:voyager/modules/rewards_voucher/pages/reward_voucher_home.dart';
 import 'package:voyager/screens/barcode_scan.dart';
 import 'package:voyager/screens/forgot_pin.dart';
@@ -51,7 +52,7 @@ class _HomePageState extends State<HomePage> {
     Text('Miles'),
     Text('Hot Deals'),
     Text('Vouchers'),
-    Text('My acc'),
+    MyAccount(),
   ];
   List nav_button_color = [
     Color(0xffCB8A03),

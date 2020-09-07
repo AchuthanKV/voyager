@@ -51,39 +51,51 @@ class _LoginOptionsState extends State<LoginOptions> {
           appBar: AppBar(
             title: Text('Login Options'),
             centerTitle: true,
-            backgroundColor: Colors.transparent,
+            backgroundColor: Color(THEME.PRIMARY_COLOR),
           ),
           backgroundColor: Colors.transparent,
           body: Container(
             child: Center(
-              child: Wrap(
+              child: Column(
                 children: <Widget>[
                   Container(
-                    height: MediaQuery.of(context).size.height / 3,
-                    child: Center(
-                      child: Icon(
-                        Icons.lock_outline,
-                        color: Colors.white70,
-                        size: 80,
-                      ),
+                    alignment: Alignment.bottomCenter,
+                    height: MediaQuery.of(context).size.height / 4,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.fingerprint,
+                          size: 50,
+                          color: Color(THEME.PRIMARY_COLOR),
+                        ),
+                        Image.asset("assets/images/biometricslock_icon.png",
+                            color: Color(THEME.PRIMARY_COLOR), width: 90),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(20),
+                    alignment: Alignment.topCenter,
+                    height: MediaQuery.of(context).size.height / 5,
+                    child: Text(
+                      "Enable biometrics for easy logging in",
+                      style: TextStyle(
+                          fontSize: 17, color: Color(THEME.PRIMARY_COLOR)),
                     ),
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      SizedBox(width: 50),
                       Container(
                         width: MediaQuery.of(context).size.width / 2,
                         child: Text(
                           'Enable Fingerprint',
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      SizedBox(
-                        width: 50,
                       ),
                       Switch(
                         value: widget.isfingerprintOn,
@@ -114,7 +126,7 @@ class _LoginOptionsState extends State<LoginOptions> {
                         },
                         activeColor: Colors.green,
                         inactiveTrackColor: Colors.grey,
-                        inactiveThumbColor: Colors.redAccent,
+                        inactiveThumbColor: Colors.blueGrey,
                         activeTrackColor: Colors.green,
                       ),
                     ],
