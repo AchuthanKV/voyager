@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:voyager/services/api.dart' as API;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:voyager/modules/login/pages/login_page.dart';
@@ -53,12 +54,13 @@ class _SignUpPageState extends State<SignUpPage> {
   String _phone;
   String _area;
   String _gender;
+  String _title;
   String _dobString = "Select date of birth";
   String _nationality;
   List _locations = ['+91', '72'];
   List _nations = ['India', 'USA', 'China'];
   List _genders = ['Male', 'Female', 'Other'];
-  List _title = ['Mr', 'Miss', 'Mrs', 'Ms', 'Major'];
+  List _titles = ['Mr', 'Miss', 'Mrs', 'Ms', 'Major'];
 
   void initState() {
     super.initState();
@@ -107,44 +109,50 @@ class _SignUpPageState extends State<SignUpPage> {
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(
       key: _signupScaffold,
-      body: Container(
-        //color: signedUp ? Colors.red : Colors.transparent,
-        child: Container(
-          alignment: Alignment.center,
-          child: _isLoading
-              ? Center(
-                  child: SpinKitCubeGrid(
-                    color: Colors.black26,
-                    size: 100.0,
-                  ),
-                )
-              : isSignUp
-                  ? Stack(children: <Widget>[
-                      ListView(
-                        children: <Widget>[
-                          logoSection(),
-                          textSection(),
-                          buttonSection(),
-                        ],
+      body: Stack(
+        children: [
+          BackgroundClass(),
+          Container(
+            //color: signedUp ? Colors.red : Colors.transparent,
+            child: Container(
+              alignment: Alignment.center,
+              child: _isLoading
+                  ? Center(
+                      child: SpinKitCubeGrid(
+                        color: Colors.black26,
+                        size: 100.0,
                       ),
-                      Positioned.fill(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: 5,
-                            sigmaY: 5,
+                    )
+                  : isSignUp
+                      ? Stack(children: <Widget>[
+                          ListView(
+                            children: <Widget>[
+                              logoSection(),
+                              textSection(),
+                              buttonSection(),
+                            ],
                           ),
-                          child: Container(color: Colors.black.withOpacity(0)),
+                          Positioned.fill(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(
+                                sigmaX: 5,
+                                sigmaY: 5,
+                              ),
+                              child:
+                                  Container(color: Colors.black.withOpacity(0)),
+                            ),
+                          )
+                        ])
+                      : ListView(
+                          children: <Widget>[
+                            logoSection(),
+                            textSection(),
+                            buttonSection(),
+                          ],
                         ),
-                      )
-                    ])
-                  : ListView(
-                      children: <Widget>[
-                        logoSection(),
-                        textSection(),
-                        buttonSection(),
-                      ],
-                    ),
-        ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: isSignUp
           ? Container(
@@ -332,7 +340,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           borderSide: BorderSide(color: Colors.black)),
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
-                    items: _title.map((value) {
+                    items: _titles.map((value) {
                       return DropdownMenuItem(
                         value: value,
                         child: Text(value),
