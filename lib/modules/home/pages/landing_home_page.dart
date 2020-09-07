@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipedetector/swipedetector.dart';
 import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
+import 'package:voyager/base/utils/sizeconfig.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/transaction/pages/transaction_page.dart';
 
@@ -18,9 +19,22 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   ProfileModel profileObject = LoginUser.profileModel;
   AccountModel accountModel = LoginUser.accountModel;
+  SizeConfig sizeConfig = SizeConfig();
+
+  String picUrl = "male.png";
+  profilepicUrl() {
+    sizeConfig.init(context);
+    String gender = profileObject.gender;
+    gender = gender.toLowerCase();
+    print(gender);
+    if (gender != "m") {
+      picUrl = "female.png";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    profilepicUrl();
     return Container(
       child: SwipeDetector(
         child: Column(
@@ -51,14 +65,9 @@ class _LandingPageState extends State<LandingPage> {
                 Align(
                   alignment: Alignment.center,
                   child: CircleAvatar(
-                    radius: 55,
-                    backgroundColor: Colors.yellow[700],
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.white,
-                      backgroundImage:
-                          AssetImage('assets/images/DefaultMaleProfile.jpg'),
-                    ),
+                    radius: SizeConfig.screenWidth / 5,
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: AssetImage('assets/images/${picUrl}'),
                   ),
                 ),
               ],
