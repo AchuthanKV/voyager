@@ -34,10 +34,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final PinDecoration _pinDecoration = BoxLooseDecoration(
-    solidColor: Colors.white60,
+    strokeColorBuilder: PinListenColorBuilder(Colors.yellow[800], Colors.black),
+    bgColorBuilder: PinListenColorBuilder(Colors.white60, Colors.white24),
+    /*  solidColor: Colors.white60,
     strokeColor: Colors.black,
     radius: Radius.circular(10),
-    enteredColor: Colors.yellow[800],
+    enteredColor: Colors.yellow[800], */
   );
 
   userLogin() async {

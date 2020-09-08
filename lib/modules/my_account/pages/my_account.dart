@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:voyager/base/utils/sizeconfig.dart';
+import 'package:voyager/modules/more_about_voyager/pages/about_voyager.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -33,7 +34,7 @@ class _MyAccountState extends State<MyAccount> {
     "assets/images/moreabtvoy_icon.png"
   ];
 
-  List routingPath = ['', "", "/loginoptions", '', "", ""];
+  List routingPath = ['', "", "/loginoptions", '', "", "", "/moreaboutvoyager"];
 
   @override
   Widget build(BuildContext context) {

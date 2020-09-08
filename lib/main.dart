@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:voyager/modules/home/pages/membership_card.dart';
 import 'package:voyager/modules/home/widgets/barcodegenerator.dart';
 import 'package:voyager/modules/login/pages/login_screen.dart';
+import 'package:voyager/modules/more_about_voyager/pages/about_voyager.dart';
 import 'package:voyager/modules/my_account/pages/my_account.dart';
 import 'package:voyager/modules/rewards_voucher/pages/reward_voucher_home.dart';
 import 'package:voyager/screens/barcode_scan.dart';
@@ -34,6 +35,7 @@ void main() => runApp(MaterialApp(
         '/getfingerprint': (BuildContext context) => AuthenticateFingerPrint(),
         '/setPin': (BuildContext context) => SetPin(),
         '/pinLogin': (BuildContext context) => PinLogin(),
+        '/moreaboutvoyager': (BuildContext context) => MoreAboutVoyagerPage(),
       },
     ));
 
