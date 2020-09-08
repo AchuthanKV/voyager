@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:voyager/modules/contactus/pages/contact_us.dart';
 import 'package:voyager/modules/home/pages/membership_card.dart';
 import 'package:voyager/modules/home/widgets/barcodegenerator.dart';
 import 'package:voyager/modules/hotdeals/pages/hotdeals.dart';
@@ -84,7 +85,8 @@ class _HomePageState extends State<HomePage> {
               leading: IconButton(
                 icon: const Icon(Icons.info_outline),
                 onPressed: () {
-                  //go to contact us page
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => ContactUs()));
                 },
               ),
               backgroundColor: Color(THEME.PRIMARY_COLOR),
