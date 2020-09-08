@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:voyager/modules/presentation/filter_icon_icons.dart';
 import 'package:voyager/modules/login/pages/login_page.dart';
+import 'package:voyager/theme/theme.dart' as THEME;
 
 class TransactionPage extends StatefulWidget {
   TransactionPage({Key key}) : super(key: key);
@@ -19,7 +20,7 @@ class _TransactionPageState extends State<TransactionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF757575),
+        backgroundColor: Color(THEME.PRIMARY_COLOR),
         title: Text('Transactions'),
         actions: <Widget>[
           FlatButton(

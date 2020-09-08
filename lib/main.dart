@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:voyager/modules/home/pages/membership_card.dart';
 import 'package:voyager/modules/home/widgets/barcodegenerator.dart';
+import 'package:voyager/modules/hotdeals/pages/hotdeals.dart';
 import 'package:voyager/modules/login/pages/login_screen.dart';
 import 'package:voyager/modules/more_about_voyager/pages/about_voyager.dart';
 import 'package:voyager/modules/my_account/pages/my_account.dart';
@@ -52,12 +53,12 @@ class _HomePageState extends State<HomePage> {
     PageViewSwipe(),
     RewardVoucherScreen(),
     Text('Miles'),
-    Text('Hot Deals'),
+    HotDealsPage(),
     Text('Vouchers'),
     MyAccount(),
   ];
   List nav_button_color = [
-    Color(0xffCB8A03),
+    Colors.yellow,
     Colors.white,
     Colors.white,
     Colors.white,
