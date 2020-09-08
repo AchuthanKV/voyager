@@ -79,8 +79,7 @@ class _CarRewardCataloguePageState extends State<CarRewardCataloguePage> {
                         padding: const EdgeInsets.only(left: 15.0),
                         child: Container(
                           margin: EdgeInsets.all(5),
-                          width: 120,
-                          height: 120,
+                          padding: EdgeInsets.all(5),
                           child: Image.asset(carPictures[0]),
                         ),
                       ),
@@ -107,7 +106,6 @@ class _CarRewardCataloguePageState extends State<CarRewardCataloguePage> {
                                       icon: Image.asset(
                                         "assets/images/wishlist_round_1.png",
                                         color: Colors.indigo[900],
-                                        width: 40,
                                       ),
                                       onPressed: () {}),
                                   IconButton(
@@ -147,8 +145,7 @@ class _CarRewardCataloguePageState extends State<CarRewardCataloguePage> {
                     children: [
                       Container(
                         margin: EdgeInsets.all(5),
-                        width: 120,
-                        height: 120,
+                        padding: EdgeInsets.all(5),
                         child: Image.asset(carPictures[1]),
                       ),
                       Container(
@@ -174,7 +171,6 @@ class _CarRewardCataloguePageState extends State<CarRewardCataloguePage> {
                                       icon: Image.asset(
                                         "assets/images/wishlist_round_1.png",
                                         color: Colors.indigo[900],
-                                        width: 40,
                                       ),
                                       onPressed: () {}),
                                   IconButton(
