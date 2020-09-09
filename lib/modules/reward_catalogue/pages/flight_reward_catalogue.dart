@@ -137,8 +137,7 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                     children: [
                       Container(
                         margin: EdgeInsets.all(5),
-                        width: 150,
-                        height: 150,
+                        padding: EdgeInsets.all(5),
                         child: Image.asset(airPictures[0]),
                       ),
                       Container(
@@ -177,7 +176,6 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                                       icon: Image.asset(
                                         "assets/images/wishlist_round_1.png",
                                         color: Colors.indigo[900],
-                                        width: 40,
                                       ),
                                       onPressed: () {
                                         _displayDialog(context, 0);
@@ -219,8 +217,8 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                     children: [
                       Container(
                         margin: EdgeInsets.all(5),
-                        width: 150,
-                        height: 150,
+                        padding: EdgeInsets.all(5),
+                        width: MediaQuery.of(context).size.width / 2.5,
                         child: Image.asset(airPictures[1]),
                       ),
                       Container(
@@ -259,7 +257,6 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                                       icon: Image.asset(
                                         "assets/images/wishlist_round_1.png",
                                         color: Colors.indigo[900],
-                                        width: 40,
                                       ),
                                       onPressed: () {
                                         _displayDialog(context, 1);
@@ -301,7 +298,7 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                     children: [
                       Container(
                         margin: EdgeInsets.all(5),
-                        width: 150,
+                        width: MediaQuery.of(context).size.width / 2.5,
                         height: 150,
                         child: Image.asset(airPictures[3]),
                       ),
@@ -341,7 +338,6 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                                       icon: Image.asset(
                                         "assets/images/wishlist_round_1.png",
                                         color: Colors.indigo[900],
-                                        width: 40,
                                       ),
                                       onPressed: () {
                                         _displayDialog(context, 2);

@@ -76,8 +76,7 @@ class _DineRewardCataloguePageState extends State<DineRewardCataloguePage> {
                         padding: const EdgeInsets.only(left: 15.0),
                         child: Container(
                           margin: EdgeInsets.all(5),
-                          width: 150,
-                          height: 150,
+                          padding: EdgeInsets.all(5),
                           child: Image.asset(dinePictures[0]),
                         ),
                       ),
@@ -86,7 +85,7 @@ class _DineRewardCataloguePageState extends State<DineRewardCataloguePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Padding(
-                                padding: EdgeInsets.only(top: 20,right: 20),
+                                padding: EdgeInsets.only(top: 20, right: 20),
                                 child: Text(
                                   dineName[0],
                                   textAlign: TextAlign.center,
@@ -96,7 +95,8 @@ class _DineRewardCataloguePageState extends State<DineRewardCataloguePage> {
                                       fontWeight: FontWeight.bold),
                                 )),
                             Padding(
-                              padding: EdgeInsets.only(top: 20, bottom: 30,right: 20),
+                              padding: EdgeInsets.only(
+                                  top: 20, bottom: 30, right: 20),
                               child: Row(
                                 //mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -104,7 +104,6 @@ class _DineRewardCataloguePageState extends State<DineRewardCataloguePage> {
                                       icon: Image.asset(
                                         "assets/images/wishlist_round_1.png",
                                         color: Colors.indigo[900],
-                                        width: 40,
                                       ),
                                       onPressed: () {}),
                                   IconButton(

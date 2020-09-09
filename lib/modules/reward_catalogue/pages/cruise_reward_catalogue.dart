@@ -76,7 +76,7 @@ class _CruiseRewardCataloguePageState extends State<CruiseRewardCataloguePage> {
                         padding: const EdgeInsets.only(left: 15.0),
                         child: Container(
                           margin: EdgeInsets.all(5),
-                          width: 150,
+                          padding: EdgeInsets.all(5),
                           height: 150,
                           child: Image.asset(cruisePictures[0]),
                         ),
@@ -105,7 +105,7 @@ class _CruiseRewardCataloguePageState extends State<CruiseRewardCataloguePage> {
                                       icon: Image.asset(
                                         "assets/images/wishlist_round_1.png",
                                         color: Colors.indigo[900],
-                                        width: 40,
+                                        
                                       ),
                                       onPressed: () {}),
                                   IconButton(

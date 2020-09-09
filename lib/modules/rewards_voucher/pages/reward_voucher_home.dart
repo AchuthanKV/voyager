@@ -27,7 +27,6 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
         children: [
           BackgroundClass(),
           Container(
-              width: double.infinity,
               height: double.infinity,
               //margin: EdgeInsets.all(10),
               //padding: EdgeInsets.all(10),
@@ -91,9 +90,8 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(20))),
-                                      width: 130,
-                                      height: 100,
-                                      //padding: EdgeInsets.all(30),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 20),
                                       margin:
                                           EdgeInsets.symmetric(vertical: 20),
                                       child: Column(
@@ -136,9 +134,8 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(20))),
-                                      width: 130,
-                                      height: 100,
-                                      //padding: EdgeInsets.all(30),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 20),
                                       child: Column(
                                         children: [
                                           Padding(
@@ -185,9 +182,8 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(20))),
-                                      width: 130,
-                                      height: 100,
-                                      //padding: EdgeInsets.all(30),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 20),
                                       margin: EdgeInsets.only(bottom: 20),
                                       child: Column(
                                         children: [
@@ -229,9 +225,8 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(20))),
-                                      width: 130,
-                                      height: 100,
-                                      //padding: EdgeInsets.all(30),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 20),
                                       margin: EdgeInsets.only(bottom: 20),
                                       child: Column(
                                         children: [
@@ -315,9 +310,8 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(20))),
-                                      width: 130,
-                                      height: 100,
-                                      //padding: EdgeInsets.all(30),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 20),
                                       margin:
                                           EdgeInsets.symmetric(vertical: 20),
                                       child: Column(
@@ -360,9 +354,8 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(20))),
-                                      width: 130,
-                                      height: 100,
-                                      //padding: EdgeInsets.all(30),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 20),
                                       child: Column(
                                         children: [
                                           Padding(
@@ -409,9 +402,8 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(20))),
-                                      width: 130,
-                                      height: 100,
-                                      //padding: EdgeInsets.all(30),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 20),
                                       margin: EdgeInsets.only(bottom: 20),
                                       child: Column(
                                         children: [
@@ -453,9 +445,8 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(20))),
-                                      width: 130,
-                                      height: 100,
-                                      //padding: EdgeInsets.all(30),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30, vertical: 20),
                                       margin: EdgeInsets.only(bottom: 20),
                                       child: Column(
                                         children: [
