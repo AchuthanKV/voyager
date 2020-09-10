@@ -1,0 +1,194 @@
+[
+  {
+    "MR": "MR"
+  },
+  {
+    "ADM": "ADMIRAL"
+  },
+  {
+    "ADV": "ADVOCATE"
+  },
+  {
+    "AMB": "AMBASSADOR"
+  },
+  {
+    "ARCH": "ARCHBISHOP"
+  },
+  {
+    "BARON": "BARON"
+  },
+  {
+    "BISH": "BISHOP"
+  },
+  {
+    "BR": "BROTHER"
+  },
+  {
+    "BRIG": "BRIGADIER"
+  },
+  {
+    "BRNSS": "BARONESS"
+  },
+  {
+    "CAPT": "CAPTAIN"
+  },
+  {
+    "CHIEF": "CHIEF"
+  },
+  {
+    "CNTS": "COUNTESS"
+  },
+  {
+    "COL": "COLONEL"
+  },
+  {
+    "COMDT": "COMDT"
+  },
+  {
+    "COUNT": "COUNT"
+  },
+  {
+    "DATIN": "DATIN"
+  },
+  {
+    "DATO": "DATO"
+  },
+  {
+    "DIR": "DIRECTOR"
+  },
+  {
+    "DR": "DR"
+  },
+  {
+    "DS": "DS"
+  },
+  {
+    "DUCHS": "DUCHESS"
+  },
+  {
+    "DUKE": "DUKE"
+  },
+  {
+    "ELDER": "ELDER"
+  },
+  {
+    "FR": "FATHER"
+  },
+  {
+    "GENL": "GENERAL"
+  },
+  {
+    "HOL": "Head of Legal"
+  },
+  {
+    "HON": "HON"
+  },
+  {
+    "IMAM": "IMAM"
+  },
+  {
+    "INSP": "INSPECTOR"
+  },
+  {
+    "JUDGE": "JUDGE"
+  },
+  {
+    "KAM": "KEY ACCOUNT MANAGER"
+  },
+  {
+    "KING": "KING"
+  },
+  {
+    "LADY": "LADY"
+  },
+  {
+    "LORD": "LORD"
+  },
+  {
+    "LT": "LT"
+  },
+  {
+    "LTCOL": "LTCOL"
+  },
+  {
+    "LTGEN": "LTGEN"
+  },
+  {
+    "MADAM": "MADAME"
+  },
+  {
+    "MAJG": "MAJG"
+  },
+  {
+    "MAJOR": "MAJOR"
+  },
+  {
+    "MAST": "MASTER"
+  },
+  {
+    "MAYO": "rMAYOR"
+  },
+  {
+    "MIN": "MINISTER"
+  },
+  {
+    "MISS": "MISS"
+  },
+  {
+    "MRS": "MRS"
+  },
+  {
+    "MS": "MS"
+  },
+  {
+    "MTHR": "MOTHER"
+  },
+  {
+    "PAST": "PASTOR"
+  },
+  {
+    "PRE": "PRESIDENT"
+  },
+  {
+    "PRES": "PRES"
+  },
+  {
+    "PRIN": "PRINCE"
+  },
+  {
+    "PRNCS": "PRINCESS"
+  },
+  {
+    "PROF": "PROF"
+  },
+  {
+    "PRST": "PRIEST"
+  },
+  {
+    "PRSTS": "PRIESTESS"
+  },
+  {
+    "QUEEN": "QUEEN"
+  },
+  {
+    "RABBI": "RABBI"
+  },
+  {
+    "REV": "REV"
+  },
+  {
+    "RTREV": "RTREV"
+  },
+  {
+    "SEN": "SENATOR"
+  },
+  {
+    "SGT": "SERGEANT"
+  },
+  {
+    "SIR": "SIR"
+  },
+  {
+    "SR": "SISTER"
+  }
+]

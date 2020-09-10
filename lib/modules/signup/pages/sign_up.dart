@@ -13,6 +13,7 @@ import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:voyager/modules/login/pages/login_page.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -29,8 +30,11 @@ class _SignUpPageState extends State<SignUpPage> {
   bool signedUp = false;
   bool isEmailOn = false;
   bool isNotificationOn = false;
+  bool isSubmitted = false;
 
   final TextEditingController initialController = new TextEditingController();
+  final TextEditingController countryCodeController =
+      new TextEditingController();
   final TextEditingController areaController = new TextEditingController();
   final TextEditingController dobController = new TextEditingController();
   final TextEditingController nationalityController =
@@ -48,23 +52,29 @@ class _SignUpPageState extends State<SignUpPage> {
   final FocusNode _mailFocus = FocusNode();
   final FocusNode _dobFocus = FocusNode();
 
+  bool isSelected = false;
+
   String _fName;
   String _lName;
   String _email;
   String _phone;
+  String _countryCode = "27";
   String _area;
   String _gender;
-  String _title;
+  String _title = "Mr";
   String _dobString = "Select date of birth";
   String _nationality;
-  List _locations = ['+91', '72'];
-  List _nations = ['India', 'USA', 'China'];
-  List _genders = ['Male', 'Female', 'Other'];
-  List _titles = ['Mr', 'Miss', 'Mrs', 'Ms', 'Major'];
+  List _country_code = [];
+  List _nations = [];
+  List _genders = ['Male', 'Female'];
+  List _titles = [];
 
   void initState() {
+    getTitles();
+    _setup();
+    getCountries();
     super.initState();
-    getAreaCode();
+    _area = null;
     emailController.addListener(() {
       final text = emailController.text.toLowerCase();
       emailController.value = emailController.value.copyWith(
@@ -76,10 +86,94 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-  getAreaCode() async {
-    //http.Response response = await http.get('http://country.io/phone.json');
-    // Map code = jsonDecode(response.body);
-    // print(code);
+  void materialPicker() {
+    showMaterialSelectionPicker(
+      context: context,
+      title: "Choose Country Code",
+      items: _country_code,
+      selectedItem: _countryCode,
+      onChanged: (value) => setState(() => _countryCode = value),
+    );
+  }
+
+  getTitles() async {
+    List title = [];
+    List<dynamic> tmap =
+        await parseJsonFromAssetsTitle('assets/files/titles.json');
+    tmap.forEach((element) {
+      for (var value in element.values) {
+        title.add(firstCharacterUpper(value.toString().toLowerCase()));
+      }
+    });
+
+    setState(() {
+      _titles = title;
+    });
+  }
+
+  _setup() async {
+    // Retrieve the country code (Processed in the background)
+    List<String> countryCode = await getCountryCode();
+
+    // Notify the UI and display the country code
+    setState(() {
+      _country_code = countryCode;
+    });
+  }
+
+  getCountries() async {
+    List country = [];
+    Map<String, dynamic> dmap =
+        await parseJsonFromAssets('assets/files/countries.json');
+    dmap["countries"].forEach((element) {
+      for (var value in element.values) {
+        country.add(firstCharacterUpper(value.toString().toLowerCase()));
+      }
+    });
+
+    setState(() {
+      _nations = country;
+    });
+  }
+
+  firstCharacterUpper(String text) {
+    List arrayPieces = List();
+    String outPut = "";
+    text.split(' ').forEach((sepparetedWord) {
+      arrayPieces.add(sepparetedWord);
+    });
+
+    arrayPieces.forEach((word) {
+      if (word[0] != null)
+        word =
+            "${word[0].toString().toUpperCase()}${word.toString().substring(1)} ";
+      outPut += word;
+    });
+
+    return outPut;
+  }
+
+  Future<List<dynamic>> parseJsonFromAssetsTitle(String assetsPath) async {
+    return rootBundle
+        .loadString(assetsPath)
+        .then((jsonStr) => jsonDecode(jsonStr));
+  }
+
+  Future<List<String>> getCountryCode() async {
+    List<String> countryCode = [];
+    await rootBundle.loadString('assets/files/country_code.txt').then((q) {
+      for (String i in LineSplitter().convert(q)) {
+        countryCode.add(i);
+      }
+    });
+
+    return countryCode;
+  }
+
+  Future<Map<String, dynamic>> parseJsonFromAssets(String assetsPath) async {
+    return rootBundle
+        .loadString(assetsPath)
+        .then((jsonStr) => jsonDecode(jsonStr));
   }
 
   Future<void> go(BuildContext context) async {
@@ -322,23 +416,23 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 child: DropdownButtonFormField(
                     validator: (value) {
-                      if (value == null) {
+                      if (_title == null) {
                         return 'Please select Title';
                       }
                       return null;
                     },
                     onSaved: (value) {
-                      _gender = value;
+                      _title = value;
                     },
                     style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
                       icon: Icon(Icons.account_circle, color: Colors.black),
-                      hintText: "Title",
+                      hintText: _title,
                       border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white70)),
                       focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: TextStyle(color: Colors.black),
                     ),
                     items: _titles.map((value) {
                       return DropdownMenuItem(
@@ -350,6 +444,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       setState(() {
                         _title = value;
                       });
+                      if (isSubmitted) _signupFormKey.currentState.validate();
                     }),
               ),
               SizedBox(height: 30.0),
@@ -362,6 +457,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 },
                 onSaved: (String value) {
                   _fName = value;
+                },
+                onChanged: (value) {
+                  if (isSubmitted) _signupFormKey.currentState.validate();
                 },
                 controller: firstNameController,
                 onFieldSubmitted: (term) {
@@ -395,6 +493,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 onSaved: (String value) {
                   _lName = value;
                 },
+                onChanged: (value) {
+                  if (isSubmitted) _signupFormKey.currentState.validate();
+                },
                 controller: lastNameController,
                 cursorColor: Colors.white,
                 style: TextStyle(color: Colors.black),
@@ -413,46 +514,80 @@ class _SignUpPageState extends State<SignUpPage> {
               Row(
                 children: <Widget>[
                   Expanded(
-                      flex: 2,
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          canvasColor: Colors.grey[300],
+                      flex: 4,
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (_countryCode.isEmpty) {
+                            return 'Please select a Country Code';
+                          }
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          _countryCode =
+                              value.replaceAll(new RegExp(r'[^0-9]'), '');
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            _countryCode = value;
+                          });
+                          if (isSubmitted)
+                            _signupFormKey.currentState.validate();
+                        },
+                        onTap: () {
+                          materialPicker();
+
+                          if (isSubmitted)
+                            _signupFormKey.currentState.validate();
+                        },
+                        controller: countryCodeController,
+                        cursorColor: Colors.white70,
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.map, color: Colors.black),
+                          hintText: _countryCode.replaceAll(
+                              new RegExp(r'[^0-9]'), ''),
+                          border: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white70)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black)),
+                          hintStyle: TextStyle(color: Colors.black),
+                          //Color(THEME.PRIMARY_COLOR)
                         ),
-                        child: DropdownButtonFormField(
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Please select an area';
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _area = value;
-                            },
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.map, color: Colors.black),
-                              hintText: "Area Code",
-                              border: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.white70)),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black)),
-                              hintStyle: TextStyle(color: Colors.grey),
-                            ),
-                            items: _locations.map((value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _area = value;
-                              });
-                            }),
                       )),
                   Expanded(
-                    flex: 4,
+                    flex: 5,
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a Area Code';
+                        }
+                        return null;
+                      },
+                      onSaved: (String value) {
+                        _area = value;
+                      },
+                      onChanged: (value) {
+                        if (isSubmitted) _signupFormKey.currentState.validate();
+                      },
+                      controller: areaController,
+                      cursorColor: Colors.white70,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.map, color: Colors.black),
+                        hintText: "Area Code",
+                        border: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white70)),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black)),
+                        hintStyle: TextStyle(color: Colors.grey),
+                        //Color(THEME.PRIMARY_COLOR)
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 6,
                     child: TextFormField(
                       keyboardType: TextInputType.number,
                       validator: (value) {
@@ -463,6 +598,9 @@ class _SignUpPageState extends State<SignUpPage> {
                       },
                       onSaved: (String value) {
                         _phone = value;
+                      },
+                      onChanged: (value) {
+                        if (isSubmitted) _signupFormKey.currentState.validate();
                       },
                       controller: phoneController,
                       cursorColor: Colors.white70,
@@ -490,11 +628,19 @@ class _SignUpPageState extends State<SignUpPage> {
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter a Email';
+                  } else {
+                    Pattern pattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+                    RegExp regex = new RegExp(pattern);
+                    if (!(regex.hasMatch(value)))
+                      return "Please enter a valid Email";
                   }
                   return null;
                 },
                 onSaved: (String value) {
                   _email = value;
+                },
+                onChanged: (value) {
+                  if (isSubmitted) _signupFormKey.currentState.validate();
                 },
                 controller: emailController,
                 cursorColor: Colors.white,
@@ -521,6 +667,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   if (_dobString == "Select date of birth") {
                     return 'Please select date of Birth';
                   }
+
                   return null;
                 },
                 onTap: () async {
@@ -534,6 +681,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       _dobString =
                           "${datePick.month}/${datePick.day}/${datePick.year}";
                     });
+                    if (isSubmitted) _signupFormKey.currentState.validate();
                   }
                 },
                 onChanged: (value) {
@@ -590,6 +738,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       setState(() {
                         _gender = value;
                       });
+                      if (isSubmitted) _signupFormKey.currentState.validate();
                     }),
               ),
               SizedBox(height: 30.0),
@@ -598,6 +747,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   canvasColor: Colors.grey[300],
                 ),
                 child: DropdownButtonFormField(
+                    isExpanded: true,
                     validator: (value) {
                       if (value == null) {
                         return 'Please select Nationality';
@@ -627,6 +777,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       setState(() {
                         _nationality = value;
                       });
+                      if (isSubmitted) _signupFormKey.currentState.validate();
                     }),
               ),
               SizedBox(height: 20),
@@ -716,6 +867,9 @@ class _SignUpPageState extends State<SignUpPage> {
             margin: EdgeInsets.only(top: 30.0, bottom: 30),
             child: RaisedButton(
               onPressed: () {
+                setState(() {
+                  isSubmitted = true;
+                });
                 // Validate returns true if the form is valid, otherwise false.
                 if (_signupFormKey.currentState.validate()) {
                   // If the form is valid, display a snackbar. In the real world,
@@ -728,7 +882,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     'firstName': _fName,
                     'lastName': _lName,
                     'phone': _phone,
-                    'code': _area,
+                    'countryCode': _countryCode,
+                    'areaCode': _area,
                     'nation': _nationality,
                     'gender': _gender,
                   };

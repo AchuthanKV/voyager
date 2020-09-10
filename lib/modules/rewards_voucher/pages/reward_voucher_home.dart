@@ -33,8 +33,7 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
               child: SingleChildScrollView(
                 child: Container(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 40),
+                    padding: const EdgeInsets.symmetric(vertical: 40),
                     child: Column(
                       children: [
                         Padding(
@@ -255,7 +254,7 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                           ),
                         ),
                         SizedBox(
-                          height: 50,
+                          height: 20,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(right: 250),
