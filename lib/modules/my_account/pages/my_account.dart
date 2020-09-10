@@ -17,7 +17,6 @@ class _MyAccountState extends State<MyAccount> {
 
   List items = [
     "Personal Information",
-    "Passenger Information",
     "Login Options",
     'Change Password',
     "Notifications",
@@ -26,7 +25,6 @@ class _MyAccountState extends State<MyAccount> {
   ];
   List icons = [
     "assets/images/user_icon.png",
-    "assets/images/passenger_icon.png",
     "assets/images/biometric_icon.png",
     "assets/images/password_icon.png",
     "assets/images/notification_icon.png",
@@ -34,7 +32,14 @@ class _MyAccountState extends State<MyAccount> {
     "assets/images/moreabtvoy_icon.png"
   ];
 
-  List routingPath = ['', "", "/loginoptions", '', "", "", "/moreaboutvoyager"];
+  List routingPath = [
+    '/myprofile',
+    "/loginoptions",
+    '',
+    "",
+    "",
+    "/moreaboutvoyager"
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +51,7 @@ class _MyAccountState extends State<MyAccount> {
           Container(
             width: double.infinity,
             height: double.infinity,
+            color: Colors.transparent,
             child: GridView.count(
               crossAxisCount: 2,
               childAspectRatio: 4 / 3,
@@ -56,7 +62,7 @@ class _MyAccountState extends State<MyAccount> {
                     child: Container(
                       margin: EdgeInsets.all(5),
                       width: SizeConfig.screenWidth / 2 - 20,
-                      height: SizeConfig.screenHeight / 8,
+                      // height: SizeConfig.screenHeight / 8,
                       decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
@@ -72,20 +78,23 @@ class _MyAccountState extends State<MyAccount> {
                           IconButton(
                             icon: Image.asset(icons[index],
                                 color: Color(THEME.PRIMARY_COLOR), width: 50),
-                            iconSize: 50,
                             color: Colors.indigo[900],
+                            iconSize: 50,
                             onPressed: () {
                               print(index);
                               print(routingPath[index]);
                               Navigator.pushNamed(context, routingPath[index]);
                             },
                           ),
-                          Text(
-                            items[index],
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Color(THEME.PRIMARY_COLOR)),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              items[index],
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(THEME.PRIMARY_COLOR)),
+                            ),
                           )
                         ],
                       ),
