@@ -4,6 +4,7 @@ import 'package:voyager/modules/home/pages/membership_card.dart';
 import 'package:voyager/modules/home/widgets/barcodegenerator.dart';
 import 'package:voyager/modules/hotdeals/pages/hotdeals.dart';
 import 'package:voyager/modules/login/pages/login_screen.dart';
+import 'package:voyager/modules/miles/pages/miles_page.dart';
 import 'package:voyager/modules/more_about_voyager/pages/about_voyager.dart';
 //import 'package:voyager/modules/my-profile/pages/my_profile.dart';
 import 'package:voyager/modules/my_account/pages/my_account.dart';
@@ -54,7 +55,7 @@ class _HomePageState extends State<HomePage> {
   final widgetOptions = [
     PageViewSwipe(),
     RewardVoucherScreen(),
-    Text('Miles'),
+    MilesPage(),
     HotDealsPage(),
     Text('Vouchers'),
     MyAccount(),
