@@ -82,16 +82,21 @@ class _LoginPageState extends State<LoginPage> {
                     size: 100.0,
                   ),
                 )
-              : ListView(
-                  children: <Widget>[
-                    logoSection(),
-                    //pinLogin(),
+              : GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+                  },
+                  child: ListView(
+                    children: <Widget>[
+                      logoSection(),
+                      //pinLogin(),
 
-                    SizedBox(
-                      height: 50,
-                    ),
-                    normalSignIn(),
-                  ],
+                      SizedBox(
+                        height: 50,
+                      ),
+                      normalSignIn(),
+                    ],
+                  ),
                 ),
         ),
       ),
