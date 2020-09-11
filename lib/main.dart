@@ -6,6 +6,7 @@ import 'package:voyager/modules/hotdeals/pages/hotdeals.dart';
 import 'package:voyager/modules/login/pages/login_screen.dart';
 import 'package:voyager/modules/miles/pages/miles_page.dart';
 import 'package:voyager/modules/more_about_voyager/pages/about_voyager.dart';
+import 'package:voyager/modules/my-profile/pages/my_profile.dart';
 //import 'package:voyager/modules/my-profile/pages/my_profile.dart';
 import 'package:voyager/modules/my_account/pages/my_account.dart';
 import 'package:voyager/modules/rewards_voucher/pages/reward_voucher_home.dart';
@@ -42,7 +43,7 @@ void main() {
       '/setPin': (BuildContext context) => SetPin(),
       '/pinLogin': (BuildContext context) => PinLogin(),
       '/moreaboutvoyager': (BuildContext context) => MoreAboutVoyagerPage(),
-      //'/myprofile': (BuildContext context) => MyProfile(),
+      '/myprofile': (BuildContext context) => MyProfile(),
     },
   ));
 }
@@ -80,6 +81,12 @@ class _HomePageState extends State<HomePage> {
         Scaffold(
             resizeToAvoidBottomPadding: false,
             appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.info_outline),
+                onPressed: () {
+                  //go to contact us page
+                },
+              ),
               backgroundColor: Color(THEME.PRIMARY_COLOR),
               title: Text(appbarTitle, style: TextStyle(color: Colors.white)),
               centerTitle: true,
@@ -92,7 +99,10 @@ class _HomePageState extends State<HomePage> {
                             builder: (BuildContext context) => LoginScreen()),
                         (Route<dynamic> route) => false);
                   },
-                  child: Text("Log Out", style: TextStyle(color: Colors.white)),
+                  child: Icon(
+                    Icons.exit_to_app,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),

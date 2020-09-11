@@ -1,14 +1,10 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:ui';
-import 'package:voyager/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:voyager/services/api.dart' as API;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
