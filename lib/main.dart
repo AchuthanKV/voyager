@@ -21,27 +21,31 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voyager/modules/signup/pages/sign_up.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/services/getFingerprint.dart';
+import 'package:voyager/services/service_locator.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 import 'modules/splash/pages/splash_screen.dart';
 
-void main() => runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Color(THEME.PRIMARY_COLOR),
-      ),
-      home: SplashScreen(),
-      routes: {
-        '/signup': (BuildContext context) => SignUpPage(),
-        '/forgotpin': (BuildContext context) => ForgotPin(),
-        '/loginoptions': (BuildContext context) => LoginOptions(),
-        '/getfingerprint': (BuildContext context) => AuthenticateFingerPrint(),
-        '/setPin': (BuildContext context) => SetPin(),
-        '/pinLogin': (BuildContext context) => PinLogin(),
-        '/moreaboutvoyager': (BuildContext context) => MoreAboutVoyagerPage(),
-        //'/myprofile': (BuildContext context) => MyProfile(),
-      },
-    ));
+void main() {
+  setupLocator();
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      primaryColor: Color(THEME.PRIMARY_COLOR),
+    ),
+    home: SplashScreen(),
+    routes: {
+      '/signup': (BuildContext context) => SignUpPage(),
+      '/forgotpin': (BuildContext context) => ForgotPin(),
+      '/loginoptions': (BuildContext context) => LoginOptions(),
+      '/getfingerprint': (BuildContext context) => AuthenticateFingerPrint(),
+      '/setPin': (BuildContext context) => SetPin(),
+      '/pinLogin': (BuildContext context) => PinLogin(),
+      '/moreaboutvoyager': (BuildContext context) => MoreAboutVoyagerPage(),
+      //'/myprofile': (BuildContext context) => MyProfile(),
+    },
+  ));
+}
 
 class HomePage extends StatefulWidget {
   @override

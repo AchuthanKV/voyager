@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:voyager/modules/miles/pages/miles_infopage.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class ClaimMilesPage extends StatefulWidget {
@@ -68,7 +69,10 @@ class _ClaimMilesPageState extends State<ClaimMilesPage> {
                   ),
                 ),
                 FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => MilesInfoPage()));
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         boxShadow: [
@@ -108,7 +112,10 @@ class _ClaimMilesPageState extends State<ClaimMilesPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => MilesInfoPage()));
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         boxShadow: [
@@ -144,7 +151,10 @@ class _ClaimMilesPageState extends State<ClaimMilesPage> {
                   ),
                 ),
                 FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => MilesInfoPage()));
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         boxShadow: [
@@ -185,7 +195,10 @@ class _ClaimMilesPageState extends State<ClaimMilesPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => MilesInfoPage()));
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         boxShadow: [
@@ -221,7 +234,10 @@ class _ClaimMilesPageState extends State<ClaimMilesPage> {
                   ),
                 ),
                 FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => MilesInfoPage()));
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         boxShadow: [
