@@ -4,6 +4,7 @@ import 'package:voyager/modules/contactus/pages/contact_us.dart';
 import 'package:voyager/modules/home/pages/membership_card.dart';
 import 'package:voyager/modules/home/widgets/barcodegenerator.dart';
 import 'package:voyager/modules/hotdeals/pages/hotdeals.dart';
+import 'package:voyager/modules/invite_friend/pages/invite_friend.dart';
 import 'package:voyager/modules/login/pages/login_screen.dart';
 import 'package:voyager/modules/miles/pages/miles_page.dart';
 import 'package:voyager/modules/more_about_voyager/pages/about_voyager.dart';
@@ -45,6 +46,7 @@ void main() {
       '/pinLogin': (BuildContext context) => PinLogin(),
       '/moreaboutvoyager': (BuildContext context) => MoreAboutVoyagerPage(),
       '/myprofile': (BuildContext context) => MyProfile(),
+      '/invitefriend': (BuildContext context) => InvitePage(),
     },
   ));
 }

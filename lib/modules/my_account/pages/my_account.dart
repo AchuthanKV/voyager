@@ -37,7 +37,7 @@ class _MyAccountState extends State<MyAccount> {
     "/loginoptions",
     '',
     "",
-    "",
+    "/invitefriend",
     "/moreaboutvoyager"
   ];
 
