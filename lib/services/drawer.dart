@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:voyager/screens/barcode_scan.dart';
-import 'package:voyager/screens/invite_page.dart';
+import 'package:voyager/screens/invite_friend.dart';
 
 class DrawerClass extends StatelessWidget {
   const DrawerClass({Key key}) : super(key: key);
