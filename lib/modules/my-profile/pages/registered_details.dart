@@ -14,7 +14,7 @@ class RsgisteredDetails extends StatelessWidget {
     AccountModel accountModel = LoginUser.accountModel;
     return Scaffold(
         appBar: AppBar(
-          title: Text("MY PROFILE"),
+          title: Text("My Profile"),
           centerTitle: true,
         ),
         body: Stack(
@@ -28,7 +28,7 @@ class RsgisteredDetails extends StatelessWidget {
                   height: 50,
                   child: Center(
                       child: Text(
-                    "REGISTRATION DETAILS",
+                    "Registration  Details ",
                     style: TextStyle(fontSize: 20),
                   )),
                 ),

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -22,6 +21,36 @@ class _LoginOptionsState extends State<LoginOptions> {
   final _storage = FlutterSecureStorage();
   LocalAuthentication auth = LocalAuthentication();
 
+  String biometric = 'biometric';
+  List<BiometricType> biometrics;
+
+  bool isAndroid() {
+    bool isAndroid = true;
+    if (biometrics.contains(BiometricType.face)) {
+      isAndroid = false;
+      biometric = 'Face id';
+    } else if (biometrics.contains(BiometricType.fingerprint)) {
+      isAndroid = true;
+      biometric = 'Fingerprint';
+    }
+    return isAndroid;
+  }
+
+  Future<List<BiometricType>> getBiometricTypes() async {
+    try {
+      List<BiometricType> bios = await auth.getAvailableBiometrics();
+      print(bios.length == 0 ? 'No Bios' : 'Bios');
+      setState(() {
+        biometrics = bios;
+      });
+      isAndroid();
+      return bios;
+    } on Exception catch (err) {
+      print("Error: " + err.toString());
+      return null;
+    }
+  }
+
   Future<void> _authenticate() async {
     bool authenticated = false;
     try {
@@ -38,6 +67,12 @@ class _LoginOptionsState extends State<LoginOptions> {
     }
 
     return authenticated;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getBiometricTypes();
   }
 
   @override
@@ -90,7 +125,7 @@ class _LoginOptionsState extends State<LoginOptions> {
                       Container(
                         width: MediaQuery.of(context).size.width / 2,
                         child: Text(
-                          'Enable Fingerprint',
+                          'Enable ${biometric}',
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 20,
