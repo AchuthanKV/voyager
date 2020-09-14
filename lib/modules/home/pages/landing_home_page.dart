@@ -92,58 +92,57 @@ class _LandingPageState extends State<LandingPage> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 )),
-                Container(
-                    child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-                      child: LinearPercentIndicator(
-                          lineHeight: 15.0,
-                          percent: tierPercent,
-                          backgroundColor: Colors.grey[400],
-                          progressColor: Color(profileObject.tierColor)),
-                    ),
-                    new Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                (profileObject.tierName.toLowerCase() != "platinum") &&
+                        (profileObject.tierName.toLowerCase() !=
+                            "lifetimeplatinum")
+                    ? Container(
+                        child: Column(
+                        children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.only(left: 15.0),
-                            child: Text(
-                              "${profileObject.tierName}",
-                              style: TextStyle(fontStyle: FontStyle.italic),
-                            ),
+                            padding:
+                                const EdgeInsets.only(left: 15.0, right: 15.0),
+                            child: LinearPercentIndicator(
+                                lineHeight: 15.0,
+                                percent: tierPercent,
+                                backgroundColor: Colors.grey[400],
+                                progressColor: Color(profileObject.tierColor)),
                           ),
                           new Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              (profileObject.tierName.toLowerCase() ==
-                                          "platinum") ||
-                                      (profileObject.tierName.toLowerCase() ==
-                                          "lifetimeplatinum")
-                                  ? Text(
-                                      "Consult Member Guide",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic),
-                                    )
-                                  : Text(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 15.0),
+                                  child: Text(
+                                    "${profileObject.tierName}",
+                                    style:
+                                        TextStyle(fontStyle: FontStyle.italic),
+                                  ),
+                                ),
+                                new Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
                                       "get ${accountModel.getPointsToNextTier} more points",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.italic),
                                     ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 15.0),
-                            child: Text(
-                              "${profileObject.nextTierName}",
-                              style: TextStyle(fontStyle: FontStyle.italic),
-                            ),
-                          ),
-                        ]),
-                  ],
-                )),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 15.0),
+                                  child: Text(
+                                    "${profileObject.nextTierName}",
+                                    style:
+                                        TextStyle(fontStyle: FontStyle.italic),
+                                  ),
+                                ),
+                              ]),
+                        ],
+                      ))
+                    : SizedBox(
+                        height: 0,
+                      ),
                 Container(
                   child: Card(
                     shape: RoundedRectangleBorder(

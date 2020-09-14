@@ -28,7 +28,10 @@ class _ContactUsState extends State<ContactUs> {
                         builder: (BuildContext context) => LoginPage()),
                     (Route<dynamic> route) => false);
               },
-              child: Text("Log Out", style: TextStyle(color: Colors.white)),
+              child: Icon(
+                Icons.exit_to_app,
+                color: Colors.white,
+              ),
             ),
           ],
         ),
