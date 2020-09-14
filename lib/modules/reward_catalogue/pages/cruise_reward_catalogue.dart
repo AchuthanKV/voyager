@@ -68,7 +68,7 @@ class _CruiseRewardCataloguePageState extends State<CruiseRewardCataloguePage> {
                       ],
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(40))),
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -105,7 +105,6 @@ class _CruiseRewardCataloguePageState extends State<CruiseRewardCataloguePage> {
                                       icon: Image.asset(
                                         "assets/images/wishlist_round_1.png",
                                         color: Colors.indigo[900],
-                                        
                                       ),
                                       onPressed: () {}),
                                   IconButton(

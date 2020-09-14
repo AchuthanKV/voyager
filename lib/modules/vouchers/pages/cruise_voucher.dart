@@ -127,7 +127,7 @@ class _CruiseVoucherState extends State<CruiseVoucher> {
                               decoration: TextDecoration.underline),
                         ),
                         onTap: () {
-                          print("value of your terms");
+                          Navigator.pushNamed(context, '/termsandconditions');
                         },
                       ),
                     ),
@@ -143,7 +143,7 @@ class _CruiseVoucherState extends State<CruiseVoucher> {
                               decoration: TextDecoration.underline),
                         ),
                         onTap: () {
-                          print("value of your booking");
+                          Navigator.pushNamed(context, '/makeabooking');
                         },
                       ),
                     ),

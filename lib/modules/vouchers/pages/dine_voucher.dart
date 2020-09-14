@@ -174,7 +174,7 @@ class _DineVoucherState extends State<DineVoucher> {
                           decoration: TextDecoration.underline),
                     ),
                     onTap: () {
-                      print("value of your terms");
+                      Navigator.pushNamed(context, '/termsandconditions');
                     },
                   ),
                 ),
