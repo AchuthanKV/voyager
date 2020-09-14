@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -31,6 +35,8 @@ class _AddressState extends State<Address> {
   final TextEditingController cityController = new TextEditingController();
   final TextEditingController stateController = new TextEditingController();
   final TextEditingController phoneController = new TextEditingController();
+  final TextEditingController countryCodeController =
+      new TextEditingController();
 
   String _addressLine1;
   String _addressLine2;
@@ -41,11 +47,14 @@ class _AddressState extends State<Address> {
   String _phone;
   String _areacode;
   String _isdcode;
+  String _countryCode;
 
   String _nationality;
   List _locations = ['+91', '72'];
   List _nations = ['India', 'USA', 'China'];
   List _genders = ['Male', 'Female'];
+  List _country_code = [];
+
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _mailFocus = FocusNode();
   final FocusNode _line1Focus = FocusNode();
@@ -80,6 +89,7 @@ class _AddressState extends State<Address> {
                     'state': _state,
                     'zipcode': _zipcode,
                     'nation': _nationality,
+                    'countryCode': _countryCode,
                   };
                   print(data);
                   setState(() {
@@ -104,6 +114,91 @@ class _AddressState extends State<Address> {
         ],
       ),
     );
+  }
+
+  void initState() {
+    _setup();
+    getCountries();
+    super.initState();
+    _countryCode = null;
+    emailController.addListener(() {
+      final text = emailController.text.toLowerCase();
+      emailController.value = emailController.value.copyWith(
+        text: text,
+        // selection:
+        //     TextSelection(baseOffset: text.length, extentOffset: text.length),
+        composing: TextRange.empty,
+      );
+    });
+  }
+
+  _setup() async {
+    // Retrieve the country code (Processed in the background)
+    List<String> countryCode = await getCountryCode();
+
+    // Notify the UI and display the country code
+    setState(() {
+      _country_code = countryCode;
+    });
+  }
+
+  void materialPicker() {
+    showMaterialSelectionPicker(
+      context: context,
+      title: "Choose Country Code",
+      items: _country_code,
+      selectedItem: _countryCode,
+      onChanged: (value) => setState(() => _countryCode = value),
+    );
+  }
+
+  Future<List<String>> getCountryCode() async {
+    List<String> countryCode = [];
+    await rootBundle.loadString('assets/files/country_code.txt').then((q) {
+      for (String i in LineSplitter().convert(q)) {
+        countryCode.add(i);
+      }
+    });
+
+    return countryCode;
+  }
+
+  Future<Map<String, dynamic>> parseJsonFromAssets(String assetsPath) async {
+    return rootBundle
+        .loadString(assetsPath)
+        .then((jsonStr) => jsonDecode(jsonStr));
+  }
+
+  getCountries() async {
+    List country = [];
+    Map<String, dynamic> dmap =
+        await parseJsonFromAssets('assets/files/countries.json');
+    dmap["countries"].forEach((element) {
+      for (var value in element.values) {
+        country.add(firstCharacterUpper(value.toString().toLowerCase()));
+      }
+    });
+
+    setState(() {
+      _nations = country;
+    });
+  }
+
+  firstCharacterUpper(String text) {
+    List arrayPieces = List();
+    String outPut = "";
+    text.split(' ').forEach((sepparetedWord) {
+      arrayPieces.add(sepparetedWord);
+    });
+
+    arrayPieces.forEach((word) {
+      if (word[0] != null)
+        word =
+            "${word[0].toString().toUpperCase()}${word.toString().substring(1)} ";
+      outPut += word;
+    });
+
+    return outPut;
   }
 
   @override
@@ -144,44 +239,77 @@ class _AddressState extends State<Address> {
                               children: <Widget>[
                                 Expanded(
                                     flex: 2,
-                                    child: Theme(
-                                      data: Theme.of(context).copyWith(
-                                        canvasColor: Colors.grey[300],
+                                    child: TextFormField(
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) {
+                                        if (_countryCode.isEmpty) {
+                                          return 'Please select a Country Code';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (String value) {
+                                        _countryCode = value.replaceAll(
+                                            new RegExp(r'[^0-9]'), '');
+                                      },
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _countryCode = value;
+                                        });
+                                      },
+                                      onTap: () {
+                                        materialPicker();
+                                      },
+                                      controller: countryCodeController,
+                                      cursorColor: Colors.white70,
+                                      style: TextStyle(color: Colors.black),
+                                      decoration: InputDecoration(
+                                        hintText: (_countryCode != null)
+                                            ? _countryCode.replaceAll(
+                                                new RegExp(r'[^0-9]'), '')
+                                            : ' ',
+                                        border: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.white70)),
+                                        focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.black)),
+                                        hintStyle:
+                                            TextStyle(color: Colors.black),
+                                        //Color(THEME.PRIMARY_COLOR)
                                       ),
-                                      child: DropdownButtonFormField(
-                                          validator: (value) {
-                                            if (value == null) {
-                                              return 'Please select an area';
-                                            }
-                                            return null;
-                                          },
-                                          onSaved: (value) {
-                                            _areacode = value;
-                                          },
-                                          style: TextStyle(color: Colors.black),
-                                          decoration: InputDecoration(
-                                            hintText: "Area Code",
-                                            border: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.white70)),
-                                            focusedBorder: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.black)),
-                                            hintStyle:
-                                                TextStyle(color: Colors.grey),
-                                          ),
-                                          items: _locations.map((value) {
-                                            return DropdownMenuItem(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _areacode = value;
-                                            });
-                                          }),
                                     )),
+                                Expanded(
+                                  flex: 2,
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Please enter a Area Code';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (String value) {
+                                      _areacode = value;
+                                    },
+                                    onChanged: (value) {
+                                      _areacode = value;
+                                    },
+                                    controller: areaController,
+                                    cursorColor: Colors.white70,
+                                    style: TextStyle(color: Colors.black),
+                                    decoration: InputDecoration(
+                                      hintText: "Area Code",
+                                      border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.white70)),
+                                      focusedBorder: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.black)),
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      //Color(THEME.PRIMARY_COLOR)
+                                    ),
+                                  ),
+                                ),
                                 Expanded(
                                   flex: 4,
                                   child: TextFormField(
