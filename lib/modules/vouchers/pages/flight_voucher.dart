@@ -119,8 +119,9 @@ class _FlightVoucherState extends State<FlightVoucher> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      inkWellSection("Term and Condition", '/forgotpin'),
-                      inkWellSection("Make a Booking", '/forgotpin'),
+                      inkWellSection(
+                          "Term and Condition", '/termsandconditions'),
+                      inkWellSection("Make a Booking", '/makeabooking'),
                       //makeaBookingSection()
                       //Text('Term and Condition')
                     ],

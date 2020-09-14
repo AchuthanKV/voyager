@@ -12,6 +12,8 @@ import 'package:voyager/modules/my-profile/pages/my_profile.dart';
 //import 'package:voyager/modules/my-profile/pages/my_profile.dart';
 import 'package:voyager/modules/my_account/pages/my_account.dart';
 import 'package:voyager/modules/rewards_voucher/pages/reward_voucher_home.dart';
+import 'package:voyager/modules/vouchers/pages/voucher_makebooking.dart';
+import 'package:voyager/modules/vouchers/pages/vouchers_termsconditions.dart';
 import 'package:voyager/screens/barcode_scan.dart';
 import 'package:voyager/screens/forgot_pin.dart';
 import 'package:voyager/screens/login_options.dart';
@@ -47,6 +49,9 @@ void main() {
       '/moreaboutvoyager': (BuildContext context) => MoreAboutVoyagerPage(),
       '/myprofile': (BuildContext context) => MyProfile(),
       '/invitefriend': (BuildContext context) => InvitePage(),
+      '/termsandconditions': (BuildContext context) =>
+          VoucherTermsAndConditionsPage(),
+      '/makeabooking': (BuildContext context) => VoucherMakeBooking(),
     },
   ));
 }

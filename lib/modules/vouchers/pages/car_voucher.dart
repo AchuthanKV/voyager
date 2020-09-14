@@ -372,32 +372,31 @@ class _CarVoucherState extends State<CarVoucher> {
                             decoration: TextDecoration.underline),
                       ),
                       onTap: () {
-                        print("value of your terms");
+                        Navigator.pushNamed(context, '/termsandconditions');
                       },
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: InkWell(
-                      child: Text(
-                        "Make a Booking",
-                        style: TextStyle(
-                            color: Colors.indigo[900],
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline),
-                      ),
-                      onTap: () {
-                        print("value of your booking");
-                      },
-                    ),
+                        child: Text(
+                          "Make a Booking",
+                          style: TextStyle(
+                              color: Colors.indigo[900],
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline),
+                        ),
+                        onTap: () {
+                          Navigator.pushNamed(context, '/makeabooking');
+                        }),
                   ),
                 ],
               )),
               Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
-                margin: EdgeInsets.only(top: 10.0, bottom: 30),
+                margin: EdgeInsets.only(top: 15.0, bottom: 30),
                 height: 40.0,
                 child: RaisedButton(
                   child: Text(
