@@ -7,10 +7,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/login/widgets/login_error.dart';
+import 'package:voyager/screens/login_options.dart';
+import 'package:voyager/services/api.dart' as API;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
+  static bool firstLogin = false;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -293,10 +298,23 @@ class _LoginPageState extends State<LoginPage> {
   signIn(String membershipId, pin) async {
     var response = await LoginUser().authenticateUser(membershipId, pin);
     if (response == 'true') {
+      var id = await _storage.read(key: 'membershipId');
       setStoredVal(membershipId, pin);
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-          (Route<dynamic> route) => false);
+      print(id);
+      print(membershipId);
+      print(LoginPage.firstLogin);
+      if (id != membershipId) {
+        LoginPage.firstLogin = true;
+
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (BuildContext context) => LoginOptions()),
+            (Route<dynamic> route) => false);
+      } else {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (BuildContext context) => HomePage()),
+            (Route<dynamic> route) => false);
+      }
     } else if (response == null) {
       setState(() {
         _isLoading = false;
