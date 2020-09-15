@@ -1,9 +1,9 @@
-import 'dart:convert';
+// import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipedetector/swipedetector.dart';
 import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
@@ -78,11 +78,16 @@ class _LandingPageState extends State<LandingPage> {
                         )),
                     Align(
                       alignment: Alignment.center,
-                      child: CircleAvatar(
-                        radius: SizeConfig.screenWidth / 5,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: AssetImage('assets/images/${picUrl}'),
-                      ),
+                      child: FlatButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/myprofile');
+                          },
+                          child: CircleAvatar(
+                            radius: SizeConfig.screenWidth / 5,
+                            backgroundColor: Colors.transparent,
+                            backgroundImage:
+                                AssetImage('assets/images/${picUrl}'),
+                          )),
                     ),
                   ],
                 ),

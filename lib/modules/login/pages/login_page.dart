@@ -1,25 +1,13 @@
-import 'dart:async';
-import 'dart:convert';
 import 'dart:core';
 import 'dart:ui';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:passcode_screen/circle.dart';
-import 'package:passcode_screen/keyboard.dart';
-import 'package:passcode_screen/passcode_screen.dart';
 import 'package:voyager/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/login/widgets/login_error.dart';
-import 'package:voyager/services/api.dart' as API;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'package:voyager/theme/theme.dart' as THEME;
-import 'package:local_auth/local_auth.dart';
-import 'package:local_auth/error_codes.dart' as auth_error;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -59,7 +47,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    //print('build execution...');
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
         .copyWith(statusBarColor: Colors.transparent));
     return Scaffold(

@@ -1,23 +1,18 @@
 import 'dart:ui';
 
 import 'package:voyager/modules/contactus/pages/contact_us.dart';
-import 'package:voyager/modules/home/pages/membership_card.dart';
-import 'package:voyager/modules/home/widgets/barcodegenerator.dart';
 import 'package:voyager/modules/hotdeals/pages/hotdeals.dart';
 import 'package:voyager/modules/invite_friend/pages/invite_friend.dart';
 import 'package:voyager/modules/login/pages/login_screen.dart';
 import 'package:voyager/modules/miles/pages/miles_page.dart';
 import 'package:voyager/modules/more_about_voyager/pages/about_voyager.dart';
 import 'package:voyager/modules/my-profile/pages/my_profile.dart';
-//import 'package:voyager/modules/my-profile/pages/my_profile.dart';
 import 'package:voyager/modules/my_account/pages/my_account.dart';
 import 'package:voyager/modules/rewards_voucher/pages/reward_voucher_home.dart';
 import 'package:voyager/modules/vouchers/pages/voucher_makebooking.dart';
 import 'package:voyager/modules/vouchers/pages/vouchers_termsconditions.dart';
-import 'package:voyager/screens/barcode_scan.dart';
 import 'package:voyager/screens/forgot_pin.dart';
 import 'package:voyager/screens/login_options.dart';
-import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/modules/home/pages/page_view_left.dart';
 import 'package:voyager/screens/pin_login.dart';
 import 'package:voyager/screens/set_pin.dart';
@@ -102,15 +97,49 @@ class _HomePageState extends State<HomePage> {
               actions: <Widget>[
                 FlatButton(
                   onPressed: () {
-                    removeSharedPreferenceKeys();
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => LoginScreen()),
-                        (Route<dynamic> route) => false);
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            title: Text("Log Out",
+                                style: TextStyle(
+                                    color: Color(THEME.PRIMARY_COLOR))),
+                            content: Text("Do you want to log out ?",
+                                style: TextStyle(
+                                    color: Color(THEME.TERTIARY_COLOUR))),
+                            actions: <Widget>[
+                              // usually buttons at the bottom of the dialog
+                              new FlatButton(
+                                child: new Text("Yes",
+                                    style: TextStyle(
+                                        color: Color(THEME.PRIMARY_COLOR))),
+                                onPressed: () {
+                                  removeSharedPreferenceKeys();
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              LoginScreen()),
+                                      (Route<dynamic> route) => false);
+                                },
+                              ),
+                              new FlatButton(
+                                child: new Text("No",
+                                    style: TextStyle(
+                                        color: Color(THEME.PRIMARY_COLOR))),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        });
                   },
-                  child: Icon(
-                    Icons.exit_to_app,
+                  child: Image.asset(
+                    "assets/images/logout.png",
                     color: Colors.white,
+                    width: 30,
+                    height: 30,
                   ),
                 ),
               ],

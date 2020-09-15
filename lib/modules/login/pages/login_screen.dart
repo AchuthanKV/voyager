@@ -42,6 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
     enteredColor: Colors.yellow[800], */
   );
 
+  List<BiometricType> biometrics;
+
   userLogin() async {
     var response = await LoginUser().authenticateUser(membershipId, _pin);
 
@@ -253,19 +255,64 @@ class _LoginScreenState extends State<LoginScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         IconButton(
-          icon: new Icon(
-            Icons.fingerprint,
-            size: 70,
-          ),
+          icon: biometricImage(),
           onPressed: () {
             _authenticate();
           },
         ),
-        SizedBox(
-          width: 35,
-        )
+        // SizedBox(
+        //   width: 15,
+        // )
       ],
     ));
+  }
+
+  Widget biometricImage() {
+    if (isAndroid()) {
+      // Finger-print for android
+      return new Icon(
+        Icons.fingerprint,
+        size: 30,
+      );
+    } else {
+      // Face-Id for ios
+      return ImageIcon(
+        AssetImage("assets/images/face-id.png"),
+        color: Colors.black,
+        size: 30,
+      );
+    }
+  }
+
+  bool isAndroid() {
+    //getBiometricTypes();
+    bool isAndroid = true;
+    if (biometrics.contains(BiometricType.face)) {
+      isAndroid = false;
+    } else if (biometrics.contains(BiometricType.fingerprint)) {
+      isAndroid = true;
+    }
+    return isAndroid;
+  }
+
+  Future<List<BiometricType>> getBiometricTypes() async {
+    try {
+      List<BiometricType> bios = await auth.getAvailableBiometrics();
+      print(bios.length == 0 ? 'No Bios' : 'Bios');
+      setState(() {
+        biometrics = bios;
+      });
+      return bios;
+    } on Exception catch (err) {
+      print("Error: " + err.toString());
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getBiometricTypes();
   }
 
   @override
@@ -311,6 +358,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? Column(
                                 children: <Widget>[
                                   Text("OR"),
+                                  SizedBox(
+                                    height: 35,
+                                  ),
                                   fingerPrint(),
                                 ],
                               )
