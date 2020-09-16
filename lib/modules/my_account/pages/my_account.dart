@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:voyager/base/utils/sizeconfig.dart';
+import 'package:voyager/modules/logout/pages/logout.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -13,37 +14,39 @@ class MyAccount extends StatefulWidget {
 
 class _MyAccountState extends State<MyAccount> {
   SizeConfig sizeConfig = SizeConfig();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List items = [
     "Personal Information",
     "Login Options",
     'Change Password',
-    "Notifications",
     "Invite a Friend",
-    "More About Voyager"
+    "More About Voyager",
+    "Log Out"
   ];
   List icons = [
     "assets/images/user_icon.png",
     "assets/images/biometric_icon.png",
     "assets/images/password_icon.png",
-    "assets/images/notification_icon.png",
     "assets/images/invite_icon.png",
-    "assets/images/moreabtvoy_icon.png"
+    "assets/images/moreabtvoy_icon.png",
+    "assets/images/logout.png",
   ];
 
   List routingPath = [
     '/myprofile',
     "/loginoptions",
     '/changepin',
-    "",
     "/invitefriend",
-    "/moreaboutvoyager"
+    "/moreaboutvoyager",
+    "/logout"
   ];
 
   @override
   Widget build(BuildContext context) {
     sizeConfig.init(context);
     return Scaffold(
+      key: _scaffoldKey,
       body: Stack(
         children: [
           BackgroundClass(),
@@ -80,9 +83,13 @@ class _MyAccountState extends State<MyAccount> {
                             color: Colors.indigo[900],
                             iconSize: 50,
                             onPressed: () {
-                              print(index);
-                              print(routingPath[index]);
-                              Navigator.pushNamed(context, routingPath[index]);
+                              if (routingPath[index] == "/logout") {
+                                Logout.showAlertDialog(
+                                    _scaffoldKey.currentContext);
+                              } else {
+                                Navigator.pushNamed(
+                                    context, routingPath[index]);
+                              }
                             },
                           ),
                           FittedBox(

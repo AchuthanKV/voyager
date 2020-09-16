@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:swipedetector/swipedetector.dart';
 import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
@@ -97,9 +98,7 @@ class _LandingPageState extends State<LandingPage> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 )),
-                (profileObject.tierName.toLowerCase() != "platinum") &&
-                        (profileObject.tierName.toLowerCase() !=
-                            "lifetimeplatinum")
+                (profileObject.tierName.toLowerCase() != "lifetimeplatinum")
                     ? Container(
                         child: Column(
                         children: <Widget>[
@@ -127,7 +126,7 @@ class _LandingPageState extends State<LandingPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "get ${accountModel.getPointsToNextTier} more points",
+                                      "You need ${accountModel.getPointsToNextTier} more miles",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.italic),

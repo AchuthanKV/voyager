@@ -5,6 +5,7 @@ import 'package:voyager/modules/contactus/pages/contact_us.dart';
 import 'package:voyager/modules/hotdeals/pages/hotdeals.dart';
 import 'package:voyager/modules/invite_friend/pages/invite_friend.dart';
 import 'package:voyager/modules/login/pages/login_screen.dart';
+import 'package:voyager/modules/logout/pages/logout.dart';
 import 'package:voyager/modules/miles/pages/miles_page.dart';
 import 'package:voyager/modules/more_about_voyager/pages/about_voyager.dart';
 import 'package:voyager/modules/my-profile/pages/my_profile.dart';
@@ -101,49 +102,11 @@ class _HomePageState extends State<HomePage> {
               actions: <Widget>[
                 FlatButton(
                   onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            backgroundColor: Colors.white,
-                            title: Text("Log Out",
-                                style: TextStyle(
-                                    color: Color(THEME.PRIMARY_COLOR))),
-                            content: Text("Do you want to log out ?",
-                                style: TextStyle(
-                                    color: Color(THEME.TERTIARY_COLOUR))),
-                            actions: <Widget>[
-                              // usually buttons at the bottom of the dialog
-                              new FlatButton(
-                                child: new Text("Yes",
-                                    style: TextStyle(
-                                        color: Color(THEME.PRIMARY_COLOR))),
-                                onPressed: () {
-                                  removeSharedPreferenceKeys();
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              LoginScreen()),
-                                      (Route<dynamic> route) => false);
-                                },
-                              ),
-                              new FlatButton(
-                                child: new Text("No",
-                                    style: TextStyle(
-                                        color: Color(THEME.PRIMARY_COLOR))),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        });
+                    //notifictn pg
                   },
-                  child: Image.asset(
-                    "assets/images/logout.png",
+                  child: Icon(
+                    Icons.notifications_active,
                     color: Colors.white,
-                    width: 30,
-                    height: 30,
                   ),
                 ),
               ],

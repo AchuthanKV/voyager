@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:voyager/modules/change_forgot_pin/services/changepin_api.dart';
+import 'package:voyager/modules/change_forgot_pin/services/changepin_status.dart';
 import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
@@ -35,16 +37,6 @@ class _ChangePinState extends State<ChangePin> {
           key: _changePinKey,
           child: Column(
             children: <Widget>[
-              SizedBox(height: 20.0),
-              Container(
-                child: Text(
-                  "FORGOT PIN",
-                  style: TextStyle(
-                      fontSize: 18,
-//                      fontWeight: FontWeight.w500,
-                      color: Colors.black),
-                ),
-              ),
               SizedBox(height: 30.0),
               TextFormField(
                 keyboardType: TextInputType.number,
@@ -86,6 +78,8 @@ class _ChangePinState extends State<ChangePin> {
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter new pin';
+                  } else if (newPin.length < 4) {
+                    return 'Minimum length is 4';
                   } else if (newPin != confirmPin) {
                     return 'Pins do not Match';
                   }
@@ -119,6 +113,8 @@ class _ChangePinState extends State<ChangePin> {
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please re-enter new pin';
+                  } else if (newPin.length < 4) {
+                    return 'Minimum length is 4';
                   } else if (newPin != confirmPin) {
                     return 'Pins do not Match';
                   }
@@ -165,15 +161,30 @@ class _ChangePinState extends State<ChangePin> {
       child: RaisedButton(
         onPressed: () async {
           FocusScope.of(context).unfocus();
+
           if (_changePinKey.currentState.validate()) {
             setState(() {
               _isLoading = true;
             });
 
             //change pin api
-            await new Future.delayed(const Duration(seconds: 3));
-            Navigator.push(
-                context, new MaterialPageRoute(builder: (__) => LoginPage()));
+            bool status = await ChangepinApi().changePin(oldPin, newPin);
+            setState(() {
+              _isLoading = false;
+            });
+            if (status) {
+              ChangepinStatus.displaySnackBar(_scaffoldKey,
+                  "Successfully Changed Pin. Please login again!");
+              await new Future.delayed(const Duration(seconds: 3));
+              Navigator.push(
+                  context, new MaterialPageRoute(builder: (__) => LoginPage()));
+            } else {
+              newPinController.clear();
+              confirmPinController.clear();
+              oldPinController.clear();
+              ChangepinStatus.displaySnackBar(
+                  _scaffoldKey, ChangepinStatus.errorMsg);
+            }
           }
         },
         textColor: Colors.white,
@@ -193,6 +204,9 @@ class _ChangePinState extends State<ChangePin> {
         Scaffold(
           backgroundColor: Colors.transparent,
           key: _scaffoldKey,
+          appBar: AppBar(
+            title: Text("Change Pin"),
+          ),
           body: Container(
             height: double.infinity,
             width: double.infinity,
