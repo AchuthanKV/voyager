@@ -97,32 +97,7 @@ class _CruiseRewardCataloguePageState extends State<CruiseRewardCataloguePage> {
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 )),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: 20, bottom: 30, right: 20),
-                              child: Row(
-                                //mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  IconButton(
-                                      icon: Image.asset(
-                                        "assets/images/wishlist_round_1.png",
-                                        color: Colors.indigo[900],
-                                      ),
-                                      onPressed: () {}),
-                                  IconButton(
-                                      icon: Image.asset(
-                                          "assets/images/voucher_round.png",
-                                          color: Colors.indigo[900]),
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            new MaterialPageRoute(
-                                                builder: (__) =>
-                                                    CruiseVoucher()));
-                                      }),
-                                ],
-                              ),
-                            )
+                            IconsRewards(i: 0)
                           ],
                         ),
                       )
@@ -133,5 +108,181 @@ class _CruiseRewardCataloguePageState extends State<CruiseRewardCataloguePage> {
             ),
           )
         ]));
+  }
+}
+
+class IconsRewards extends StatefulWidget {
+  int i;
+  IconsRewards({Key key, this.i}) : super(key: key);
+
+  @override
+  _IconsRewardsState createState() => _IconsRewardsState();
+}
+
+class _IconsRewardsState extends State<IconsRewards>
+    with TickerProviderStateMixin {
+  List<String> _dropdownValues;
+  double _scale1;
+  double _scale2;
+  AnimationController _controller1;
+  AnimationController _controller2;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _scale1 = 0;
+    _scale2 = 0;
+    _controller1 = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: 200,
+      ),
+      lowerBound: 0.0,
+      upperBound: 0.1,
+    )..addListener(() {
+        setState(() {});
+      });
+    _controller2 = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: 200,
+      ),
+      lowerBound: 0.0,
+      upperBound: 0.1,
+    )..addListener(() {
+        setState(() {});
+      });
+    super.initState();
+  }
+
+  Future<void> go1(BuildContext context) async {
+    await new Future.delayed(const Duration(milliseconds: 200));
+
+    setState(() {
+      _controller1.value = 0;
+    });
+  }
+
+  Future<void> go2(BuildContext context) async {
+    await new Future.delayed(const Duration(milliseconds: 200));
+    setState(() {
+      _controller2.value = 0;
+    });
+    Navigator.push(
+        context, new MaterialPageRoute(builder: (__) => CruiseVoucher()));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _scale1 = 1 - _controller1.value;
+    _scale2 = 1 - _controller2.value;
+    switch (widget.i) {
+      case 0:
+        _dropdownValues = [
+          "Oneway",
+          "Round Trip",
+        ];
+        break;
+      case 1:
+        _dropdownValues = [
+          "Oneway",
+        ];
+        break;
+      case 2:
+        _dropdownValues = [
+          "Oneway",
+          "Round Trip",
+        ];
+        break;
+      default:
+    }
+    void _onTapDown1(TapDownDetails details) {
+      _controller1.forward();
+    }
+
+    void _onTapUp1(TapUpDetails details) {
+      _controller1.reverse();
+    }
+
+    void _onTapDown2(TapDownDetails details) {
+      _controller2.forward();
+    }
+
+    void _onTapUp2(TapUpDetails details) {
+      _controller2.reverse();
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(top: 10, bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          GestureDetector(
+            onTapDown: _onTapDown1,
+            onTapUp: _onTapUp1,
+            child: Transform.scale(
+              scale: _scale1,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(40)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                    icon: Image.asset(
+                      "assets/images/wishlist_round_1.png",
+                      color: Color(THEME.PRIMARY_COLOR),
+                    ),
+                    onPressed: () {
+                      go1(context);
+                    }),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTapDown: _onTapDown2,
+            onTapUp: _onTapUp2,
+            child: Transform.scale(
+              scale: _scale2,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(40)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                    icon: Image.asset("assets/images/voucher_round.png",
+                        color: Color(THEME.PRIMARY_COLOR)),
+                    onPressed: () {
+                      go2(context);
+                    }),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller1.dispose();
+    _controller2.dispose();
+    super.dispose();
   }
 }

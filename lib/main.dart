@@ -170,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                       title: Text('Account')),
                 ],
                 currentIndex: selectedIndex,
-                backgroundColor: Color(THEME.PRIMARY_COLOR),
+                backgroundColor: Colors.grey[800],
                 fixedColor: Colors.yellow,
                 onTap: onItemTapped,
               ),

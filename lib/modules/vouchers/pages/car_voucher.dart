@@ -59,47 +59,11 @@ class _CarVoucherState extends State<CarVoucher> {
         actions: <Widget>[
           FlatButton(
             onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor: Colors.white,
-                      title: Text("Log Out",
-                          style: TextStyle(color: Color(THEME.PRIMARY_COLOR))),
-                      content: Text("Do you want to log out ?",
-                          style:
-                              TextStyle(color: Color(THEME.TERTIARY_COLOUR))),
-                      actions: <Widget>[
-                        // usually buttons at the bottom of the dialog
-                        new FlatButton(
-                          child: new Text("Yes",
-                              style:
-                                  TextStyle(color: Color(THEME.PRIMARY_COLOR))),
-                          onPressed: () {
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        LoginPage()),
-                                (Route<dynamic> route) => false);
-                          },
-                        ),
-                        new FlatButton(
-                          child: new Text("No",
-                              style:
-                                  TextStyle(color: Color(THEME.PRIMARY_COLOR))),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  });
+              //notifictn pg
             },
-            child: Image.asset(
-              "assets/images/logout.png",
+            child: Icon(
+              Icons.notifications_active,
               color: Colors.white,
-              width: 30,
-              height: 30,
             ),
           ),
         ],
@@ -436,16 +400,16 @@ class _CarVoucherState extends State<CarVoucher> {
                 height: 40.0,
                 child: RaisedButton(
                   child: Text(
-                    'Submit',
+                    'SUBMIT',
                     style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 17),
                   ),
                   onPressed: _saveForm,
                   textColor: Colors.white,
                   elevation: 0.0,
-                  color: Color(THEME.PRIMARY_COLOR),
+                  color: Color(THEME.BUTTON_COLOR),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
                 ),
