@@ -126,7 +126,7 @@ class _LandingPageState extends State<LandingPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      "get ${accountModel.getPointsToNextTier} more points",
+                                      "You need ${accountModel.getPointsToNextTier} more miles",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontStyle: FontStyle.italic),

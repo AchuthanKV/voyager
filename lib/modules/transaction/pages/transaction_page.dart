@@ -25,48 +25,11 @@ class _TransactionPageState extends State<TransactionPage> {
         actions: <Widget>[
           FlatButton(
             onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor: Colors.white,
-                      title: Text("Log Out",
-                          style: TextStyle(color: Color(THEME.PRIMARY_COLOR))),
-                      content: Text("Do you want to log out ?",
-                          style:
-                              TextStyle(color: Color(THEME.TERTIARY_COLOUR))),
-                      actions: <Widget>[
-                        // usually buttons at the bottom of the dialog
-                        new FlatButton(
-                          child: new Text("Yes",
-                              style:
-                                  TextStyle(color: Color(THEME.PRIMARY_COLOR))),
-                          onPressed: () {
-                            //removeSharedPreferenceKeys();
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        LoginPage()),
-                                (Route<dynamic> route) => false);
-                          },
-                        ),
-                        new FlatButton(
-                          child: new Text("No",
-                              style:
-                                  TextStyle(color: Color(THEME.PRIMARY_COLOR))),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
-                  });
+              //notifictn pg
             },
-            child: Image.asset(
-              "assets/images/logout.png",
+            child: Icon(
+              Icons.notifications_active,
               color: Colors.white,
-              width: 30,
-              height: 30,
             ),
           ),
         ],
