@@ -34,7 +34,7 @@ class _MyAccountState extends State<MyAccount> {
   List routingPath = [
     '/myprofile',
     "/loginoptions",
-    '',
+    '/changepin',
     "",
     "/invitefriend",
     "/moreaboutvoyager"

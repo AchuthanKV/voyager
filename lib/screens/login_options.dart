@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:voyager/main.dart';
+import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -16,6 +18,7 @@ class LoginOptions extends StatefulWidget {
 }
 
 class _LoginOptionsState extends State<LoginOptions> {
+  bool firstlogin = LoginPage.firstLogin;
   String usingBio = "false";
 
   final _storage = FlutterSecureStorage();
@@ -88,6 +91,25 @@ class _LoginOptionsState extends State<LoginOptions> {
             centerTitle: true,
             backgroundColor: Color(THEME.PRIMARY_COLOR),
           ),
+          floatingActionButton: firstlogin
+              ? Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: RaisedButton(
+                      color: Color(THEME.BUTTON_COLOR),
+                      child: Text("Next"),
+                      onPressed: () {
+                        setState(() {
+                          firstlogin = false;
+                        });
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => HomePage()),
+                            (Route<dynamic> route) => false);
+                      }),
+                )
+              : SizedBox(
+                  height: 0,
+                ),
           backgroundColor: Colors.transparent,
           body: Container(
             child: Center(

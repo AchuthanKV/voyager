@@ -13,6 +13,7 @@ import 'package:voyager/theme/theme.dart' as THEME;
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
+
 class InvitePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -34,7 +35,7 @@ class _InvitePageState extends State<InvitePage> {
   int imageIndex;
   Uint8List imagedata;
   Map<int, Uint8List> selectedImageData;
- /* Color selectedContactColor;
+  /* Color selectedContactColor;
   Map<int, Color> mapContactClolorList;*/
   Map<int, Contact> mapFilterItem;
 
@@ -85,34 +86,35 @@ class _InvitePageState extends State<InvitePage> {
   }
 
   _sendSMS() async {
-    if(await isInternetEnable()){
-    List<String> contactNumbers = [];
-    Map<String, List<String>> data = new HashMap<String, List<String>>();
-    print(mapFilterItem.length);
-    mapFilterItem.forEach((index, contact) {
-      print(contact.phones.elementAt(0).value);
-      contactNumbers.add(contact.phones.elementAt(0).value);
-    });
-    if(_phone != null){
-      print("Phone Field : $_phone");
-      contactNumbers.add(_phone);
-    }
-    data.putIfAbsent("numbers", () => contactNumbers);
-    var response = await http.post(API.SMS_API,
-        headers: {"Content-Type": "application/json"}, body: json.encode(data));
+    if (await isInternetEnable()) {
+      List<String> contactNumbers = [];
+      Map<String, List<String>> data = new HashMap<String, List<String>>();
+      print(mapFilterItem.length);
+      mapFilterItem.forEach((index, contact) {
+        print(contact.phones.elementAt(0).value);
+        contactNumbers.add(contact.phones.elementAt(0).value);
+      });
+      if (_phone != null) {
+        print("Phone Field : $_phone");
+        contactNumbers.add(_phone);
+      }
+      data.putIfAbsent("numbers", () => contactNumbers);
+      var response = await http.post(API.SMS_API,
+          headers: {"Content-Type": "application/json"},
+          body: json.encode(data));
 
-    print('without status $response');
-    var jsonResponse;
-    if (response.statusCode == 200) {
-      jsonResponse = json.decode(response.body);
-      print('in status');
-      print(response.body.toString());
-      showWarningMessage(jsonResponse['sendStatus'].toString() +
-          ":" +
-          jsonResponse['detail'].toString());
-    } else {
-      showWarningMessage("Something went wrong!! Try again.");
-    }
+      print('without status $response');
+      var jsonResponse;
+      if (response.statusCode == 200) {
+        jsonResponse = json.decode(response.body);
+        print('in status');
+        print(response.body.toString());
+        showWarningMessage(jsonResponse['sendStatus'].toString() +
+            ":" +
+            jsonResponse['detail'].toString());
+      } else {
+        showWarningMessage("Something went wrong!! Try again.");
+      }
     }
   }
 
@@ -134,9 +136,8 @@ class _InvitePageState extends State<InvitePage> {
                 new Text(
                   message.contains(":") ? message.split(":")[1] : message,
                   style: TextStyle(
-                      color: message.contains('true')
-                          ? Colors.green
-                          : Colors.red,
+                      color:
+                          message.contains('true') ? Colors.green : Colors.red,
                       fontWeight: FontWeight.bold),
                 ),
               ],
@@ -227,9 +228,9 @@ class _InvitePageState extends State<InvitePage> {
                 TextField(
                   controller: nameEditingController,
                   decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.person),
-                      hintText: 'Name',
-                      suffixIcon: Icon(Icons.search),
+                    prefixIcon: Icon(Icons.person),
+                    hintText: 'Name',
+                    suffixIcon: Icon(Icons.search),
                   ),
                   onChanged: (text) {
                     setState(() {
@@ -249,7 +250,7 @@ class _InvitePageState extends State<InvitePage> {
                   onChanged: (text) {
                     setState(() {
                       _phone = text;
-                          //phoneEditingController.text;
+                      //phoneEditingController.text;
                       print('phone text $_phone');
                     });
                   },
@@ -437,10 +438,7 @@ class _InvitePageState extends State<InvitePage> {
   Container buildButtonContainer() {
     return Container(
       height: 56.0,
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(23.0),
         gradient: LinearGradient(
@@ -460,7 +458,6 @@ class _InvitePageState extends State<InvitePage> {
             color: Colors.white,
           ),
         ),
-
       ),
     );
   }

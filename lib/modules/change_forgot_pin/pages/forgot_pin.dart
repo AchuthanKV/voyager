@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/screens/set_pin.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -24,7 +25,7 @@ class _ForgotPinState extends State<ForgotPin> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = false;
   final TextEditingController membershipController =
-  new TextEditingController();
+      new TextEditingController();
   final TextEditingController emailController = new TextEditingController();
   final FocusNode _pinFocus = FocusNode();
 
@@ -58,20 +59,20 @@ class _ForgotPinState extends State<ForgotPin> {
           // make sure we apply clip it properly
           child: _isLoading
               ? Center(
-            child: SpinKitHourGlass(
-              color: Colors.white,
-              size: 100.0,
-            ),
-          )
+                  child: SpinKitHourGlass(
+                    color: Colors.white,
+                    size: 100.0,
+                  ),
+                )
               : ListView(
-            children: <Widget>[
-              logoSection(),
-              SizedBox(
-                height: 50,
-              ),
-              normalSignIn(),
-            ],
-          ),
+                  children: <Widget>[
+                    logoSection(),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    normalSignIn(),
+                  ],
+                ),
         ),
       ),
     );
@@ -85,9 +86,9 @@ class _ForgotPinState extends State<ForgotPin> {
       margin: EdgeInsets.only(top: 40.0),
       decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/logo.png'),
-            fit: BoxFit.fitHeight,
-          )),
+        image: AssetImage('assets/images/logo.png'),
+        fit: BoxFit.fitHeight,
+      )),
     );
   }
 
@@ -126,9 +127,7 @@ class _ForgotPinState extends State<ForgotPin> {
                 child: Text(
                   "Please enter your Membership No. & Email Address registered with us.",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black),
+                  style: TextStyle(fontSize: 15, color: Colors.black),
                 ),
               ),
               SizedBox(height: 30.0),
@@ -154,7 +153,7 @@ class _ForgotPinState extends State<ForgotPin> {
                   hintText: "Membership No.",
                   border: UnderlineInputBorder(
                       borderSide:
-                      BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
                   focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black)),
                   hintStyle: TextStyle(color: Colors.grey),
@@ -181,7 +180,7 @@ class _ForgotPinState extends State<ForgotPin> {
                   hintText: "Email Address",
                   border: UnderlineInputBorder(
                       borderSide:
-                      BorderSide(color: Color(THEME.PRIMARY_COLOR))),
+                          BorderSide(color: Color(THEME.PRIMARY_COLOR))),
                   focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.black)),
                   hintStyle: TextStyle(color: Colors.grey),
@@ -198,13 +197,16 @@ class _ForgotPinState extends State<ForgotPin> {
       height: 45.0,
       padding: EdgeInsets.only(left: 20, right: 15),
       child: RaisedButton(
-        onPressed: () {
+        onPressed: () async {
           if (_forgotPinKey.currentState.validate()) {
             setState(() {
               _isLoading = true;
             });
-            signInWithEmail(
-                membershipController.text.trim(), emailController.text.trim());
+            // signInWithEmail(
+            //     membershipController.text.trim(), emailController.text.trim());
+            await new Future.delayed(const Duration(seconds: 3));
+            Navigator.push(
+                context, new MaterialPageRoute(builder: (__) => LoginPage()));
           }
         },
         textColor: Colors.white,
@@ -227,11 +229,11 @@ class _ForgotPinState extends State<ForgotPin> {
       setStoredVal(membership);
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => SetPin()),
-              (Route<dynamic> route) => false);
+          (Route<dynamic> route) => false);
     } else {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => ForgotPin()),
-              (Route<dynamic> route) => false);
+          (Route<dynamic> route) => false);
     }
   }
 }
