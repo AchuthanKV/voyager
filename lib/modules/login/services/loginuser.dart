@@ -9,6 +9,7 @@ import 'package:voyager/base/models/profile_model.dart';
 import 'package:voyager/modules/login/services/accountsummary.dart';
 import 'package:voyager/modules/login/services/memberprofile.dart';
 import 'package:voyager/modules/login/services/response.dart';
+import 'package:voyager/modules/login/widgets/login_error.dart';
 import 'package:voyager/services/api_service.dart';
 
 class LoginUser {
@@ -55,16 +56,16 @@ class LoginUser {
 
         return 'true';
       } else if (response == "fault") {
-        errorMsg = "invalid username or pin";
         return 'fault';
       } else {
         return "false";
       }
     } on CommonError catch (e) {
       print(e.description);
-      errorMsg = e.description;
+      LoginErrorAlert.errorMsg = e.description;
     } on Exception catch (e) {
-      errorMsg = "Something unexpected Occurred! Please try again!";
+      LoginErrorAlert.errorMsg =
+          "Something unexpected Occurred! Please try again!";
     }
   }
 }

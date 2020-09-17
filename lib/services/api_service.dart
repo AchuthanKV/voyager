@@ -30,8 +30,9 @@ class ApiService {
             return 'true';
           }
         } else if (response.body.contains('Fault')) {
+          print("FaultFaultFault");
           LoginErrorAlert.setError(respObj);
-          return 'false';
+          return 'fault';
         }
       } else if (code == 500) {
         return 'connectionRefused';

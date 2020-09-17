@@ -4,6 +4,7 @@ import 'package:voyager/modules/change_forgot_pin/pages/change_pin.dart';
 import 'package:voyager/modules/contactus/pages/contact_us.dart';
 import 'package:voyager/modules/hotdeals/pages/hotdeals.dart';
 import 'package:voyager/modules/invite_friend/pages/invite_friend.dart';
+import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/modules/login/pages/login_screen.dart';
 import 'package:voyager/modules/logout/pages/logout.dart';
 import 'package:voyager/modules/miles/pages/miles_page.dart';
@@ -73,6 +74,10 @@ class _HomePageState extends State<HomePage> {
     Text('Vouchers'),
     MyAccount(),
   ];
+  init() {
+    LoginPage.firstLogin = false;
+  }
+
   List nav_button_color = [
     Colors.yellow,
     Colors.white,
@@ -81,8 +86,10 @@ class _HomePageState extends State<HomePage> {
     Colors.white,
     Colors.white
   ];
+
   @override
   Widget build(BuildContext context) {
+    init();
     return Stack(
       children: <Widget>[
         BackgroundClass(),
