@@ -1,7 +1,7 @@
 library theme;
 
 //HEX A Color code only supported.
-const PRIMARY_COLOR = 0xff00286D; // saa blue
+const PRIMARY_COLOR = 0xff000000; // saa black
 const SECONDARY_COLOR = 0xffC1AB81; // saa light yellow
 const BG_GRADIENT_COLOR_1 = 0xffffffff;
 const BG_GRADIENT_COLOR_2 = 0xffe4e8ed;
