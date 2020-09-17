@@ -534,6 +534,7 @@ class _AddressState extends State<Address> {
                                 canvasColor: Colors.grey[300],
                               ),
                               child: DropdownButtonFormField(
+                                  isExpanded: true,
                                   validator: (value) {
                                     if (value == null) {
                                       return 'Please select Nationality';

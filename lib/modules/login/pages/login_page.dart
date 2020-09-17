@@ -300,9 +300,7 @@ class _LoginPageState extends State<LoginPage> {
     if (response == 'true') {
       var id = await _storage.read(key: 'membershipId');
       setStoredVal(membershipId, pin);
-      print(id);
-      print(membershipId);
-      print(LoginPage.firstLogin);
+
       if (id != membershipId) {
         LoginPage.firstLogin = true;
 
@@ -315,18 +313,11 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (BuildContext context) => HomePage()),
             (Route<dynamic> route) => false);
       }
-    } else if (response == null) {
+    } else if (response == null || response == 'fault') {
       setState(() {
         _isLoading = false;
       });
       LoginErrorAlert.displaySnackBar(_scaffoldKey);
-    } else if (response == 'false') {
-      await LoginErrorAlert.showAlertDialog(_scaffoldKey.currentContext);
-      membershipController.clear();
-      pinController.clear();
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 }

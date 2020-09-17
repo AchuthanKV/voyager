@@ -30,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String membershipId;
   final FlutterSecureStorage _storage = FlutterSecureStorage();
   LocalAuthentication auth = LocalAuthentication();
+
   final FocusNode _pinFocus = FocusNode();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -51,16 +52,10 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = false;
     });
 
-    if (response == null) {
+    if (response == null || response == 'fault') {
       _pin = "";
       _pinEditingController.clear();
       LoginErrorAlert.displaySnackBar(_scaffoldKey);
-    } else if (response == 'false') {
-      await LoginErrorAlert.showAlertDialog(_scaffoldKey.currentContext);
-      _pinEditingController.clear();
-      setState(() {
-        _isLoading = false;
-      });
     } else if (response == 'true') {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => HomePage()),
@@ -80,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         child: ClipRRect(
-            // make sure we apply clip it properly
+            // make sure we apply- clip it properly
             child: Container(
           alignment: Alignment.center,
           color: Colors.grey.withOpacity(0.1),
@@ -186,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
           style: TextStyle(
               color: Colors.black, decoration: TextDecoration.underline),
         ),
-        onTap: () => Navigator.pushNamed(context, '/loginoptions'),
+        onTap: () => Navigator.pushNamed(context, '/forgotpin'),
       ),
     );
   }
