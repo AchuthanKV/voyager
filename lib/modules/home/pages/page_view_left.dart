@@ -42,7 +42,7 @@ class _PageViewSwipeState extends State<PageViewSwipe> {
       ),
       align: IndicatorAlign.bottom,
       indicatorSelectorColor: Colors.white,
-      indicatorColor: Colors.indigo[900],
+      indicatorColor: Colors.black,
       shape: IndicatorShape.circle(size: 8),
     );
   }
