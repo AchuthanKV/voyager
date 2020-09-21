@@ -28,7 +28,7 @@ import 'package:voyager/services/background.dart';
 import 'package:voyager/services/getFingerprint.dart';
 import 'package:voyager/services/service_locator.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
-
+import 'package:voyager/modules/voyager_partners/pages/voyager_partners_home.dart';
 import 'modules/splash/pages/splash_screen.dart';
 
 void main() {
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     RewardVoucherScreen(),
     MilesPage(),
     HotDealsPage(),
-    Text('Vouchers'),
+    VoyagerPartnersHome(),
     MyAccount(),
   ];
   init() {
