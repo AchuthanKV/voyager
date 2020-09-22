@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:api_handler/api_handler.dart';
 import 'package:voyager/app_config.dart';
 import 'package:voyager/base/models/profile_model.dart';
+import 'package:voyager/base/services/helper.dart';
 import 'package:voyager/modules/login/services/response.dart';
 import 'package:voyager/modules/login/services/tier_name.dart';
 import 'package:voyager/modules/login/widgets/login_error.dart';
@@ -10,12 +11,13 @@ import 'package:voyager/modules/login/widgets/login_error.dart';
 class MembershipProfile {
   final apiHandler = ApiHandler(AppConfig.baseURL);
   ProfileModel profileModel = new ProfileModel();
+  static Response responseObj;
   getMembershipProfile(String membershipNumber) async {
     {
       Map txnheader = {
         "transactionID": "",
         "userName": "mob-app",
-        "timeStamp": "2020-07-20T10:01:32.131Z"
+        "timeStamp": Helper.getFormatedTime().toString()
       };
       Map memberProfileDetailsRequest = {
         "companyCode": "SA",
@@ -51,6 +53,7 @@ class MembershipProfile {
     int code = 500;
     ApiResponse response;
     Response respObj = Response();
+    responseObj = respObj;
     while (code == 500) {
       response = await apiHandler.requestWith(
         path: "$path",

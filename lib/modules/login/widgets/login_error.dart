@@ -15,9 +15,9 @@ class LoginErrorAlert {
     if (respObj.getLoginAuth.body.contains('Fault')) {
       res = json.decode(respObj.loginAuth.body);
     } else if (respObj.getMemberProfile.body.contains('Fault')) {
-      res = json.decode(respObj.loginAuth.body);
+      res = json.decode(respObj.getMemberProfile.body);
     } else if (respObj.getAccountSummary.body.contains('Fault')) {
-      res = json.decode(respObj.loginAuth.body);
+      res = json.decode(respObj.getAccountSummary.body);
     }
 
     Map fault = res['Fault'];

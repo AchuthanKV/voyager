@@ -4,12 +4,14 @@ import 'package:api_handler/api_handler.dart';
 import 'package:voyager/app_config.dart';
 import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
+import 'package:voyager/base/services/helper.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/login/services/response.dart';
 import 'package:voyager/modules/login/widgets/login_error.dart';
 
 class AccountSummary {
   final apiHandler = ApiHandler(AppConfig.baseURL);
+  static Response responseobj;
   AccountModel accountModel = new AccountModel();
   int totalPoints;
   var ACCOUNT_ID;
@@ -160,6 +162,7 @@ class AccountSummary {
     }
 
     if (response != null) {
+      responseobj = respObj;
       respObj.setAccountSummary = response;
       if (code == 200) {
         Map responseBody = json.decode(response.body);
@@ -193,7 +196,7 @@ class AccountSummary {
     Map txnheader = {
       "transactionID": "",
       "userName": "mob-app",
-      "timeStamp": "2020-07-20T10:01:32.131Z"
+      "timeStamp": Helper.getFormatedTime().toString()
     };
 
     Map body = {

@@ -7,10 +7,12 @@ import 'package:voyager/modules/login/widgets/login_error.dart';
 
 class ApiService {
   final apiHandler = ApiHandler(AppConfig.baseURL);
+  static Response responseObj;
 
   Future<String> userStatus(String path, body) async {
     ApiResponse response;
     Response respObj = Response();
+    responseObj = respObj;
     response = await apiHandler.requestWith(
       path: "$path",
       type: RequestType.post,

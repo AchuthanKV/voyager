@@ -6,9 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voyager/app_config.dart';
 import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
+import 'package:voyager/base/services/helper.dart';
 import 'package:voyager/modules/login/services/accountsummary.dart';
 import 'package:voyager/modules/login/services/memberprofile.dart';
-import 'package:voyager/modules/login/services/response.dart';
 import 'package:voyager/modules/login/widgets/login_error.dart';
 import 'package:voyager/services/api_service.dart';
 
@@ -27,10 +27,12 @@ class LoginUser {
   }
 
   authenticateUser(String membershipId, String pin) async {
+    String date = Helper.getFormatedTime().toString();
+    print(date);
     Map txnheader = {
       "transactionID": "",
       "userName": "mob-app",
-      "timeStamp": "2020-07-20T10:01:32.131Z"
+      "timeStamp": date
     };
     Map data = {
       'companyCode': 'SA',

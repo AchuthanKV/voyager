@@ -79,7 +79,7 @@ class _MyAccountState extends State<MyAccount> {
                         children: [
                           IconButton(
                             icon: Image.asset(icons[index],
-                                color: Color(THEME.PRIMARY_COLOR), width: 50),
+                                color: Color(THEME.SAA_BLUE_COLOR), width: 50),
                             color: Colors.indigo[900],
                             iconSize: 50,
                             onPressed: () {
@@ -99,7 +99,7 @@ class _MyAccountState extends State<MyAccount> {
                               style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(THEME.PRIMARY_COLOR)),
+                                  color: Color(THEME.SAA_BLUE_COLOR)),
                             ),
                           )
                         ],
