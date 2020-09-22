@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
+import 'package:voyager/base/models/profile_model.dart';
+import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -22,6 +25,11 @@ class _AddressState extends State<Address> {
   bool signedUp = false;
   bool isEmailOn = false;
   bool isNotificationOn = false;
+  ProfileModel profileObject = LoginUser.profileModel;
+
+  List<String> added = [];
+  String currentText = "";
+  GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
 
   final TextEditingController zipcodeController = new TextEditingController();
   final TextEditingController areaController = new TextEditingController();
@@ -47,13 +55,13 @@ class _AddressState extends State<Address> {
   String _phone;
   String _areacode;
   String _isdcode;
-  String _countryCode;
+  String _countryCode = "77";
 
   String _nationality;
   List _locations = ['+91', '72'];
-  List _nations = ['India', 'USA', 'China'];
+  List<String> _nations = [];
   List _genders = ['Male', 'Female'];
-  List _country_code = [];
+  List _country_code = ['jk'];
 
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _mailFocus = FocusNode();
@@ -62,6 +70,66 @@ class _AddressState extends State<Address> {
   final FocusNode _cityFocus = FocusNode();
   final FocusNode _stateFocus = FocusNode();
   final FocusNode _zipFocus = FocusNode();
+
+  setDefaultValues() {
+    line1Controller.text = profileObject.addressLine1;
+    line2Controller.text = profileObject.addressLine2;
+    cityController.text = profileObject.city;
+    stateController.text = profileObject.state;
+    zipcodeController.text = profileObject.zipCode;
+
+    emailController.text = profileObject.emailAddress;
+    phoneController.text = profileObject.phoneNumber;
+    areaController.text = profileObject.phoneAreaCode;
+    _countryCode = profileObject.mobileAreaCode;
+    _nationality = profileObject.memberNationality;
+  }
+
+  firstCharacterUpper(String text) {
+    List arrayPieces = List();
+    String outPut = "";
+    text.split(' ').forEach((sepparetedWord) {
+      arrayPieces.add(sepparetedWord);
+    });
+
+    arrayPieces.forEach((word) {
+      if (word[0] != null)
+        word =
+            "${word[0].toString().toUpperCase()}${word.toString().substring(1)} ";
+      outPut += word;
+    });
+
+    return outPut;
+  }
+
+  Future<Map<String, dynamic>> parseJsonFromAssets(String assetsPath) async {
+    return rootBundle
+        .loadString(assetsPath)
+        .then((jsonStr) => jsonDecode(jsonStr));
+  }
+
+  getCountries() async {
+    List<String> country = [];
+    List<String> code = [];
+    List<String> countryCode = [];
+    Map<String, dynamic> dmap =
+        await parseJsonFromAssets('assets/files/countries.json');
+    dmap["countries"].forEach((element) {
+      for (var value in element.values) {
+        country.add(firstCharacterUpper(value.toLowerCase()));
+      }
+      for (var key in element.keys) {
+        code.add(key);
+      }
+    });
+    for (int i = 0; i < code.length; i++) {
+      String item = country[i] + " (" + code[i] + ")";
+      countryCode.add(item);
+    }
+    setState(() {
+      _nations = countryCode;
+    });
+  }
 
   Container buttonSection() {
     return Container(
@@ -118,9 +186,11 @@ class _AddressState extends State<Address> {
 
   void initState() {
     _setup();
-    getCountries();
+
+    setDefaultValues();
+    //  getCountries();
     super.initState();
-    _countryCode = null;
+    // _countryCode = null;
     emailController.addListener(() {
       final text = emailController.text.toLowerCase();
       emailController.value = emailController.value.copyWith(
@@ -152,6 +222,16 @@ class _AddressState extends State<Address> {
     );
   }
 
+  void materialPicker1() {
+    showMaterialSelectionPicker(
+      context: context,
+      title: "Choose Nationality",
+      items: _nations,
+      selectedItem: _nationality,
+      onChanged: (value) => setState(() => _nationality = value),
+    );
+  }
+
   Future<List<String>> getCountryCode() async {
     List<String> countryCode = [];
     await rootBundle.loadString('assets/files/country_code.txt').then((q) {
@@ -163,46 +243,9 @@ class _AddressState extends State<Address> {
     return countryCode;
   }
 
-  Future<Map<String, dynamic>> parseJsonFromAssets(String assetsPath) async {
-    return rootBundle
-        .loadString(assetsPath)
-        .then((jsonStr) => jsonDecode(jsonStr));
-  }
-
-  getCountries() async {
-    List country = [];
-    Map<String, dynamic> dmap =
-        await parseJsonFromAssets('assets/files/countries.json');
-    dmap["countries"].forEach((element) {
-      for (var value in element.values) {
-        country.add(firstCharacterUpper(value.toString().toLowerCase()));
-      }
-    });
-
-    setState(() {
-      _nations = country;
-    });
-  }
-
-  firstCharacterUpper(String text) {
-    List arrayPieces = List();
-    String outPut = "";
-    text.split(' ').forEach((sepparetedWord) {
-      arrayPieces.add(sepparetedWord);
-    });
-
-    arrayPieces.forEach((word) {
-      if (word[0] != null)
-        word =
-            "${word[0].toString().toUpperCase()}${word.toString().substring(1)} ";
-      outPut += word;
-    });
-
-    return outPut;
-  }
-
   @override
   Widget build(BuildContext context) {
+    getCountries();
     return Scaffold(
         appBar: AppBar(
           title: Text("MY PROFILE"),
@@ -227,6 +270,22 @@ class _AddressState extends State<Address> {
                         style: TextStyle(fontSize: 20),
                       )),
                     ),
+                    // SimpleAutoCompleteTextField(
+                    //   // decoration: new InputDecoration(errorText: "Beans"),
+                    //   controller: TextEditingController(text: _nationality),
+                    //   suggestions: _nations,
+
+                    //   textChanged: (text) => _nationality = text,
+                    //   // _nationality = text,
+
+                    //   clearOnSubmit: false,
+                    //   key: key,
+                    //   textSubmitted: (text) => setState(() {
+                    //     if (text != "") {
+                    //       _nationality = text;
+                    //     }
+                    //   }),
+                    // ),
                     Container(
                       padding: EdgeInsets.symmetric(
                           horizontal: 30.0, vertical: 20.0),
@@ -240,20 +299,23 @@ class _AddressState extends State<Address> {
                                 Expanded(
                                     flex: 2,
                                     child: TextFormField(
-                                      keyboardType: TextInputType.number,
+                                      readOnly: true,
                                       validator: (value) {
-                                        if (_countryCode.isEmpty) {
+                                        if (_countryCode == null ||
+                                            _countryCode.isEmpty) {
                                           return 'Please select a Country Code';
                                         }
                                         return null;
                                       },
                                       onSaved: (String value) {
-                                        _countryCode = value.replaceAll(
+                                        _countryCode = _countryCode.replaceAll(
                                             new RegExp(r'[^0-9]'), '');
                                       },
                                       onChanged: (value) {
                                         setState(() {
-                                          _countryCode = value;
+                                          _countryCode =
+                                              _countryCode.replaceAll(
+                                                  new RegExp(r'[^0-9]'), '');
                                         });
                                       },
                                       onTap: () {
@@ -263,10 +325,8 @@ class _AddressState extends State<Address> {
                                       cursorColor: Colors.white70,
                                       style: TextStyle(color: Colors.black),
                                       decoration: InputDecoration(
-                                        hintText: (_countryCode != null)
-                                            ? _countryCode.replaceAll(
-                                                new RegExp(r'[^0-9]'), '')
-                                            : ' ',
+                                        hintText: _countryCode.replaceAll(
+                                            new RegExp(r'[^0-9]'), ''),
                                         border: UnderlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: Colors.white70)),
@@ -529,43 +589,42 @@ class _AddressState extends State<Address> {
                               ),
                             ),
                             SizedBox(height: 20.0),
-                            Theme(
-                              data: Theme.of(context).copyWith(
-                                canvasColor: Colors.grey[300],
+                            TextFormField(
+                              readOnly: true,
+                              validator: (value) {
+                                if (_nationality == null ||
+                                    _nationality.isEmpty) {
+                                  return 'Please select Nationlity';
+                                }
+                                return null;
+                              },
+                              onSaved: (String value) {
+                                _nationality = _nationality;
+                              },
+                              onChanged: (value) {
+                                // setState(() {
+                                //   _countryCode =
+                                //       _countryCode.replaceAll(
+                                //           new RegExp(r'[^0-9]'), '');
+                                // });
+                              },
+                              onTap: () {
+                                materialPicker1();
+                              },
+                              controller: nationalityController,
+                              cursorColor: Colors.white70,
+                              style: TextStyle(color: Colors.black),
+                              decoration: InputDecoration(
+                                hintText: _nationality,
+                                border: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.white70)),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black)),
+                                hintStyle: TextStyle(color: Colors.black),
+                                //Color(THEME.PRIMARY_COLOR)
                               ),
-                              child: DropdownButtonFormField(
-                                  isExpanded: true,
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return 'Please select Nationality';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value) {
-                                    _nationality = value;
-                                  },
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: InputDecoration(
-                                    hintText: "Select Nationality",
-                                    border: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.white70)),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.black)),
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                  ),
-                                  items: _nations.map((value) {
-                                    return DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _nationality = value;
-                                    });
-                                  }),
                             ),
                             SizedBox(
                               height: 50,

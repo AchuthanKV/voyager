@@ -3,6 +3,7 @@ import 'package:voyager/app_config.dart';
 import 'dart:convert';
 
 import 'package:voyager/base/models/profile_model.dart';
+import 'package:voyager/base/services/helper.dart';
 import 'package:voyager/modules/change_forgot_pin/services/changepin_status.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 
@@ -18,7 +19,7 @@ class ChangepinApi {
       "transactionID": "",
       "userName": "mob-app",
       "transactionToken": "",
-      "timeStamp": "2020-07-20T10:01:32.131Z"
+      "timeStamp": Helper.getFormatedTime().toString()
     };
 
     Map body = {

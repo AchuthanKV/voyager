@@ -172,6 +172,15 @@ class _InvitePageState extends State<InvitePage> {
         child: Scaffold(
           key: _invitePageState,
           appBar: AppBar(
+            leading: FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+            ),
             backgroundColor: Color(THEME.PRIMARY_COLOR),
             title: Center(
               child: Text(
@@ -215,7 +224,7 @@ class _InvitePageState extends State<InvitePage> {
             width: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: ExactAssetImage("assets/images/saa2.jpg"),
+                image: ExactAssetImage("assets/images/plainbackground.png"),
                 fit: BoxFit.fill,
                 //gradient: LinearGradient(colors: [
                 //  Color(THEME.BG_GRADIENT_COLOR_1),
@@ -329,17 +338,17 @@ class _InvitePageState extends State<InvitePage> {
                   ),
                 ),
                 RaisedButton(
-                  color: Colors.white10,
+                  color: Color(THEME.BUTTON_COLOR),
                   disabledColor: Colors.white10,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      side: BorderSide(color: Colors.red)),
-                  child: Text(
-                    'Send Invite',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Send Invite',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                   onPressed: () {
                     _fieldValidation();
@@ -354,7 +363,7 @@ class _InvitePageState extends State<InvitePage> {
         width: double.infinity,*/
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: ExactAssetImage("assets/images/saa2.jpg"),
+            image: ExactAssetImage("assets/images/plainbackground.png"),
             fit: BoxFit.fill,
             //gradient: LinearGradient(colors: [
             //  Color(THEME.BG_GRADIENT_COLOR_1),
@@ -445,25 +454,18 @@ class _InvitePageState extends State<InvitePage> {
 
   Container buildButtonContainer() {
     return Container(
-      height: 56.0,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(23.0),
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFFFB415B),
-            Color(0xFFEE5653),
-          ],
-          begin: Alignment.centerRight,
-          end: Alignment.centerLeft,
-        ),
-      ),
+      color: Color(THEME.BUTTON_COLOR),
+      width: MediaQuery.of(context).size.width / 2,
       child: Center(
-        child: Text(
-          "SUBMIT",
-          style: TextStyle(
-            fontSize: 25.0,
-            color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "SUBMIT",
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
           ),
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:voyager/modules/presentation/filter_icon_icons.dart';
 import 'package:voyager/modules/login/pages/login_page.dart';
+import 'package:voyager/modules/transaction/services/transaction_api.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class TransactionPage extends StatefulWidget {
@@ -15,6 +16,10 @@ class _TransactionPageState extends State<TransactionPage> {
   final List<String> items = <String>['10', '15', '20'];
   String selectedItem = '10';
   bool isSelected = false;
+  void initState() {
+    print('init');
+    TransactionsApi().getActivityDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
