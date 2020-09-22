@@ -65,15 +65,15 @@ class _LandingPageState extends State<LandingPage> {
                           children: <Widget>[
                             IconButton(
                                 icon: Image.asset("assets/images/wishlist.png",
-                                    color: Colors.indigo[900]),
+                                    color: Colors.black),
                                 onPressed: () {
                                   //Wishlist method has to be called here
                                   //Navigator
                                 }),
                             Text(
                               'Wishlist',
-                              style: TextStyle(
-                                  color: Colors.indigo[900], fontSize: 11),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 11),
                             ),
                           ],
                         )),

@@ -17,6 +17,7 @@ class _MilesPageState extends State<MilesPage> {
         child: Scaffold(
           appBar: TabBar(
             labelColor: Colors.black,
+            indicatorColor: Colors.black,
             tabs: [
               Tab(
                 child: Text('Claim Miles'),
