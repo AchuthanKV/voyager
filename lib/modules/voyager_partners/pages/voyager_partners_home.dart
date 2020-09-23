@@ -34,7 +34,7 @@ class _VoyagerPartnersHomeState extends State<VoyagerPartnersHome> {
                           style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
-                              color: Color(THEME.PRIMARY_COLOR)),
+                              color: Color(THEME.SAA_BLUE_COLOR)),
                         ),
                       ),
                       Container(
@@ -141,19 +141,19 @@ class _CardsPartnerState extends State<CardsPartner> {
                   ? Icon(
                       patnerTypeIcon[widget.i],
                       size: 30,
-                      color: Color(THEME.PRIMARY_COLOR),
+                      color: Color(THEME.SAA_BLUE_COLOR),
                     )
                   : ImageIcon(
                       AssetImage("assets/images/claimmiles.png"),
                       size: 25,
-                      color: Color(THEME.PRIMARY_COLOR),
+                      color: Color(THEME.SAA_BLUE_COLOR),
                     ),
             ),
             Text(
               partnerType[widget.i],
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(THEME.PRIMARY_COLOR),
+                color: Color(THEME.SAA_BLUE_COLOR),
               ),
             ),
           ],

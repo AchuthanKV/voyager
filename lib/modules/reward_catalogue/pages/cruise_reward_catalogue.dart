@@ -121,7 +121,6 @@ class IconsRewards extends StatefulWidget {
 
 class _IconsRewardsState extends State<IconsRewards>
     with TickerProviderStateMixin {
-  List<String> _dropdownValues;
   double _scale1;
   double _scale2;
   AnimationController _controller1;
@@ -176,26 +175,7 @@ class _IconsRewardsState extends State<IconsRewards>
   Widget build(BuildContext context) {
     _scale1 = 1 - _controller1.value;
     _scale2 = 1 - _controller2.value;
-    switch (widget.i) {
-      case 0:
-        _dropdownValues = [
-          "Oneway",
-          "Round Trip",
-        ];
-        break;
-      case 1:
-        _dropdownValues = [
-          "Oneway",
-        ];
-        break;
-      case 2:
-        _dropdownValues = [
-          "Oneway",
-          "Round Trip",
-        ];
-        break;
-      default:
-    }
+
     void _onTapDown1(TapDownDetails details) {
       _controller1.forward();
     }
