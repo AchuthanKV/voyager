@@ -235,6 +235,8 @@ class _DisplaySiteState extends State<DisplaySite> {
     URL.status_benefits,
     URL.claim_miles,
     URL.voyager_partners,
+    URL.legal,
+    URL.legal,
     URL.legal
   ];
 
@@ -246,7 +248,9 @@ class _DisplaySiteState extends State<DisplaySite> {
     "Status and Benefits",
     "Claim Miles",
     "Voyage Partners",
-    "Legal"
+    "Legal",
+    "Terms of Use",
+    "Privacy Policy"
   ];
   num progress = 1;
   doneLoading(String A) {

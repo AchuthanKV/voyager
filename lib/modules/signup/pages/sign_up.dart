@@ -1,10 +1,15 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:ui';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:voyager/modules/more_about_voyager/pages/about_voyager.dart';
+import 'package:voyager/modules/signup/services/enroll_error.dart';
+import 'package:voyager/modules/signup/services/enroll_user.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -27,6 +32,21 @@ class _SignUpPageState extends State<SignUpPage> {
   bool isEmailOn = false;
   bool isNotificationOn = false;
   bool isSubmitted = false;
+  bool isError = false;
+  var months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
 
   final TextEditingController initialController = new TextEditingController();
   final TextEditingController countryCodeController =
@@ -43,10 +63,14 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController firstNameController = new TextEditingController();
   final TextEditingController lastNameController = new TextEditingController();
   final TextEditingController phoneController = new TextEditingController();
+  final TextEditingController passportController = new TextEditingController();
+  final TextEditingController idNumberController = new TextEditingController();
 
   final FocusNode _lastNameFocus = FocusNode();
   final FocusNode _mailFocus = FocusNode();
   final FocusNode _dobFocus = FocusNode();
+  final FocusNode _passportFocus = FocusNode();
+  final FocusNode _idNumberFocus = FocusNode();
 
   bool isSelected = false;
 
@@ -60,8 +84,12 @@ class _SignUpPageState extends State<SignUpPage> {
   String _title = "Mr";
   String _dobString = "Select date of birth";
   String _nationality;
+  String _nationalityCode = "S";
+  String _passport;
+  String _idNumber;
   List _country_code = [];
   List _nations = [];
+  List _nationsCode = [];
   List _genders = ['Male', 'Female'];
   List _titles = [];
 
@@ -119,6 +147,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   getCountries() async {
     List country = [];
+    List shortCountry = [];
     Map<String, dynamic> dmap =
         await parseJsonFromAssets('assets/files/countries.json');
     dmap["countries"].forEach((element) {
@@ -126,9 +155,15 @@ class _SignUpPageState extends State<SignUpPage> {
         country.add(firstCharacterUpper(value.toString().toLowerCase()));
       }
     });
+    dmap["countries"].forEach((element) {
+      for (var key in element.keys) {
+        shortCountry.add(firstCharacterUpper(key));
+      }
+    });
 
     setState(() {
       _nations = country;
+      _nationsCode = shortCountry;
     });
   }
 
@@ -172,18 +207,35 @@ class _SignUpPageState extends State<SignUpPage> {
         .then((jsonStr) => jsonDecode(jsonStr));
   }
 
-  Future<void> go(BuildContext context) async {
-    await new Future.delayed(const Duration(seconds: 3));
-
-    go1(context);
+  Future<void> go(BuildContext context, Map data) async {
     setState(() {
-      _isLoading = false;
-      isSignUp = true;
-      signedUp = true;
+      _isLoading = true;
     });
+    print(data);
+    var response = await EnrollUser().enrollUser(data);
+    if (response == 'true') {
+      print("response true if");
+      setState(() {
+        _isLoading = false;
+        isSignUp = true;
+        signedUp = true;
+      });
+      go1(context);
+    } else if (response == null || response == 'fault') {
+      print("Error..!!! else if");
+
+      setState(() {
+        _isLoading = false;
+        signedUp = true;
+        isError = true;
+      });
+      go2(context);
+      print("Error..!!!");
+    }
   }
 
   Future<void> go1(BuildContext context) async {
+    EnrollmentError.displaySnackBar(_signupScaffold);
     await new Future.delayed(const Duration(seconds: 4));
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
@@ -191,6 +243,23 @@ class _SignUpPageState extends State<SignUpPage> {
     setState(() {
       isSignUp = false;
     });
+  }
+
+  Future<void> go2(BuildContext context) async {
+    EnrollmentError.displaySnackBar(_signupScaffold);
+    await new Future.delayed(const Duration(seconds: 4));
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) => SignUpPage()),
+        (Route<dynamic> route) => false);
+    setState(() {
+      isSignUp = false;
+    });
+  }
+
+  String getCurrentDate() {
+    var now = new DateTime.now();
+    var currentDate = "${now.day}-${months[now.month - 1]}-${now.year}";
+    return currentDate;
   }
 
   @override
@@ -209,7 +278,7 @@ class _SignUpPageState extends State<SignUpPage> {
               child: _isLoading
                   ? Center(
                       child: SpinKitCubeGrid(
-                        color: Colors.black26,
+                        color: Colors.black,
                         size: 100.0,
                       ),
                     )
@@ -246,7 +315,7 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
       floatingActionButton: isSignUp
           ? Container(
-              child: signedUp
+              child: (signedUp && !isError)
                   ? Center(
                       child: Container(
                         width: 500,
@@ -267,26 +336,28 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                     )
-                  : Container(
-                      width: 500,
-                      height: 100,
-                      padding: EdgeInsets.all(20),
-                      margin: EdgeInsets.only(left: 30),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.black,
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Enrolling New user....",
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
+                  : !isError
+                      ? Container(
+                          width: 500,
+                          height: 100,
+                          padding: EdgeInsets.all(20),
+                          margin: EdgeInsets.only(left: 30),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.black,
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Enrolling New user....",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        )
+                      : null,
             )
           : null,
     );
@@ -310,7 +381,7 @@ class _SignUpPageState extends State<SignUpPage> {
     isSignUp = true;
     //_storage.write(key: "mail_id", value: emailController.text);
     print("Mail_Id in sign up page :" + emailController.text);
-    go(context);
+    go(context, data);
 
     /* SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var jsonResponse;
@@ -418,7 +489,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       return null;
                     },
                     onSaved: (value) {
-                      _title = value;
+                      if (value != null) _title = value;
                     },
                     style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
@@ -520,8 +591,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           return null;
                         },
                         onSaved: (String value) {
-                          _countryCode =
-                              value.replaceAll(new RegExp(r'[^0-9]'), '');
+                          _countryCode = _countryCode.replaceAll(
+                              new RegExp(r'[^0-9]'), '');
                         },
                         onChanged: (value) {
                           setState(() {
@@ -675,7 +746,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   if (datePick != null) {
                     setState(() {
                       _dobString =
-                          "${datePick.month}/${datePick.day}/${datePick.year}";
+                          "${datePick.day}-${months[datePick.month - 1]}-${datePick.year}";
                     });
                     if (isSubmitted) _signupFormKey.currentState.validate();
                   }
@@ -772,11 +843,83 @@ class _SignUpPageState extends State<SignUpPage> {
                     onChanged: (value) {
                       setState(() {
                         _nationality = value;
+                        _nationalityCode =
+                            _nationsCode[_nations.indexOf(value)].toString();
                       });
+                      print(_nationalityCode);
                       if (isSubmitted) _signupFormKey.currentState.validate();
                     }),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30.0),
+              (_nationalityCode == "S")
+                  ? Container()
+                  : (_nationalityCode.trim() == "ZA")
+                      ? TextFormField(
+                          focusNode: _idNumberFocus,
+                          onFieldSubmitted: (term) {
+                            FocusScope.of(context).requestFocus(_idNumberFocus);
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter ID No.(SA Citizens)';
+                            }
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            _idNumber = value;
+                          },
+                          onChanged: (value) {
+                            if (isSubmitted)
+                              _signupFormKey.currentState.validate();
+                          },
+                          controller: idNumberController,
+                          cursorColor: Colors.white,
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            icon:
+                                Icon(Icons.perm_identity, color: Colors.black),
+                            //Color(THEME.PRIMARY_COLOR)
+                            hintText: "ID No.(SA Citizens)",
+                            border: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white70)),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ),
+                        )
+                      : TextFormField(
+                          focusNode: _passportFocus,
+                          onFieldSubmitted: (term) {
+                            FocusScope.of(context).requestFocus(_passportFocus);
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter Passport No.';
+                            }
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            _passport = value;
+                          },
+                          onChanged: (value) {
+                            if (isSubmitted)
+                              _signupFormKey.currentState.validate();
+                          },
+                          controller: passportController,
+                          cursorColor: Colors.white,
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.book, color: Colors.black),
+                            //Color(THEME.PRIMARY_COLOR)
+                            hintText: "Passport No.",
+                            border: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white70)),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+              SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -801,7 +944,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -873,20 +1016,24 @@ class _SignUpPageState extends State<SignUpPage> {
                   _signupFormKey.currentState.save();
                   print(_fName);
                   Map data = {
-                    'title': _title,
+                    'title': _title.toUpperCase(),
                     'email': _email,
                     'firstName': _fName,
                     'lastName': _lName,
                     'phone': _phone,
+                    'dob': _dobString,
                     'countryCode': _countryCode,
                     'areaCode': _area,
                     'nation': _nationality,
-                    'gender': _gender,
+                    'nationCode': _nationalityCode,
+                    'gender': _gender.substring(0, 1),
+                    'emailOn': isEmailOn,
+                    'identityNumber': _idNumber == null ? "" : _idNumber,
+                    'passportNumber': _passport == null ? _idNumber : _passport,
+                    'enrollmentDate': getCurrentDate(),
+                    'initials': _fName.substring(0, 1).toUpperCase()
                   };
                   print(data);
-                  setState(() {
-                    _isLoading = true;
-                  });
                   signUpPage(data);
                 }
               },
@@ -906,10 +1053,50 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            child: Text(
-              "By signing up, I agree to the Terms of use and Privacy Policy of SAA Voyager.",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15),
+            child: Center(
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(children: [
+                  TextSpan(
+                    text: "By signing up, I agree to the ",
+                    style: TextStyle(fontSize: 15, color: Colors.black),
+                  ),
+                  TextSpan(
+                    text: "Terms of use",
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.indigo[900],
+                        fontWeight: FontWeight.bold),
+                    recognizer: new TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                DisplaySite(i: 8)));
+                      },
+                  ),
+                  TextSpan(
+                    text: " and ",
+                    style: TextStyle(fontSize: 15, color: Colors.black),
+                  ),
+                  TextSpan(
+                    text: "Privacy Policy ",
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.indigo[900],
+                        fontWeight: FontWeight.bold),
+                    recognizer: new TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                DisplaySite(i: 9)));
+                      },
+                  ),
+                  TextSpan(
+                    text: "of SAA Voyager.",
+                    style: TextStyle(fontSize: 15, color: Colors.black),
+                  )
+                ]),
+              ),
             ),
           )
         ],

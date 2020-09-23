@@ -45,7 +45,7 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                             style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
-                                color: Color(THEME.PRIMARY_COLOR)),
+                                color: Color(THEME.SAA_BLUE_COLOR)),
                           ),
                         ),
                         Container(
@@ -101,14 +101,16 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                             child: Icon(
                                               Icons.flight,
                                               size: 30,
-                                              color: Color(THEME.PRIMARY_COLOR),
+                                              color:
+                                                  Color(THEME.SAA_BLUE_COLOR),
                                             ),
                                           ),
                                           Text(
                                             "Flight",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: Color(THEME.PRIMARY_COLOR),
+                                              color:
+                                                  Color(THEME.SAA_BLUE_COLOR),
                                             ),
                                           ),
                                         ],
@@ -143,14 +145,16 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                             child: Icon(
                                               Icons.directions_car,
                                               size: 30,
-                                              color: Color(THEME.PRIMARY_COLOR),
+                                              color:
+                                                  Color(THEME.SAA_BLUE_COLOR),
                                             ),
                                           ),
                                           Text(
                                             "Car",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: Color(THEME.PRIMARY_COLOR),
+                                              color:
+                                                  Color(THEME.SAA_BLUE_COLOR),
                                             ),
                                           ),
                                         ],
@@ -192,14 +196,16 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                             child: Icon(
                                               Icons.local_bar,
                                               size: 30,
-                                              color: Color(THEME.PRIMARY_COLOR),
+                                              color:
+                                                  Color(THEME.SAA_BLUE_COLOR),
                                             ),
                                           ),
                                           Text(
                                             "Dine",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: Color(THEME.PRIMARY_COLOR),
+                                              color:
+                                                  Color(THEME.SAA_BLUE_COLOR),
                                             ),
                                           ),
                                         ],
@@ -235,14 +241,16 @@ class _RewardVoucherScreenState extends State<RewardVoucherScreen> {
                                             child: Icon(
                                               Icons.directions_boat,
                                               size: 30,
-                                              color: Color(THEME.PRIMARY_COLOR),
+                                              color:
+                                                  Color(THEME.SAA_BLUE_COLOR),
                                             ),
                                           ),
                                           Text(
                                             "Cruise",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                              color: Color(THEME.PRIMARY_COLOR),
+                                              color:
+                                                  Color(THEME.SAA_BLUE_COLOR),
                                             ),
                                           ),
                                         ],

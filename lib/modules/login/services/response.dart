@@ -5,6 +5,13 @@ class Response {
   ApiResponse memberProfile;
   ApiResponse accountSummary;
   ApiResponse get getLoginAuth => loginAuth;
+  ApiResponse enrollUser;
+
+  ApiResponse get getEnrollUser => enrollUser;
+
+  set setEnrollUser(ApiResponse enrollUser) {
+    this.enrollUser = enrollUser;
+  }
 
   set setLoginAuth(ApiResponse loginAuth) => this.loginAuth = loginAuth;
 
