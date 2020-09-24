@@ -1,9 +1,13 @@
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
+import 'package:voyager/base/utils/sizeconfig.dart';
 import 'package:voyager/modules/presentation/filter_icon_icons.dart';
-import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/modules/transaction/services/transaction_api.dart';
+import 'package:voyager/modules/transaction/widgets/transaction_history.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class TransactionPage extends StatefulWidget {
@@ -14,12 +18,34 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  final List<String> items = <String>['10', '15', '20'];
-  String selectedItem = '10';
+  final List<String> items = <String>[
+    '10 Days',
+    '15 Days',
+    '20 Days',
+    'Select Date Range'
+  ];
+  bool isloading = true;
+  String selectedItem = '10 Days';
+  bool selectRange = false;
   bool isSelected = false;
+
+  DateTime fromDate = DateTime.now().subtract(new Duration(days: 10));
+  DateTime toDate = DateTime.now();
+  final TextEditingController fromController = new TextEditingController();
+  final TextEditingController toController = new TextEditingController();
+
   void initState() {
-    print('init');
-    TransactionsApi().getActivityDetails();
+    getTransactionData(fromDate, toDate);
+  }
+
+  Future<void> getTransactionData(DateTime fromDate, DateTime toDate) async {
+    final f = new DateFormat('dd-MMM-yyyy hh:mm:ss');
+    String from = f.format(fromDate).toString();
+    String to = f.format(toDate).toString();
+    await TransactionsApi().getActivityDetails(from, to);
+    setState(() {
+      isloading = false;
+    });
   }
 
   @override
@@ -32,7 +58,7 @@ class _TransactionPageState extends State<TransactionPage> {
           /* Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => MilesInfoPage()));*/
           //print(DateTime.now().subtract(Duration(days: int.parse("10"))));
-         // print(DateFormat("dd-MMM-yyyy HH:mm:ss").format(DateTime.now()));
+          // print(DateFormat("dd-MMM-yyyy HH:mm:ss").format(DateTime.now()));
         },
         tooltip: 'Increment',
         child: ImageIcon(
@@ -76,16 +102,51 @@ class _TransactionPageState extends State<TransactionPage> {
                   underline: SizedBox(),
                   value: _selectedValue(),
                   onChanged: (String string) {
-                    print(string);
+                    switch (string) {
+                      case "10 Days":
+                        fromDate =
+                            DateTime.now().subtract(new Duration(days: 10));
+
+                        break;
+                      case "15 Days":
+                        fromDate =
+                            DateTime.now().subtract(new Duration(days: 15));
+                        break;
+
+                      case "20 Days":
+                        fromDate =
+                            DateTime.now().subtract(new Duration(days: 20));
+                        break;
+                      case "Select Date Range":
+                        setState(() {
+                          selectedItem = string;
+                          selectRange = true;
+                        });
+                    }
+                    if (string != "Select Date Range") {
+                      toDate = DateTime.now();
+                      setState(() {
+                        isloading = true;
+                        selectedItem = string;
+                        selectRange = false;
+                      });
+                    }
+                    getTransactionData(fromDate, toDate);
                     isSelected = true;
-                    print('Item is selected : $isSelected');
-                    setState(() {
-                      selectedItem = string;
-                    });
                   },
                   selectedItemBuilder: (BuildContext context) {
                     return items.map<Widget>((String item) {
-                      return Text(item);
+                      switch (item) {
+                        case "10 Days":
+                          return Text("10");
+                        case "15 Days":
+                          return Text("15");
+                        case "20 Days":
+                          return Text("20");
+
+                        case "Select Date Range":
+                          return Text("Date");
+                      }
                     }).toList();
                   },
                   icon: Icon(
@@ -98,7 +159,7 @@ class _TransactionPageState extends State<TransactionPage> {
                   //color: Colors.white,
                   items: items.map((String item) {
                     return DropdownMenuItem<String>(
-                      child: Text('$item Days',
+                      child: Text('$item',
                           style: TextStyle(
                               backgroundColor: Colors.grey,
                               fontWeight: FontWeight.bold)),
@@ -109,7 +170,110 @@ class _TransactionPageState extends State<TransactionPage> {
               ],
             ),
             SizedBox(
-              height: 20,
+              height: 10,
+            ),
+            selectRange
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: fromController,
+                          readOnly: true,
+                          onTap: () async {
+                            final datePick = await showDatePicker(
+                                context: context,
+                                initialDate: toDate != null
+                                    ? new DateTime(
+                                        toDate.year, toDate.month, toDate.day)
+                                    : new DateTime.now(),
+                                firstDate: new DateTime(1900),
+                                lastDate: toDate != null
+                                    ? new DateTime(
+                                        toDate.year, toDate.month, toDate.day)
+                                    : new DateTime.now());
+                            if (datePick != null) {
+                              setState(() {
+                                fromController.text =
+                                    "${datePick.month}/${datePick.day}/${datePick.year}";
+                                fromDate = datePick;
+                              });
+                            }
+                          },
+                          cursorColor: Colors.white,
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            icon:
+                                Icon(Icons.calendar_today, color: Colors.black),
+                            hintText: "From Date",
+                            border: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white70)),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: toController,
+                          readOnly: true,
+                          onTap: () async {
+                            final datePick = await showDatePicker(
+                                context: context,
+                                initialDate: new DateTime.now(),
+                                firstDate: fromDate != null
+                                    ? new DateTime(fromDate.year,
+                                        fromDate.month, fromDate.day)
+                                    : new DateTime(1900),
+                                lastDate: new DateTime.now());
+                            if (datePick != null) {
+                              print(datePick);
+                              setState(() {
+                                toController.text =
+                                    "${datePick.month}/${datePick.day}/${datePick.year}";
+                                toDate = datePick;
+                              });
+                            }
+                          },
+                          cursorColor: Colors.white,
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            icon:
+                                Icon(Icons.calendar_today, color: Colors.black),
+                            hintText: "To Date",
+                            border: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white70)),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black)),
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.all(8),
+                          child: RaisedButton(
+                              onPressed: () {
+                                setState(() {
+                                  isloading = true;
+                                });
+                                getTransactionData(fromDate, toDate);
+                              },
+                              color: Color(THEME.BUTTON_COLOR),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Show"),
+                              )),
+                        ),
+                      )
+                    ],
+                  )
+                : SizedBox(
+                    height: 0,
+                  ),
+            SizedBox(
+              height: 30,
             ),
             Table(
               // border: TableBorder.all(width: 1),
@@ -126,7 +290,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       style: TextStyle(
                         fontSize: 19,
                       ),
-                    )
+                    ),
                   ]),
                   Column(children: [
                     Container(
@@ -154,6 +318,25 @@ class _TransactionPageState extends State<TransactionPage> {
               width: double.infinity,
               color: Colors.black,
             ),
+            isloading
+                ? Column(
+                    children: [
+                      Container(
+                        height: SizeConfig.screenHeight / 3,
+                        child: Center(
+                          child: SpinKitCubeGrid(
+                            color: Colors.black26,
+                            size: 100.0,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        'Loading...!!',
+                        style: TextStyle(fontSize: 20),
+                      )
+                    ],
+                  )
+                : TransactionHistory(),
             Expanded(
               flex: 2,
               child: ListView.builder(
