@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:voyager/modules/presentation/filter_icon_icons.dart';
 import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/modules/transaction/services/transaction_api.dart';
@@ -24,6 +25,22 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        onPressed: () {
+          /* Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => MilesInfoPage()));*/
+          //print(DateTime.now().subtract(Duration(days: int.parse("10"))));
+         // print(DateFormat("dd-MMM-yyyy HH:mm:ss").format(DateTime.now()));
+        },
+        tooltip: 'Increment',
+        child: ImageIcon(
+          AssetImage("assets/images/mails.png"),
+          size: 40,
+        ),
+        elevation: 2.0,
+      ),
       appBar: AppBar(
         backgroundColor: Color(THEME.PRIMARY_COLOR),
         title: Text('Transactions'),
@@ -136,7 +153,87 @@ class _TransactionPageState extends State<TransactionPage> {
               height: 0.5,
               width: double.infinity,
               color: Colors.black,
-            )
+            ),
+            Expanded(
+              flex: 2,
+              child: ListView.builder(
+                itemCount: 100,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Card(
+                      color: Colors.white54,
+                      child: ListTile(
+                        //selected: ,
+                        //focusColor: isSelected? Colors.green: Colors.white,
+                        onTap: () {},
+                        title: Row(
+                          children: [
+                            Image.asset(
+                              "assets/images/acural_flag.png",
+                              height: 30,
+                              alignment: Alignment.topLeft,
+                            ),
+                            Container(
+                                height: 30,
+                                child: Text(
+                                  'Redemption',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ))
+                          ],
+                        ),
+                        /*Container(
+                              height: 70,
+                              width: 70,
+                              decoration:BoxDecoration(
+                          image:DecorationImage(
+                          image:ExactAssetImage("assets/images/acural_flag.png")
+                          ))),*/
+                        subtitle: Row(
+                          children: [
+                            Image.asset("assets/images/redemption.png",
+                                height: 20, alignment: Alignment.topLeft),
+                            Container(
+                                height: 20,
+                                child: Text('    23-Jul-2020',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    )))
+                          ],
+                        ),
+                        /*Container(
+                              height: 70,
+                              width: 70,
+                              decoration:BoxDecoration(
+                              image:DecorationImage(
+                                  image:ExactAssetImage("assets/images/redemption.png")
+                              )))*/
+                        //leading:Icon(Icons.album),
+                        trailing: Column(
+                          children: [
+                            SizedBox(
+                              height: 4,
+                            ),
+                            Text('Redemed On HSPC',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                )),
+                            SizedBox(
+                              height: 7,
+                            ),
+                            Text('-3000',
+                                textAlign: TextAlign.end,
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold))
+                          ],
+                        ),
+                      )); //),
+                  // );
+                },
+              ),
+            ),
           ],
         ),
       ),
