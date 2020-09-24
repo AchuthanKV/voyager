@@ -6,6 +6,8 @@ import 'package:voyager/base/models/profile_model.dart';
 import 'package:voyager/base/services/helper.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/login/services/response.dart';
+import 'package:voyager/modules/transaction/services/transactionList.dart';
+import 'package:voyager/modules/transaction/widgets/transaction_history.dart';
 import 'package:voyager/services/api_service.dart';
 
 class TransactionsApi {
@@ -13,7 +15,7 @@ class TransactionsApi {
   ApiResponse response;
   ProfileModel profileModel = LoginUser.profileModel;
 
-  getBody() {
+  getBody(String fromDate, String toDate) {
     Map loginResponse = json.decode(ApiService.responseObj.getLoginAuth.body);
     String transactionId = loginResponse['AuthenticateMemberResponse']
         ['txnHeader']['transactionID'];
@@ -29,8 +31,8 @@ class TransactionsApi {
         "programCode": "VOYAG",
         "membershipNumber": profileModel.membershipId,
         "activityStatus": "",
-        "fromDate": "01-Jan-2019 14:05:10",
-        "toDate": "25-May-2019 14:05:10",
+        "fromDate": fromDate,
+        "toDate": toDate,
         "pageNumber": "1",
         "absoluteIndex": "1",
         "activtyAttributesRequired": "Y",
@@ -42,10 +44,10 @@ class TransactionsApi {
     }
   }
 
-  getActivityDetails() async {
+  getActivityDetails(String fromDate, String toDate) async {
     int code = 500;
-
-    var body = getBody();
+    print(fromDate);
+    var body = getBody(fromDate, toDate);
     String path = AppConfig.activityDetailsURL;
     while (code == 500) {
       response = await apiHandler.requestWith(
@@ -62,13 +64,15 @@ class TransactionsApi {
         if (response.body.contains("Fault")) {
           Map fault = responseBody['Fault'];
           print('fault');
+          TransactionList.error = fault;
           // ChangepinStatus.setErroMsg(fault);
         }
         if (response.body.contains("ActivityDetailsResponse")) {
           Map activityDetailsResponse = responseBody['ActivityDetailsResponse'];
           if (activityDetailsResponse != null) {
             //status = activityDetailsResponse['status'];
-            print("success");
+            TransactionList.response = activityDetailsResponse;
+            TransactionList().setTransactionList();
           }
         }
       }
