@@ -2,11 +2,11 @@ class TransHistoryItems {
   /**
     * activity Image.
     */
-  int activityImage;
+  String activityImage;
   /**
     * flag of activity Image.
     */
-  int activityImageFlag;
+  String activityImageFlag;
   /**
     * activity name.
     */
@@ -24,13 +24,14 @@ class TransHistoryItems {
     */
   int activityPoints;
 
-  int get getActivityImage => activityImage;
+  String get getActivityImage => activityImage;
 
-  set setActivityImage(int activityImage) => this.activityImage = activityImage;
+  set setActivityImage(String activityImage) =>
+      this.activityImage = activityImage;
 
-  int get getActivityImageFlag => activityImageFlag;
+  String get getActivityImageFlag => activityImageFlag;
 
-  set setActivityImageFlag(int activityImageFlag) =>
+  set setActivityImageFlag(String activityImageFlag) =>
       this.activityImageFlag = activityImageFlag;
 
   String get getActivityName => activityName;
@@ -51,8 +52,8 @@ class TransHistoryItems {
     * constructor
     */
   TransHistoryItems(
-      int activityImage,
-      int activityImageFlag,
+      String activityImage,
+      String activityImageFlag,
       String activityName,
       String activityDescription,
       String activityDate,
