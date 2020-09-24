@@ -35,7 +35,7 @@ class _DonateMilesNextState extends State<DonateMilesNext> {
           children: <Widget>[
             Container(
               child: WebView(
-                initialUrl: "",
+                initialUrl: "https://www.flysaa.com/za/en/voyager",
                 onPageFinished: doneLoading,
                 onPageStarted: startLoading,
               ),
