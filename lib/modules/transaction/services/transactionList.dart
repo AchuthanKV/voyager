@@ -1,4 +1,5 @@
 import 'package:voyager/base/models/Transaction_items.dart';
+import 'package:voyager/modules/transaction/services/transactionHelper.dart';
 
 class TransactionList {
   static Map response;
@@ -12,9 +13,9 @@ class TransactionList {
   int totalMileageAdjustPoints = 0;
   int totalRenewPoints = 0;
   int totalExpirePoints = 0;
-  int activityImage = 0;
-  int activityFlagImage = 0;
-  String special_character = "[^0-9]";
+  String activityImage = "";
+  String activityFlagImage = "";
+  static String charityName = "  ";
   List<TransHistoryItems> transHistoryItems = [];
 
   setTransactionList() {
@@ -52,9 +53,8 @@ class TransactionList {
 
     switch (activityName) {
       case "Member Enrollment":
-
-        //  activityImage = R.drawable.enrollment;
-        //  activityFlagImage = R.drawable.enrollment_flag;
+        activityImage = "enrollment.png";
+        activityFlagImage = "enrollment_flag.png";
         if (totalPoints != 0) {
           return new TransHistoryItems(activityImage, activityFlagImage,
               activityName, extractedDesc, activityDate, totalPoints);
@@ -62,53 +62,47 @@ class TransactionList {
 
         break;
       case "Accrual":
-
-        //activityImage = R.drawable.acural;
-        // activityFlagImage = R.drawable.redemption_flag;
+        activityImage = "acural.png";
+        activityFlagImage = "redemption_flag.png";
         return new TransHistoryItems(activityImage, activityFlagImage,
             activityName, extractedDesc, activityDate, totalPoints);
         break;
       case "Redemption":
-
-        // activityImage = R.drawable.redemption;
-        // activityFlagImage = R.drawable.acural_flag;
+        activityImage = "redemption.png";
+        activityFlagImage = "acural_flag.png";
         return new TransHistoryItems(activityImage, activityFlagImage,
             activityName, extractedDesc, activityDate, totalPoints);
         break;
       case "Purchase of Miles":
-
-        // activityImage = R.drawable.purchasepoints;
-        // activityFlagImage = R.drawable.purchasepoints_flag;
+        activityImage = "purchasepoints.png";
+        activityFlagImage = "purchasepoints_flag.png";
         return new TransHistoryItems(activityImage, activityFlagImage,
             activityName, extractedDesc, activityDate, totalPoints);
         break;
       case "Donation of Miles":
-
-        // activityImage = R.drawable.transferpoints;
-        // activityFlagImage = R.drawable.transferpoints_flag;
+        activityImage = "transferpoints.png";
+        activityFlagImage = "transferpoints_flag.png";
         activityName = "Transfer Miles";
         return new TransHistoryItems(activityImage, activityFlagImage,
             activityName, extractedDesc, activityDate, totalPoints);
         break;
       case "Mileage Adjustments":
-
-        // activityImage = R.drawable.mileage;
-        // activityFlagImage = R.drawable.mileage_flag;
+        activityImage = "mileage.png";
+        activityFlagImage = "mileage_flag.png";
         return new TransHistoryItems(activityImage, activityFlagImage,
             activityName, extractedDesc, activityDate, totalPoints);
         break;
       case "Extended Miles Expiry":
-
-        //  activityImage = R.drawable.expirypoints;
-        // activityFlagImage = R.drawable.expirypoints_flag;
+        activityImage = "expirypoints.png";
+        activityFlagImage = "expirypoints_flag.png";
         return new TransHistoryItems(activityImage, activityFlagImage,
             activityName, extractedDesc, activityDate, totalPoints);
         break;
       case "Expiry of Miles":
         if ("Totals for the previous year have been Reset" !=
             actualDescription) {
-          //  activityImage = R.drawable.expirypoints;
-          // activityFlagImage = R.drawable.expirypoints_flag;
+          activityImage = "expirypoints.png";
+          activityFlagImage = "expirypoints_flag.png";
           return new TransHistoryItems(activityImage, activityFlagImage,
               activityName, extractedDesc, activityDate, totalPoints);
         }
@@ -203,12 +197,11 @@ class TransactionList {
         totalPurchasePoints += totalPoint;
         break;
       case "Donation of Miles":
-        String txt = actualDesc.replaceAll(special_character, "");
+        String txt = actualDesc.replaceAll(new RegExp(r'[^0-9]'), '');
 
-        String charityName = "Charity";
-        // TransactionHelper().getCharityNameFromCharityNumber(txt);
+        TransactionHelper().getCharityNameFromCharityNumber(txt);
 
-        extractedDes = "Transferred miles to " + charityName;
+        extractedDes = "Transferred miles to " + TransactionList.charityName;
 
         points.forEach((element) {
           totalPoint += element['points'];
@@ -223,8 +216,8 @@ class TransactionList {
         if (mileageArray.length == 1) {
           extractedDes = "Credited to MEM";
         } else {
-          String txt1 = mileageArray[0].replaceAll(special_character, "");
-          String txt2 = mileageArray[1].replaceAll(special_character, "");
+          String txt1 = mileageArray[0].replaceAll(new RegExp(r'[^0-9]'), '');
+          String txt2 = mileageArray[1].replaceAll(new RegExp(r'[^0-9]'), '');
 
           int val1 = int.parse(txt1);
           int val2 = int.parse(txt2);

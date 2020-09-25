@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:voyager/base/models/charity_model.dart';
 import 'package:voyager/base/utils/sizeconfig.dart';
 import 'package:voyager/modules/presentation/filter_icon_icons.dart';
+import 'package:voyager/modules/transaction/services/transactionHelper.dart';
 import 'package:voyager/modules/transaction/services/transaction_api.dart';
 import 'package:voyager/modules/transaction/widgets/transaction_history.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
@@ -40,9 +42,11 @@ class _TransactionPageState extends State<TransactionPage> {
 
   Future<void> getTransactionData(DateTime fromDate, DateTime toDate) async {
     final f = new DateFormat('dd-MMM-yyyy hh:mm:ss');
+    await TransactionHelper().getCharities();
     String from = f.format(fromDate).toString();
     String to = f.format(toDate).toString();
     await TransactionsApi().getActivityDetails(from, to);
+
     setState(() {
       isloading = false;
     });
@@ -336,87 +340,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       )
                     ],
                   )
-                : TransactionHistory(),
-            Expanded(
-              flex: 2,
-              child: ListView.builder(
-                itemCount: 100,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Card(
-                      color: Colors.white54,
-                      child: ListTile(
-                        //selected: ,
-                        //focusColor: isSelected? Colors.green: Colors.white,
-                        onTap: () {},
-                        title: Row(
-                          children: [
-                            Image.asset(
-                              "assets/images/acural_flag.png",
-                              height: 30,
-                              alignment: Alignment.topLeft,
-                            ),
-                            Container(
-                                height: 30,
-                                child: Text(
-                                  'Redemption',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                  ),
-                                ))
-                          ],
-                        ),
-                        /*Container(
-                              height: 70,
-                              width: 70,
-                              decoration:BoxDecoration(
-                          image:DecorationImage(
-                          image:ExactAssetImage("assets/images/acural_flag.png")
-                          ))),*/
-                        subtitle: Row(
-                          children: [
-                            Image.asset("assets/images/redemption.png",
-                                height: 20, alignment: Alignment.topLeft),
-                            Container(
-                                height: 20,
-                                child: Text('    23-Jul-2020',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                    )))
-                          ],
-                        ),
-                        /*Container(
-                              height: 70,
-                              width: 70,
-                              decoration:BoxDecoration(
-                              image:DecorationImage(
-                                  image:ExactAssetImage("assets/images/redemption.png")
-                              )))*/
-                        //leading:Icon(Icons.album),
-                        trailing: Column(
-                          children: [
-                            SizedBox(
-                              height: 4,
-                            ),
-                            Text('Redemed On HSPC',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                )),
-                            SizedBox(
-                              height: 7,
-                            ),
-                            Text('-3000',
-                                textAlign: TextAlign.end,
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold))
-                          ],
-                        ),
-                      )); //),
-                  // );
-                },
-              ),
-            ),
+                : Expanded(child: TransactionHistory()),
           ],
         ),
       ),

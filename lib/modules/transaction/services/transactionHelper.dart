@@ -1,33 +1,55 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
+import 'package:voyager/base/models/charity_model.dart';
+import 'package:voyager/modules/transaction/services/transactionList.dart';
+
 class TransactionHelper {
-  List getCharities() {
-    // JSONArray charities = new JSONArray(loadJSONFromAsset(context,
-    //         "charities.json").trim());
-    // List<CharityModel> charityList = new ArrayList<CharityModel>();
-    // JSONObject j;
-    // for (int i = 0; i < charities.length(); i++) {
-    //     j = charities.getJSONObject(i);
-    //     String key = j.keys().next().toString();
-    //     CharityModel model = new CharityModel(key, j.getString(key));
-    //     charityList.add(model);
-    // }
-    // return charityList;
+  List<CharityModel> charityList = [];
+
+  getCharities() async {
+    List<dynamic> charities =
+        await parseJsonFromAssets('assets/files/charities.json');
+    List<String> values = [];
+    List<String> keys = [];
+    charities.forEach((element) {
+      for (var value in element.values) {
+        values.add(value);
+      }
+      for (var key in element.keys) {
+        keys.add(key);
+      }
+    });
+
+    for (int i = 0; i < values.length; i++) {
+      CharityModel model = new CharityModel(keys[i], values[i]);
+      charityList.add(model);
+    }
+    print(charityList.length);
   }
-  String getCharityNameFromCharityNumber(String charityNumber) {
-    // try {
-    //     List<CharityModel> charityModels = Helper
-    //             .getCharities(getActivity().getApplicationContext());
-    //     for (CharityModel model : charityModels) {
 
-    //         if (charityNumber.equals(model.getCharityAccNum())) {
-    //             return model.getCharityName();
-    //         }
+  Future<List<dynamic>> parseJsonFromAssets(String assetsPath) async {
+    return rootBundle
+        .loadString(assetsPath)
+        .then((jsonStr) => jsonDecode(jsonStr));
+  }
 
-    //     }
-    // } catch (JSONException e) {
-    //     Log.e(TAG, UTILITY.TAG_JSON, e);
-    //     return charityNumber;
-    // }
-
-    // return charityNumber;
+  getCharityNameFromCharityNumber(String charityNumber) async {
+    await getCharities();
+    String name = charityNumber;
+    try {
+      charityList.forEach((element) {
+        if (element.charityAccNum == charityNumber) {
+          name = element.charityName;
+          TransactionList.charityName = name;
+        }
+      });
+    } on Exception catch (e) {
+      print("error in getcharityname");
+      print(e.toString());
+      TransactionList.charityName = name;
+    }
+    TransactionList.charityName = name;
+    print(TransactionList.charityName);
   }
 }
