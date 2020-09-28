@@ -37,6 +37,18 @@ class _MyProfileState extends State<MyProfile> {
       child: Scaffold(
           appBar: AppBar(
             title: Text("My Profile"),
+            centerTitle: true,
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  //notifictn pg
+                },
+                child: Icon(
+                  Icons.notifications_active,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
           body: Stack(
             children: [

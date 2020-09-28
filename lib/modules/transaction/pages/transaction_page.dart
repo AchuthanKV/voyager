@@ -74,6 +74,7 @@ class _TransactionPageState extends State<TransactionPage> {
       appBar: AppBar(
         backgroundColor: Color(THEME.PRIMARY_COLOR),
         title: Text('Transactions'),
+        centerTitle: true,
         actions: <Widget>[
           FlatButton(
             onPressed: () {
