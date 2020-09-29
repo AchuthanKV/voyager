@@ -206,6 +206,7 @@ class _ChangePinState extends State<ChangePin> {
           key: _scaffoldKey,
           appBar: AppBar(
             title: Text("Change Pin"),
+            centerTitle: true,
           ),
           body: Container(
             height: double.infinity,

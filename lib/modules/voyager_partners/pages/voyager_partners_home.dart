@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voyager/modules/voyager_partners/pages/air_partners.dart';
+import 'package:voyager/modules/voyager_partners/pages/hotel_partners.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -111,14 +112,20 @@ class _CardsPartnerState extends State<CardsPartner> {
     Icons.directions_boat
   ];
 
-  List patnerPages = [AirPartners()];
+  List partnerPages = [
+    AirPartners(),
+    HotelPartner(),
+    CarPartner(),
+    DinePartner(),
+    CruisePartner(),
+    CardPartner()
+  ];
   @override
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: () {
-        if (widget.i == 0)
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => patnerPages[widget.i]));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => partnerPages[widget.i]));
       },
       child: Container(
         decoration: BoxDecoration(

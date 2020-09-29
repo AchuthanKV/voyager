@@ -20,6 +20,7 @@ class _ContactUsState extends State<ContactUs> {
         appBar: AppBar(
           backgroundColor: Color(THEME.PRIMARY_COLOR),
           title: Text('Contact Us'),
+          centerTitle: true,
           actions: <Widget>[
             FlatButton(
               onPressed: () {

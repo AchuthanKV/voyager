@@ -47,6 +47,7 @@ class _ClaimMilesFormState extends State<ClaimMilesForm> {
       appBar: AppBar(
         backgroundColor: Color(THEME.PRIMARY_COLOR),
         title: Text('Claim Miles'),
+        centerTitle: true,
         actions: <Widget>[
           FlatButton(
             onPressed: () {
