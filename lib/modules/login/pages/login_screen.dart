@@ -234,9 +234,11 @@ class _LoginScreenState extends State<LoginScreen> {
           useErrorDialogs: true,
           stickyAuth: true);
       if (authenticated == true) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => HomePage()),
-            (Route<dynamic> route) => false);
+        setState(() {
+          _isLoading = true;
+          _pin = storedPin;
+        });
+        userLogin();
       }
     } on PlatformException catch (e) {
       auth.stopAuthentication();

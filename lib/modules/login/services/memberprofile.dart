@@ -4,6 +4,7 @@ import 'package:api_handler/api_handler.dart';
 import 'package:voyager/app_config.dart';
 import 'package:voyager/base/models/profile_model.dart';
 import 'package:voyager/base/services/helper.dart';
+import 'package:voyager/base/services/save_profile.dart';
 import 'package:voyager/modules/login/services/response.dart';
 import 'package:voyager/modules/login/services/tier_name.dart';
 import 'package:voyager/modules/login/widgets/login_error.dart';
@@ -242,6 +243,7 @@ class MembershipProfile {
             profileModel.faxAreaCode = "";
             profileModel.fax = "";
           }
+          SaveGetProfile().saveProfile(profileModel);
 
           return profileModel;
         } else if (response.body.contains('Fault')) {

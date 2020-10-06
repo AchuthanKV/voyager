@@ -13,9 +13,12 @@ class TransactionList {
   int totalMileageAdjustPoints = 0;
   int totalRenewPoints = 0;
   int totalExpirePoints = 0;
+  int totalBasePoints = 0;
+  int totalStatusPoints = 0;
   String activityImage = "";
   String activityFlagImage = "";
   static String charityName = "  ";
+  static List<TransHistoryItems> transList = [];
   List<TransHistoryItems> transHistoryItems = [];
 
   setTransactionList() {
@@ -38,6 +41,7 @@ class TransactionList {
       }
     }
     print(transHistoryItems.length);
+    transList = transHistoryItems;
     return transHistoryItems;
   }
 
@@ -106,6 +110,17 @@ class TransactionList {
           return new TransHistoryItems(activityImage, activityFlagImage,
               activityName, extractedDesc, activityDate, totalPoints);
         }
+
+        //  toggleMailIgetExtractedActivityDesccon();
+
+        points.forEach((element) {
+          String pointType = element['pointType'];
+          if (equalsIgnoreCase(pointType, "BASE")) {
+            totalBasePoints += element['points'];
+          } else if (equalsIgnoreCase(pointType, "BASE")) {
+            totalStatusPoints += element['points'];
+          }
+        });
     }
 
     return null;

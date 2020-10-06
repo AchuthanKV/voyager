@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,13 +11,16 @@ import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
 import 'package:voyager/base/utils/sizeconfig.dart';
 import 'package:voyager/modules/home/services/percentage_tier.dart';
+import 'package:voyager/modules/login/services/accountsummary.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
+import 'package:voyager/modules/login/services/memberprofile.dart';
 import 'package:voyager/modules/transaction/pages/transaction_page.dart';
 import 'package:voyager/services/background.dart';
 
 class LandingPage extends StatefulWidget {
   @override
   _LandingPageState createState() => _LandingPageState();
+  static bool callApi = false;
 }
 
 class _LandingPageState extends State<LandingPage> {
@@ -24,9 +28,10 @@ class _LandingPageState extends State<LandingPage> {
   AccountModel accountModel = LoginUser.accountModel;
   Tierpercentage tierpercentage = Tierpercentage();
   SizeConfig sizeConfig = SizeConfig();
-
+  final FlutterSecureStorage _storage = FlutterSecureStorage();
   String picUrl = "male.png";
   double tierPercent = 0.0;
+
   profilepicUrl() {
     sizeConfig.init(context);
     String gender = profileObject.gender;
@@ -42,8 +47,28 @@ class _LandingPageState extends State<LandingPage> {
     tierPercent = tierpercentage.go();
   }
 
+  go() async {
+    if (LandingPage.callApi) {
+      String membershipId = await _storage.read(key: 'membershipId');
+
+      await MembershipProfile().getMembershipProfile(membershipId);
+
+      await AccountSummary().getAccountSummary(membershipId);
+      if (mounted) {
+        setState(() {
+          profileObject = LoginUser.profileModel;
+          accountModel = LoginUser.accountModel;
+          LandingPage.callApi = false;
+        });
+      } else {
+        LandingPage.callApi = false;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    go();
     profilepicUrl();
     getTierPercent();
 
