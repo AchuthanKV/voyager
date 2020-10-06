@@ -5,6 +5,7 @@ import 'package:voyager/app_config.dart';
 import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
 import 'package:voyager/base/services/helper.dart';
+import 'package:voyager/base/services/save_account.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/login/services/response.dart';
 import 'package:voyager/modules/login/widgets/login_error.dart';
@@ -189,6 +190,8 @@ class AccountSummary {
         }
       }
     }
+    SaveGetAccount().saveAccount(accountModel);
+    print("saved accnt");
     return accountModel;
   }
 

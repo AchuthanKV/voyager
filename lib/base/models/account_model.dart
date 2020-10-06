@@ -1,3 +1,5 @@
+import 'package:voyager/base/models/profile_model.dart';
+
 class AccountModel {
   String membershipNumber;
 

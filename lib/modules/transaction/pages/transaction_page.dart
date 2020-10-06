@@ -1,6 +1,7 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rounded_date_picker/rounded_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +12,7 @@ import 'package:voyager/modules/transaction/services/transactionHelper.dart';
 import 'package:voyager/modules/transaction/services/transaction_api.dart';
 import 'package:voyager/modules/transaction/widgets/transaction_history.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
+import 'package:flutter/cupertino.dart';
 
 class TransactionPage extends StatefulWidget {
   TransactionPage({Key key}) : super(key: key);
@@ -30,7 +32,18 @@ class _TransactionPageState extends State<TransactionPage> {
   String selectedItem = '10 Days';
   bool selectRange = false;
   bool isSelected = false;
-
+  Map<int, Color> color = {
+    50: Color.fromRGBO(4, 131, 184, .1),
+    100: Color.fromRGBO(4, 131, 184, .2),
+    200: Color.fromRGBO(4, 131, 184, .3),
+    300: Color.fromRGBO(4, 131, 184, .4),
+    400: Color.fromRGBO(4, 131, 184, .5),
+    500: Color.fromRGBO(4, 131, 184, .6),
+    600: Color.fromRGBO(4, 131, 184, .7),
+    700: Color.fromRGBO(4, 131, 184, .8),
+    800: Color.fromRGBO(4, 131, 184, .9),
+    900: Color.fromRGBO(4, 131, 184, 1),
+  };
   DateTime fromDate = DateTime.now().subtract(new Duration(days: 10));
   DateTime toDate = DateTime.now();
   final TextEditingController fromController = new TextEditingController();
@@ -130,13 +143,24 @@ class _TransactionPageState extends State<TransactionPage> {
                     }
                     if (string != "Select Date Range") {
                       toDate = DateTime.now();
+
                       setState(() {
                         isloading = true;
                         selectedItem = string;
                         selectRange = false;
                       });
+                      getTransactionData(fromDate, toDate);
+                    } else {
+                      toDate = DateTime.now();
+
+                      fromDate =
+                          DateTime.now().subtract(new Duration(days: 10));
+                      toController.text =
+                          "${toDate.month}/${toDate.day}/${toDate.year}";
+                      fromController.text =
+                          "${fromDate.month}/${fromDate.day}/${fromDate.year}";
                     }
-                    getTransactionData(fromDate, toDate);
+
                     isSelected = true;
                   },
                   selectedItemBuilder: (BuildContext context) {
@@ -186,17 +210,34 @@ class _TransactionPageState extends State<TransactionPage> {
                           controller: fromController,
                           readOnly: true,
                           onTap: () async {
-                            final datePick = await showDatePicker(
-                                context: context,
-                                initialDate: toDate != null
-                                    ? new DateTime(
-                                        toDate.year, toDate.month, toDate.day)
-                                    : new DateTime.now(),
-                                firstDate: new DateTime(1900),
-                                lastDate: toDate != null
-                                    ? new DateTime(
-                                        toDate.year, toDate.month, toDate.day)
-                                    : new DateTime.now());
+                            final datePick = await showRoundedDatePicker(
+                              height: 280,
+                              context: context,
+                              background: Colors.transparent,
+                              initialDate: fromDate != null
+                                  ? new DateTime(fromDate.year, fromDate.month,
+                                      fromDate.day)
+                                  : new DateTime.now(),
+                              firstDate: new DateTime(1900),
+                              lastDate: toDate != null
+                                  ? new DateTime(
+                                      toDate.year, toDate.month, toDate.day)
+                                  : new DateTime.now(),
+                              theme: ThemeData(
+                                primaryColor: Colors.black,
+                                primarySwatch: MaterialColor(0xFF000000, color),
+                                accentColor: Color(THEME.BUTTON_COLOR),
+                                dialogBackgroundColor: Colors.grey[300],
+                                textTheme: TextTheme(
+                                  body1: TextStyle(color: Colors.black),
+                                  caption: TextStyle(color: Colors.black),
+                                ),
+                                disabledColor: Colors.grey,
+                                accentTextTheme: TextTheme(
+                                  body2: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            );
                             if (datePick != null) {
                               setState(() {
                                 fromController.text =
@@ -224,16 +265,36 @@ class _TransactionPageState extends State<TransactionPage> {
                           controller: toController,
                           readOnly: true,
                           onTap: () async {
-                            final datePick = await showDatePicker(
-                                context: context,
-                                initialDate: new DateTime.now(),
-                                firstDate: fromDate != null
-                                    ? new DateTime(fromDate.year,
-                                        fromDate.month, fromDate.day)
-                                    : new DateTime(1900),
-                                lastDate: new DateTime.now());
+                            final datePick = await showRoundedDatePicker(
+                              height: 280,
+                              context: context,
+                              background: Colors.transparent,
+                              initialDate: toDate != null
+                                  ? new DateTime(
+                                      toDate.year, toDate.month, toDate.day)
+                                  : new DateTime.now(),
+                              firstDate: fromDate != null
+                                  ? new DateTime(fromDate.year, fromDate.month,
+                                      fromDate.day)
+                                  : new DateTime(1900),
+                              lastDate: new DateTime.now(),
+                              theme: ThemeData(
+                                primaryColor: Colors.black,
+                                primarySwatch: MaterialColor(0xFF000000, color),
+                                accentColor: Color(THEME.BUTTON_COLOR),
+                                dialogBackgroundColor: Colors.grey[300],
+                                textTheme: TextTheme(
+                                  body1: TextStyle(color: Colors.black),
+                                  caption: TextStyle(color: Colors.black),
+                                ),
+                                disabledColor: Colors.grey,
+                                accentTextTheme: TextTheme(
+                                  body2: TextStyle(color: Colors.black),
+                                  caption: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            );
                             if (datePick != null) {
-                              print(datePick);
                               setState(() {
                                 toController.text =
                                     "${datePick.month}/${datePick.day}/${datePick.year}";
