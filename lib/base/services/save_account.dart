@@ -28,7 +28,6 @@ class SaveGetAccount {
 
   getAccount() async {
     var data = await _storage.read(key: "account");
-    print(data + "accntData");
 
     if (data == null) {
       return null;

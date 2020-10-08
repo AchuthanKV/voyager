@@ -1,10 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:voyager/base/models/wishlist_item_model.dart';
 import 'package:voyager/modules/vouchers/pages/flight_voucher.dart';
+import 'package:voyager/modules/wishlist/pages/flight_wishlist.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class FlightRewardCataloguePage extends StatefulWidget {
   FlightRewardCataloguePage({Key key}) : super(key: key);
+  List airName = ["SA Airlink", "SAA Awards", "Star Alliance", "SA Express"];
+
+  List airAwardType = [
+    "Anyday / MileageKeeper",
+    "Upgrade Awards",
+    "MileageKeeper/K-Keeper",
+    ""
+  ];
+  List airSearchType = [
+    "OneWay / Round Trip",
+    "One Way",
+    "OneWay / Round Trip",
+    "Round Trip"
+  ];
+  List airPictures = [
+    "assets/images/sa_airlink.jpg",
+    "assets/images/saa_starallianz.png",
+    "assets/images/alliance_reward.png",
+    "assets/images/saa_express.png"
+  ];
 
   @override
   _FlightRewardCataloguePageState createState() =>
@@ -12,29 +34,9 @@ class FlightRewardCataloguePage extends StatefulWidget {
 }
 
 class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
+  String searchtype = "";
   @override
   Widget build(BuildContext context) {
-    List airName = ["SA Airlink", "SAA Awards", "SA Express", "Star Alliance"];
-
-    List airAwardType = [
-      "Anyday / MileageKeeper",
-      "Upgrade Awards",
-      "MileageKeeper / K-Keeper",
-      ""
-    ];
-    List airSearchType = [
-      "OneWay / Round Trip",
-      "One Way",
-      "OneWay / Round Trip",
-      "Round Trip"
-    ];
-    List airPictures = [
-      "assets/images/sa_airlink.jpg",
-      "assets/images/saa_starallianz.png",
-      "assets/images/saa_express.png",
-      "assets/images/alliance_reward.png"
-    ];
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(THEME.PRIMARY_COLOR),
@@ -88,7 +90,7 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                       Container(
                         margin: EdgeInsets.all(5),
                         padding: EdgeInsets.all(5),
-                        child: Image.asset(airPictures[0]),
+                        child: Image.asset(widget.airPictures[0]),
                       ),
                       Container(
                         child: Column(
@@ -97,21 +99,21 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                             Padding(
                                 padding: EdgeInsets.all(20),
                                 child: Text(
-                                  airName[0],
+                                  widget.airName[0],
                                   style: TextStyle(
                                       color: Color(THEME.PRIMARY_COLOR),
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 )),
                             Text(
-                              airAwardType[0],
+                              widget.airAwardType[0],
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 15,
                               ),
                             ),
                             Text(
-                              airSearchType[0],
+                              widget.airSearchType[0],
                               style: TextStyle(
                                   color: Color(THEME.PRIMARY_COLOR),
                                   fontSize: 15,
@@ -143,7 +145,7 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                         margin: EdgeInsets.all(5),
                         padding: EdgeInsets.all(5),
                         width: MediaQuery.of(context).size.width / 2.5,
-                        child: Image.asset(airPictures[1]),
+                        child: Image.asset(widget.airPictures[1]),
                       ),
                       Container(
                         child: Column(
@@ -152,21 +154,21 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                             Padding(
                                 padding: EdgeInsets.all(20),
                                 child: Text(
-                                  airName[1],
+                                  widget.airName[1],
                                   style: TextStyle(
                                       color: Color(THEME.PRIMARY_COLOR),
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 )),
                             Text(
-                              airAwardType[1],
+                              widget.airAwardType[1],
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 15,
                               ),
                             ),
                             Text(
-                              airSearchType[1],
+                              widget.airSearchType[1],
                               style: TextStyle(
                                   color: Color(THEME.PRIMARY_COLOR),
                                   fontSize: 15,
@@ -198,7 +200,7 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                         margin: EdgeInsets.all(5),
                         width: MediaQuery.of(context).size.width / 2.5,
                         height: 150,
-                        child: Image.asset(airPictures[3]),
+                        child: Image.asset(widget.airPictures[2]),
                       ),
                       Container(
                         child: Column(
@@ -207,21 +209,21 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                             Padding(
                                 padding: EdgeInsets.all(20),
                                 child: Text(
-                                  airName[3],
+                                  widget.airName[2],
                                   style: TextStyle(
                                       color: Color(THEME.PRIMARY_COLOR),
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 )),
                             Text(
-                              airAwardType[2],
+                              widget.airAwardType[2],
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 15,
                               ),
                             ),
                             Text(
-                              airSearchType[0],
+                              widget.airSearchType[0],
                               style: TextStyle(
                                   color: Color(THEME.PRIMARY_COLOR),
                                   fontSize: 15,
@@ -258,12 +260,13 @@ class _IconsRewardsState extends State<IconsRewards>
   double _scale2;
   AnimationController _controller1;
   AnimationController _controller2;
-
+  String searchtype = "";
   void _displayDialog(BuildContext context, int index) async {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
         int selectedRadio = 0;
+
         return AlertDialog(
             contentPadding: EdgeInsets.only(top: 20, left: 40),
             titlePadding: EdgeInsets.only(top: 40, left: 30, right: 100),
@@ -283,7 +286,10 @@ class _IconsRewardsState extends State<IconsRewards>
                           value: index,
                           groupValue: selectedRadio,
                           onChanged: (int value) {
-                            setState(() => selectedRadio = value);
+                            setState(() => {
+                                  selectedRadio = value,
+                                  searchtype = _dropdownValues[index],
+                                });
                           },
                         ),
                         Text(_dropdownValues[index])
@@ -306,6 +312,14 @@ class _IconsRewardsState extends State<IconsRewards>
                 onPressed: () {
                   Navigator.of(context).pop();
                   //Write code to add this trip to Wishlist
+                  print(searchtype);
+                  FlightWishlist().save(new WishlistItemModel(
+                    "flight",
+                    FlightRewardCataloguePage().airName[index],
+                    FlightRewardCataloguePage().airPictures[index],
+                    searchtype,
+                    FlightRewardCataloguePage().airAwardType[index],
+                  ));
                 },
               ),
             ]);
@@ -368,17 +382,20 @@ class _IconsRewardsState extends State<IconsRewards>
           "Oneway",
           "Round Trip",
         ];
+        searchtype = "Oneway";
         break;
       case 1:
         _dropdownValues = [
           "Oneway",
         ];
+        searchtype = "Oneway";
         break;
       case 2:
         _dropdownValues = [
           "Oneway",
           "Round Trip",
         ];
+        searchtype = "Oneway";
         break;
       default:
     }

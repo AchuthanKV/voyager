@@ -69,10 +69,10 @@ class SaveGetProfile {
 
   getProfile() async {
     var data = await _storage.read(key: "profile");
-    print(data + "profileData");
+
     if (data != null) {
       Map modelMap = jsonDecode(data);
-      ProfileModel model=new ProfileModel();
+      ProfileModel model = new ProfileModel();
       model.membershipId = modelMap['membershipId'];
       model.accountStatus = modelMap['accountStatus'];
       model.enrolmentSource = modelMap['enrolmentSource'];
