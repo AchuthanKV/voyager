@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voyager/base/models/wishlist_item_model.dart';
@@ -9,6 +8,9 @@ import 'package:voyager/modules/reward_catalogue/pages/car_reward_catalogue.dart
 import 'package:voyager/modules/reward_catalogue/pages/cruise_reward_catalogue.dart';
 import 'package:voyager/modules/reward_catalogue/pages/dine_reward_catalogue.dart';
 import 'package:voyager/modules/reward_catalogue/pages/flight_reward_catalogue.dart';
+import 'package:voyager/modules/wishlist/pages/car_wishlist.dart';
+import 'package:voyager/modules/wishlist/pages/cruise_wishlist.dart';
+import 'package:voyager/modules/wishlist/pages/dine_wishlist.dart';
 import 'package:voyager/modules/wishlist/pages/flight_wishlist.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
@@ -17,6 +19,9 @@ class Wishlist extends StatefulWidget {
   Wishlist({Key key}) : super(key: key);
   static List<Map> wishList = [];
   static List<WishlistItemModel> flightList = [];
+  static List<WishlistItemModel> carList = [];
+  static List<WishlistItemModel> dineList = [];
+  static List<WishlistItemModel> cruiseList = [];
 
   go() {
     createState().go();
@@ -59,7 +64,7 @@ class _WishlistState extends State<Wishlist> {
             ));
           } else if (element['category'] == "car") {
             carList.add(new WishlistItemModel(
-              "flight",
+              "car",
               element['awardName'],
               element['awardPicture'],
               element['airSearchType'],
@@ -67,7 +72,7 @@ class _WishlistState extends State<Wishlist> {
             ));
           } else if (element['category'] == "dine") {
             dineList.add(new WishlistItemModel(
-              "flight",
+              "dine",
               element['awardName'],
               element['awardPicture'],
               element['airSearchType'],
@@ -75,7 +80,7 @@ class _WishlistState extends State<Wishlist> {
             ));
           } else if (element['category'] == "cruise") {
             cruiseList.add(new WishlistItemModel(
-              "flight",
+              "cruise",
               element['awardName'],
               element['awardPicture'],
               element['airSearchType'],
@@ -87,6 +92,9 @@ class _WishlistState extends State<Wishlist> {
     }
     Wishlist.flightList = flightList;
     Wishlist.wishList = wishList;
+    Wishlist.dineList = dineList;
+    Wishlist.carList = carList;
+    Wishlist.cruiseList = cruiseList;
   }
 
   SizeConfig sizeConfig = SizeConfig();
@@ -205,9 +213,9 @@ class _WishlistState extends State<Wishlist> {
                                       onPressed: () {
                                         Navigator.of(context).push(
                                             MaterialPageRoute(
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    CarRewardCataloguePage()));
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        CarWishlist()));
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -258,9 +266,9 @@ class _WishlistState extends State<Wishlist> {
                                       onPressed: () {
                                         Navigator.of(context).push(
                                             MaterialPageRoute(
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    DineRewardCataloguePage()));
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        DineWishlist()));
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -306,9 +314,9 @@ class _WishlistState extends State<Wishlist> {
                                       onPressed: () {
                                         Navigator.of(context).push(
                                             MaterialPageRoute(
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    CruiseRewardCataloguePage()));
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        CruiseWishlist()));
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(

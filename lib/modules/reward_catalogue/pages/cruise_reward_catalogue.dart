@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:voyager/base/models/wishlist_item_model.dart';
 import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/modules/vouchers/pages/cruise_voucher.dart';
+import 'package:voyager/modules/wishlist/pages/cruise_wishlist.dart';
+import 'package:voyager/modules/wishlist/widgets/status_snackbar.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class CruiseRewardCataloguePage extends StatefulWidget {
   CruiseRewardCataloguePage({Key key}) : super(key: key);
+  List cruisePictures = [
+    "assets/images/non_air_cruises.png",
+    /*
+           "assets/images/uberlogo.png"*/
+  ];
+
+  List cruiseName = [
+    "Cruises International",
+  ];
 
   @override
   _CruiseRewardCataloguePageState createState() =>
@@ -13,19 +25,11 @@ class CruiseRewardCataloguePage extends StatefulWidget {
 }
 
 class _CruiseRewardCataloguePageState extends State<CruiseRewardCataloguePage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    List cruisePictures = [
-      "assets/images/non_air_cruises.png",
-      /*
-           "assets/images/uberlogo.png"*/
-    ];
-
-    List cruiseName = [
-      "Cruises International",
-    ];
-
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: Color(THEME.PRIMARY_COLOR),
           title: Text('Rewards Catalogue'),
@@ -80,7 +84,7 @@ class _CruiseRewardCataloguePageState extends State<CruiseRewardCataloguePage> {
                           margin: EdgeInsets.all(5),
                           padding: EdgeInsets.all(5),
                           height: 150,
-                          child: Image.asset(cruisePictures[0]),
+                          child: Image.asset(widget.cruisePictures[0]),
                         ),
                       ),
                       Container(
@@ -90,14 +94,14 @@ class _CruiseRewardCataloguePageState extends State<CruiseRewardCataloguePage> {
                             Padding(
                                 padding: EdgeInsets.only(top: 20, right: 20),
                                 child: Text(
-                                  cruiseName[0],
+                                  widget.cruiseName[0],
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Color(THEME.PRIMARY_COLOR),
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 )),
-                            IconsRewards(i: 0)
+                            IconsRewards(i: 0, scaffoldKey: _scaffoldKey)
                           ],
                         ),
                       )
@@ -113,7 +117,8 @@ class _CruiseRewardCataloguePageState extends State<CruiseRewardCataloguePage> {
 
 class IconsRewards extends StatefulWidget {
   int i;
-  IconsRewards({Key key, this.i}) : super(key: key);
+  GlobalKey scaffoldKey = GlobalKey<ScaffoldState>();
+  IconsRewards({Key key, this.i, this.scaffoldKey}) : super(key: key);
 
   @override
   _IconsRewardsState createState() => _IconsRewardsState();
@@ -221,8 +226,25 @@ class _IconsRewardsState extends State<IconsRewards>
                       "assets/images/wishlist_round_1.png",
                       color: Color(THEME.PRIMARY_COLOR),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       go1(context);
+                      print("pressed save");
+                      bool status = false;
+                      status =
+                          await CruiseWishlist().save(new WishlistItemModel(
+                        "cruise",
+                        CruiseRewardCataloguePage().cruiseName[widget.i],
+                        CruiseRewardCataloguePage().cruisePictures[widget.i],
+                        "",
+                        "",
+                      ));
+                      if (!status) {
+                        WishlistStatus.displaySnackBar(
+                            widget.scaffoldKey, "Already there in wishlist");
+                      } else {
+                        WishlistStatus.displaySnackBar(
+                            widget.scaffoldKey, "Added to  wishlist");
+                      }
                     }),
               ),
             ),

@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:voyager/base/models/wishlist_item_model.dart';
 import 'package:voyager/modules/vouchers/pages/dine_voucher.dart';
+import 'package:voyager/modules/wishlist/pages/dine_wishlist.dart';
+import 'package:voyager/modules/wishlist/widgets/status_snackbar.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class DineRewardCataloguePage extends StatefulWidget {
   DineRewardCataloguePage({Key key}) : super(key: key);
+  List dinePictures = [
+    "assets/images/non_air_healthspa.png",
+    /*
+           "assets/images/uberlogo.png"*/
+  ];
 
+  List dineName = [
+    "Health Spas Guide" /*, "Uber" */
+  ];
   @override
   _DineRewardCataloguePageState createState() =>
       _DineRewardCataloguePageState();
 }
 
 class _DineRewardCataloguePageState extends State<DineRewardCataloguePage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    List dinePictures = [
-      "assets/images/non_air_healthspa.png",
-      /*
-           "assets/images/uberlogo.png"*/
-    ];
-
-    List dineName = [
-      "Health Spas Guide" /*, "Uber" */
-    ];
-
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: Color(THEME.PRIMARY_COLOR),
           title: Text('Rewards Catalogue'),
@@ -78,7 +81,7 @@ class _DineRewardCataloguePageState extends State<DineRewardCataloguePage> {
                         child: Container(
                           margin: EdgeInsets.all(5),
                           padding: EdgeInsets.all(5),
-                          child: Image.asset(dinePictures[0]),
+                          child: Image.asset(widget.dinePictures[0]),
                         ),
                       ),
                       Container(
@@ -88,14 +91,14 @@ class _DineRewardCataloguePageState extends State<DineRewardCataloguePage> {
                             Padding(
                                 padding: EdgeInsets.only(top: 20, right: 20),
                                 child: Text(
-                                  dineName[0],
+                                  widget.dineName[0],
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Color(THEME.PRIMARY_COLOR),
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 )),
-                            IconsRewards(i: 0)
+                            IconsRewards(i: 0, scaffoldKey: _scaffoldKey)
                           ],
                         ),
                       )
@@ -111,7 +114,9 @@ class _DineRewardCataloguePageState extends State<DineRewardCataloguePage> {
 
 class IconsRewards extends StatefulWidget {
   int i;
-  IconsRewards({Key key, this.i}) : super(key: key);
+  GlobalKey scaffoldKey = GlobalKey<ScaffoldState>();
+
+  IconsRewards({Key key, this.i, this.scaffoldKey}) : super(key: key);
 
   @override
   _IconsRewardsState createState() => _IconsRewardsState();
@@ -221,6 +226,23 @@ class _IconsRewardsState extends State<IconsRewards>
                     ),
                     onPressed: () {
                       go1(context);
+                      bool status = false;
+                      print("pressed save");
+                      DineWishlist().save(new WishlistItemModel(
+                        "dine",
+                        DineRewardCataloguePage().dineName[widget.i],
+                        DineRewardCataloguePage().dinePictures[widget.i],
+                        "",
+                        "",
+                      ));
+
+                      if (!status) {
+                        WishlistStatus.displaySnackBar(
+                            widget.scaffoldKey, "Already there in wishlist");
+                      } else {
+                        WishlistStatus.displaySnackBar(
+                            widget.scaffoldKey, "Added to  wishlist");
+                      }
                     }),
               ),
             ),

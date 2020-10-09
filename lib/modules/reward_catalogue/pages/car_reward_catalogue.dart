@@ -1,34 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:voyager/base/models/wishlist_item_model.dart';
 import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/modules/vouchers/pages/car_voucher.dart';
+import 'package:voyager/modules/wishlist/pages/car_wishlist.dart';
+import 'package:voyager/modules/wishlist/widgets/status_snackbar.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
 class CarRewardCataloguePage extends StatefulWidget {
   CarRewardCataloguePage({Key key}) : super(key: key);
+  List carPictures = [
+    "assets/images/non_air_avis.png",
+    /*
+            R.drawable.non_air_bidvest,*/
+    "assets/images/non_air_europcar.png"
+  ];
+
+  List carName = [
+    "Avis Car\nRental (Pty) Limited",
+    /*
+            "Bidvest Car Rental",*/
+    "Europcar\nInternational"
+  ];
 
   @override
   _CarRewardCataloguePageState createState() => _CarRewardCataloguePageState();
 }
 
 class _CarRewardCataloguePageState extends State<CarRewardCataloguePage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    List carPictures = [
-      "assets/images/non_air_avis.png",
-      /*
-            R.drawable.non_air_bidvest,*/
-      "assets/images/non_air_europcar.png"
-    ];
-
-    List carName = [
-      "Avis Car\nRental (Pty) Limited",
-      /*
-            "Bidvest Car Rental",*/
-      "Europcar\nInternational"
-    ];
-
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: Color(THEME.PRIMARY_COLOR),
           title: Text('Rewards Catalogue'),
@@ -82,7 +86,7 @@ class _CarRewardCataloguePageState extends State<CarRewardCataloguePage> {
                         child: Container(
                           margin: EdgeInsets.all(5),
                           padding: EdgeInsets.all(5),
-                          child: Image.asset(carPictures[0]),
+                          child: Image.asset(widget.carPictures[0]),
                         ),
                       ),
                       Container(
@@ -92,14 +96,14 @@ class _CarRewardCataloguePageState extends State<CarRewardCataloguePage> {
                             Padding(
                                 padding: EdgeInsets.only(top: 20),
                                 child: Text(
-                                  carName[0],
+                                  widget.carName[0],
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Color(THEME.PRIMARY_COLOR),
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 )),
-                            IconsRewards(i: 0)
+                            IconsRewards(i: 0, scaffoldKey: _scaffoldKey)
                           ],
                         ),
                       )
@@ -125,7 +129,7 @@ class _CarRewardCataloguePageState extends State<CarRewardCataloguePage> {
                       Container(
                         margin: EdgeInsets.all(5),
                         padding: EdgeInsets.all(5),
-                        child: Image.asset(carPictures[1]),
+                        child: Image.asset(widget.carPictures[1]),
                       ),
                       Container(
                         child: Column(
@@ -134,14 +138,14 @@ class _CarRewardCataloguePageState extends State<CarRewardCataloguePage> {
                             Padding(
                                 padding: EdgeInsets.only(top: 30),
                                 child: Text(
-                                  carName[1],
+                                  widget.carName[1],
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Color(THEME.PRIMARY_COLOR),
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 )),
-                            IconsRewards(i: 1)
+                            IconsRewards(i: 1, scaffoldKey: _scaffoldKey)
                           ],
                         ),
                       )
@@ -157,8 +161,8 @@ class _CarRewardCataloguePageState extends State<CarRewardCataloguePage> {
 
 class IconsRewards extends StatefulWidget {
   int i;
-  IconsRewards({Key key, this.i}) : super(key: key);
-
+  GlobalKey scaffoldKey = GlobalKey<ScaffoldState>();
+  IconsRewards({Key key, this.i, this.scaffoldKey}) : super(key: key);
   @override
   _IconsRewardsState createState() => _IconsRewardsState();
 }
@@ -265,8 +269,24 @@ class _IconsRewardsState extends State<IconsRewards>
                       "assets/images/wishlist_round_1.png",
                       color: Color(THEME.PRIMARY_COLOR),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       go1(context);
+                      bool status = false;
+                      print("pressed save");
+                      status = await CarWishlist().save(new WishlistItemModel(
+                        "car",
+                        CarRewardCataloguePage().carName[widget.i],
+                        CarRewardCataloguePage().carPictures[widget.i],
+                        "",
+                        "",
+                      ));
+                      if (!status) {
+                        WishlistStatus.displaySnackBar(
+                            widget.scaffoldKey, "Already there in wishlist");
+                      } else {
+                        WishlistStatus.displaySnackBar(
+                            widget.scaffoldKey, "Added to  wishlist");
+                      }
                     }),
               ),
             ),

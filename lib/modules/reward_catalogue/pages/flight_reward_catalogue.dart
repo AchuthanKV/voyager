@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voyager/base/models/wishlist_item_model.dart';
 import 'package:voyager/modules/vouchers/pages/flight_voucher.dart';
 import 'package:voyager/modules/wishlist/pages/flight_wishlist.dart';
+import 'package:voyager/modules/wishlist/widgets/status_snackbar.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -35,9 +36,12 @@ class FlightRewardCataloguePage extends StatefulWidget {
 
 class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
   String searchtype = "";
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Color(THEME.PRIMARY_COLOR),
         title: Text('Rewards & Vouchers'),
@@ -119,7 +123,10 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold),
                             ),
-                            IconsRewards(i: 0)
+                            IconsRewards(
+                              i: 0,
+                              scaffoldKey: _scaffoldKey,
+                            )
                           ],
                         ),
                       )
@@ -174,7 +181,7 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold),
                             ),
-                            IconsRewards(i: 1)
+                            IconsRewards(i: 1, scaffoldKey: _scaffoldKey)
                           ],
                         ),
                       )
@@ -229,7 +236,7 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold),
                             ),
-                            IconsRewards(i: 2)
+                            IconsRewards(i: 2, scaffoldKey: _scaffoldKey)
                           ],
                         ),
                       )
@@ -247,7 +254,8 @@ class _FlightRewardCataloguePageState extends State<FlightRewardCataloguePage> {
 
 class IconsRewards extends StatefulWidget {
   int i;
-  IconsRewards({Key key, this.i}) : super(key: key);
+  GlobalKey scaffoldKey = GlobalKey<ScaffoldState>();
+  IconsRewards({Key key, this.i, this.scaffoldKey}) : super(key: key);
 
   @override
   _IconsRewardsState createState() => _IconsRewardsState();
@@ -309,17 +317,25 @@ class _IconsRewardsState extends State<IconsRewards>
                 child: new Text("Add To Wishlist",
                     style: TextStyle(
                         color: Color(THEME.PRIMARY_COLOR), fontSize: 15)),
-                onPressed: () {
+                onPressed: () async {
                   Navigator.of(context).pop();
                   //Write code to add this trip to Wishlist
+                  bool status = false;
                   print(searchtype);
-                  FlightWishlist().save(new WishlistItemModel(
+                  status = await FlightWishlist().save(new WishlistItemModel(
                     "flight",
                     FlightRewardCataloguePage().airName[index],
                     FlightRewardCataloguePage().airPictures[index],
                     searchtype,
                     FlightRewardCataloguePage().airAwardType[index],
                   ));
+                  if (!status) {
+                    WishlistStatus.displaySnackBar(
+                        widget.scaffoldKey, "Already there in wishlist");
+                  } else {
+                    WishlistStatus.displaySnackBar(
+                        widget.scaffoldKey, "Added to  wishlist");
+                  }
                 },
               ),
             ]);
