@@ -9,6 +9,7 @@ import 'package:voyager/base/models/wishlist_item_model.dart';
 import 'package:voyager/base/utils/sizeconfig.dart';
 import 'package:voyager/modules/vouchers/pages/flight_voucher.dart';
 import 'package:voyager/modules/wishlist/pages/wishlist_home.dart';
+import 'package:voyager/modules/wishlist/widgets/status_snackbar.dart';
 import 'package:voyager/services/background.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
 
@@ -16,7 +17,7 @@ class FlightWishlist extends StatefulWidget {
   FlightWishlist({Key key}) : super(key: key);
 
   save(WishlistItemModel item) {
-    createState().save(item);
+    return createState().save(item);
   }
 
   @override
@@ -25,21 +26,50 @@ class FlightWishlist extends StatefulWidget {
 
 class _FlightWishlistState extends State<FlightWishlist> {
   FlutterSecureStorage _storage = FlutterSecureStorage();
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Map> wishList = [];
   List<WishlistItemModel> flightList = [];
   bool isLoading = true;
 
   go() async {
-    await Wishlist().go();
+    // await Wishlist().go();
     flightList = Wishlist.flightList;
     wishList = Wishlist.wishList;
-    print(wishList.length.toString() + "kjiu");
+
     if (mounted) {
       setState(() {
         isLoading = false;
       });
     }
+  }
+
+  delete(WishlistItemModel item) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await go();
+    Map itemMap = {
+      "category": item.category,
+      "airAwardType": item.airAwardType,
+      "airSearchType": item.airSearchType,
+      "awardName": item.awardName,
+      "awardPicture": item.awardPicture,
+    };
+
+    flightList.remove(item);
+    int index = -1;
+    wishList.forEach((element) async {
+      if ((element["airAwardType"] == itemMap['airAwardType']) &&
+          (element["airSearchType"] == itemMap['airSearchType'])) {
+        index = wishList.indexOf(element);
+
+        return;
+      }
+    });
+
+    wishList.removeAt(index);
+
+    await sharedPreferences.setString("wishlist", json.encode(wishList));
+    //delete alert
+    WishlistStatus.displaySnackBar(_scaffoldKey, "Deleted Item from Wishlist!");
   }
 
   save(WishlistItemModel item) async {
@@ -65,18 +95,21 @@ class _FlightWishlistState extends State<FlightWishlist> {
     });
     if (present) {
       print('already there');
+      return false;
     } else {
       wishList.add(itemMap);
+      await sharedPreferences.setString("wishlist", json.encode(wishList));
+      return true;
     }
 
     //  sharedPreferences.remove("wishlist");
-    await sharedPreferences.setString("wishlist", json.encode(wishList));
   }
 
   @override
   Widget build(BuildContext context) {
     go();
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text("Flight Wishlist"),
           centerTitle: true,
@@ -157,19 +190,18 @@ class _FlightWishlistState extends State<FlightWishlist> {
                                                 fontSize: 13,
                                               ),
                                             ),
+                                            Text(
+                                              "${flightList[index].airSearchType}",
+                                              style: TextStyle(
+                                                  color: Color(
+                                                      THEME.PRIMARY_COLOR),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceEvenly,
                                               children: [
-                                                Text(
-                                                  "${flightList[index].airSearchType}",
-                                                  style: TextStyle(
-                                                      color: Color(
-                                                          THEME.PRIMARY_COLOR),
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
                                                 IconButton(
                                                     icon: Image.asset(
                                                         "assets/images/voucher_round.png",
@@ -181,6 +213,16 @@ class _FlightWishlistState extends State<FlightWishlist> {
                                                           new MaterialPageRoute(
                                                               builder: (__) =>
                                                                   FlightVoucher()));
+                                                    }),
+                                                IconButton(
+                                                    icon: Icon(
+                                                      Icons.delete_forever,
+                                                      color: Color(
+                                                          THEME.PRIMARY_COLOR),
+                                                    ),
+                                                    onPressed: () {
+                                                      delete(flightList[index]);
+                                                      //delete item
                                                     }),
                                               ],
                                             )
