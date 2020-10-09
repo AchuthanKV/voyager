@@ -41,13 +41,22 @@ class ChangepinApi {
 
     var body = getBody(oldPin, newPin);
     String path = AppConfig.changePinURL;
-    while (code == 500) {
-      response = await apiHandler.requestWith(
-        path: "$path",
-        type: RequestType.post,
-        body: body,
-      );
-      code = response.code;
+    try {
+      while (code == 500) {
+        response = await apiHandler.requestWith(
+          path: "$path",
+          type: RequestType.post,
+          body: body,
+        );
+        code = response.code;
+      }
+    } on CommonError catch (e) {
+      ChangepinStatus.errorMsg = e.description;
+      return false;
+    } on Exception catch (e) {
+      ChangepinStatus.errorMsg =
+          "Something Unexpected Occurred. Please try again!!";
+      return false;
     }
     bool status = false;
     if (response != null) {

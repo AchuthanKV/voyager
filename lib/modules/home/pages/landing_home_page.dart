@@ -15,6 +15,7 @@ import 'package:voyager/modules/login/services/accountsummary.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/login/services/memberprofile.dart';
 import 'package:voyager/modules/transaction/pages/transaction_page.dart';
+import 'package:voyager/modules/wishlist/pages/wishlist_home.dart';
 import 'package:voyager/services/background.dart';
 
 class LandingPage extends StatefulWidget {
@@ -92,8 +93,9 @@ class _LandingPageState extends State<LandingPage> {
                                 icon: Image.asset("assets/images/wishlist.png",
                                     color: Colors.black),
                                 onPressed: () {
-                                  //Wishlist method has to be called here
-                                  //Navigator
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          Wishlist()));
                                 }),
                             Text(
                               'Wishlist',

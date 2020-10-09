@@ -65,9 +65,11 @@ class LoginUser {
             accountModel != null &&
             membershipId == savedMembershipId) {
           LandingPage.callApi = true;
+          print("no call");
           return "true";
         } else {
-           LandingPage.callApi = false;
+          print('calling');
+          LandingPage.callApi = false;
           profileModel =
               await MembershipProfile().getMembershipProfile(membershipId);
 
@@ -81,8 +83,11 @@ class LoginUser {
         return "false";
       }
     } on CommonError catch (e) {
-      print(e.description);
-      LoginErrorAlert.errorMsg = e.description;
+      if (e.code == 10002) {
+        LoginErrorAlert.errorMsg = "No Internet";
+      } else {
+        LoginErrorAlert.errorMsg = e.description;
+      }
     } on Exception catch (e) {
       LoginErrorAlert.errorMsg =
           "Something unexpected Occurred! Please try again!";
