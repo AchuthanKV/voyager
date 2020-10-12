@@ -4,6 +4,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:voyager/modules/change_forgot_pin/services/forgotpin_api.dart';
+import 'package:voyager/modules/change_forgot_pin/services/forgotpin_status.dart';
 import 'package:voyager/modules/login/pages/login_page.dart';
 import 'package:voyager/screens/set_pin.dart';
 import 'package:voyager/theme/theme.dart' as THEME;
@@ -132,11 +134,15 @@ class _ForgotPinState extends State<ForgotPin> {
               ),
               SizedBox(height: 30.0),
               TextFormField(
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value.isEmpty) {
                     return 'Please enter your Membership No';
                   }
                   return null;
+                },
+                onChanged: (value) => {
+                  memberShipNo = value,
                 },
                 controller: membershipController,
                 onFieldSubmitted: (term) {
@@ -161,6 +167,10 @@ class _ForgotPinState extends State<ForgotPin> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
+                onChanged: (value) => {
+                  email = value,
+                },
+                keyboardType: TextInputType.emailAddress,
                 onFieldSubmitted: (term) {
                   _pinFocus.unfocus();
                 },
@@ -198,15 +208,30 @@ class _ForgotPinState extends State<ForgotPin> {
       padding: EdgeInsets.only(left: 20, right: 15),
       child: RaisedButton(
         onPressed: () async {
+          FocusScope.of(context).unfocus();
           if (_forgotPinKey.currentState.validate()) {
             setState(() {
               _isLoading = true;
             });
-            // signInWithEmail(
-            //     membershipController.text.trim(), emailController.text.trim());
-            await new Future.delayed(const Duration(seconds: 3));
-            Navigator.push(
-                context, new MaterialPageRoute(builder: (__) => LoginPage()));
+
+            //forgot Pin API
+            bool status = await ForgotPinApi().forgotPin(memberShipNo, email);
+            setStoredValues(memberShipNo, email);
+            setState(() {
+              _isLoading = false;
+            });
+            if (status) {
+              ForgotPinStatus.displaySnackBar(_scaffoldKey,
+                  "Successfully Resetted Pin. Please login again!");
+              await new Future.delayed(const Duration(seconds: 3));
+              Navigator.push(
+                  context, new MaterialPageRoute(builder: (__) => LoginPage()));
+            } else {
+              membershipController.clear();
+              emailController.clear();
+              ForgotPinStatus.displaySnackBar(
+                  _scaffoldKey, ForgotPinStatus.errorMsg);
+            }
           }
         },
         textColor: Colors.white,
@@ -220,6 +245,11 @@ class _ForgotPinState extends State<ForgotPin> {
 
   setStoredVal(String memberShipId) async {
     await _storage.write(key: 'membershipId', value: memberShipId);
+  }
+
+  setStoredValues(String memberShipId, String emailAddress) async {
+    await _storage.write(key: 'membershipId', value: memberShipId);
+    await _storage.write(key: 'emailAddress', value: emailAddress);
   }
 
   signInWithEmail(String membership, _email) {
