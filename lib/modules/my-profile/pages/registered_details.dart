@@ -54,7 +54,7 @@ class RsgisteredDetails extends StatelessWidget {
                       ),
                       Expanded(
                           child: Text(
-                        "${profileObject.phoneISDCode}${profileObject.phoneNumber}",
+                        "${profileObject.mobileISDCode}-${profileObject.mobileAreaCode}-${profileObject.mobileNumber}",
                         style: TextStyle(fontSize: 16),
                       ))
                     ],
