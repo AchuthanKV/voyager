@@ -22,14 +22,14 @@ class TransactionsApi {
 
     {
       Map txnheader = {
-        "transactionID": transactionId,
+        "transactionID": "9591CE87C3F220014C408427A4626B75", // transactionId,
         "userName": "mob-app",
         "timeStamp": Helper.getFormatedTime().toString()
       };
       Map activityDetailsRequest = {
         "companyCode": "SA",
         "programCode": "VOYAG",
-        "membershipNumber": profileModel.membershipId,
+        "membershipNumber": "500330350", //profileModel.membershipId,
         "activityStatus": "",
         "fromDate": fromDate,
         "toDate": toDate,

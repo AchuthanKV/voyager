@@ -5,6 +5,7 @@ import 'package:voyager/app_config.dart';
 import 'package:voyager/base/models/profile_model.dart';
 import 'package:voyager/base/services/helper.dart';
 import 'package:voyager/base/services/save_profile.dart';
+import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/login/services/response.dart';
 import 'package:voyager/modules/login/services/tier_name.dart';
 import 'package:voyager/modules/login/widgets/login_error.dart';
@@ -161,7 +162,7 @@ class MembershipProfile {
           profileModel.passportNumber =
               (individualInfo['passportNumber'].toString());
           if (isNil(individualInfo['idNumber'])) {
-            profileModel.idNumber = "NA";
+            profileModel.idNumber = "";
           } else {
             profileModel.idNumber = (individualInfo['idNumber'].toString());
           }
@@ -196,7 +197,12 @@ class MembershipProfile {
             profileModel.city = memberContactInfo['city'];
             profileModel.state = memberContactInfo['state'];
             profileModel.country = memberContactInfo['country'];
-            profileModel.zipCode = memberContactInfo['zipCode'].toString();
+
+            if (isNil(memberContactInfo['zipCode'])) {
+              profileModel.zipCode = "NA";
+            } else {
+              profileModel.zipCode = (memberContactInfo['zipCode'].toString());
+            }
             profileModel.emailAddress = memberContactInfo['emailAddress'];
             profileModel.phoneAreaCode =
                 memberContactInfo['phoneAreaCode'].toString();
@@ -210,9 +216,13 @@ class MembershipProfile {
                 memberContactInfo['mobileAreaCode'].toString();
             profileModel.mobileNumber =
                 memberContactInfo['mobileNumber'].toString();
-            profileModel.faxISDCode =
-                memberContactInfo['faxISDCode'].toString();
 
+            if (isNil(memberContactInfo['faxISDCode'])) {
+              profileModel.faxISDCode = "NA";
+            } else {
+              profileModel.faxISDCode =
+                  (memberContactInfo['faxISDCode'].toString());
+            }
             if (isNil(memberContactInfo['faxAreaCode'])) {
               profileModel.faxAreaCode = "NA";
             } else {
@@ -243,6 +253,7 @@ class MembershipProfile {
             profileModel.faxAreaCode = "";
             profileModel.fax = "";
           }
+          LoginUser.profileModel = profileModel;
           SaveGetProfile().saveProfile(profileModel);
 
           return profileModel;

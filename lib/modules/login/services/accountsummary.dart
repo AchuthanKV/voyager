@@ -190,6 +190,7 @@ class AccountSummary {
         }
       }
     }
+    LoginUser.accountModel = accountModel;
     SaveGetAccount().saveAccount(accountModel);
     print("saved accnt");
     return accountModel;
