@@ -1,11 +1,18 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voyager/base/models/account_model.dart';
 import 'package:voyager/base/models/profile_model.dart';
 import 'package:voyager/base/utils/sizeconfig.dart';
+import 'package:voyager/modules/home/pages/landing_home_page.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/my-profile/pages/address.dart';
 import 'package:voyager/modules/my-profile/pages/registered_details.dart';
@@ -14,6 +21,10 @@ import 'package:voyager/services/background.dart';
 
 class MyProfile extends StatefulWidget {
   MyProfile({Key key}) : super(key: key);
+  static bool hasImage = false;
+  getPath() {
+    return createState().getImagePath();
+  }
 
   @override
   _MyProfileState createState() => _MyProfileState();
@@ -22,19 +33,194 @@ class MyProfile extends StatefulWidget {
 class _MyProfileState extends State<MyProfile> {
   ProfileModel profileObject = LoginUser.profileModel;
   AccountModel accountModel = LoginUser.accountModel;
-
+  final _scaffoldkey = GlobalKey<ScaffoldState>();
   SizeConfig sizeConfig = SizeConfig();
+
+  Future<File> _image;
+  final picker = ImagePicker();
+  String imagePath = "";
   String gender;
-  go() {
+  String imageVal = "";
+  @override
+  void initState() {
+    super.initState();
     gender = profileObject.gender;
     gender = gender.toLowerCase();
+    getImagePath();
+  }
+
+  getImagePath() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (await prefs.containsKey("profileImage")) {
+      imagePath = await prefs.getString("profileImage");
+      // print(imagePath + "gooooooo");
+      if (mounted) {
+        setState(() {
+          MyProfile.hasImage = true;
+        });
+      } else {
+        MyProfile.hasImage = true;
+      }
+    } else {
+      imagePath = "";
+      MyProfile.hasImage = false;
+    }
+    return imagePath;
+  }
+
+  saveImagePath(imagePath) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print(imagePath + "savvveeee");
+    await prefs.setString("profileImage", imagePath);
+    LandingPage.proPicUrl = imagePath;
+    getImagePath();
+  }
+
+  deleteImagePath() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (await prefs.containsKey("profileImage")) {
+      await prefs.remove("profileImage");
+    }
+    LandingPage.profilePic = false;
+    setState(() {
+      MyProfile.hasImage = false;
+    });
+  }
+
+  Widget showPhoto() {
+    print(imagePath + "jhuhu");
+    return ClipRRect(
+        borderRadius: BorderRadius.circular(100.0),
+        child: Image.file(
+          File(imagePath),
+          height: SizeConfig.screenWidth / 4,
+          width: SizeConfig.screenWidth / 4,
+          fit: BoxFit.fitWidth,
+        ));
+  }
+
+  _takePhoto() async {
+    try {
+      ImagePicker.pickImage(source: ImageSource.camera)
+          .then((File recordedImage) {
+        if (recordedImage != null && recordedImage.path != null) {
+          GallerySaver.saveImage(recordedImage.path).then((path) {
+            // save path
+            saveImagePath(recordedImage.path);
+
+            setState(() {
+              imagePath = recordedImage.path;
+              MyProfile.hasImage = true;
+            });
+            showPhoto();
+          });
+        } else {
+          print("nooo recordr img");
+        }
+      });
+    } on Exception catch (e) {
+      print("take photo exception");
+    }
+  }
+
+  _selectPhoto() async {
+    try {
+      ImagePicker.pickImage(source: ImageSource.gallery)
+          .then((File recordedImage) {
+        if (recordedImage != null && recordedImage.path != null) {
+          GallerySaver.saveImage(recordedImage.path).then((path) {
+            // save path
+            saveImagePath(recordedImage.path);
+
+            setState(() {
+              imagePath = recordedImage.path;
+              MyProfile.hasImage = true;
+            });
+            showPhoto();
+          });
+        } else {
+          print("nooo recordr img");
+        }
+      });
+    } on Exception catch (e) {
+      print("select photo exceptiomn");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    go();
+    Container image = Container(
+      child: (gender == 'm')
+          ? Image.asset(
+              "assets/images/male.png",
+              width: SizeConfig.screenWidth / 4 + 10,
+            )
+          : Image.asset(
+              "assets/images/female.png",
+              width: SizeConfig.screenWidth / 4 + 10,
+            ),
+    );
+
+    dialogPop() {
+      showDialog(
+          context: _scaffoldkey.currentContext,
+          builder: (_) {
+            return Dialog(
+              child: Container(
+                color: Colors.white,
+                child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FlatButton(
+                          onPressed: () async {
+                            await _takePhoto();
+
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Take Picture',
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 18.0),
+                          ),
+                        ),
+                        FlatButton(
+                          onPressed: () async {
+                            await _selectPhoto();
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Select Picture form Gallery',
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 18.0),
+                          ),
+                        ),
+                        MyProfile.hasImage
+                            ? FlatButton(
+                                onPressed: () async {
+                                  await deleteImagePath();
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  'Remove Picture',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 18.0),
+                                ),
+                              )
+                            : SizedBox(
+                                height: 0,
+                              ),
+                      ],
+                    )),
+              ),
+            );
+          });
+    }
+
     return Container(
       child: Scaffold(
+          key: _scaffoldkey,
           appBar: AppBar(
             title: Text("My Profile"),
             centerTitle: true,
@@ -61,21 +247,10 @@ class _MyProfileState extends State<MyProfile> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 50, 10, 50),
                         child: FlatButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) => imageDialog);
-                          },
-                          child: (gender == 'm')
-                              ? Image.asset(
-                                  "assets/images/male.png",
-                                  width: SizeConfig.screenWidth / 4 + 10,
-                                )
-                              : Image.asset(
-                                  "assets/images/female.png",
-                                  width: SizeConfig.screenWidth / 4 + 10,
-                                ),
-                        ),
+                            onPressed: () {
+                              dialogPop();
+                            },
+                            child: MyProfile.hasImage ? showPhoto() : image),
                       ),
                       Column(
                         children: [

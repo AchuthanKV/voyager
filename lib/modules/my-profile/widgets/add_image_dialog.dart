@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voyager/modules/my-profile/pages/my_profile.dart';
 
 Dialog imageDialog = Dialog(
   child: Container(

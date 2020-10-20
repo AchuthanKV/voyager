@@ -5,8 +5,6 @@ import 'package:voyager/modules/contactus/pages/contact_us.dart';
 import 'package:voyager/modules/hotdeals/pages/hotdeals.dart';
 import 'package:voyager/modules/invite_friend/pages/invite_friend.dart';
 import 'package:voyager/modules/login/pages/login_page.dart';
-import 'package:voyager/modules/login/pages/login_screen.dart';
-import 'package:voyager/modules/logout/pages/logout.dart';
 import 'package:voyager/modules/miles/pages/miles_page.dart';
 import 'package:voyager/modules/more_about_voyager/pages/about_voyager.dart';
 import 'package:voyager/modules/my-profile/pages/my_profile.dart';
@@ -14,8 +12,6 @@ import 'package:voyager/modules/my_account/pages/my_account.dart';
 import 'package:voyager/modules/rewards_voucher/pages/reward_voucher_home.dart';
 import 'package:voyager/modules/vouchers/pages/voucher_makebooking.dart';
 import 'package:voyager/modules/vouchers/pages/vouchers_termsconditions.dart';
-
-import 'package:voyager/screens/barcode_scan.dart';
 import 'package:voyager/modules/change_forgot_pin/pages/forgot_pin.dart';
 import 'package:voyager/screens/login_options.dart';
 import 'package:voyager/modules/home/pages/page_view_left.dart';

@@ -1,5 +1,7 @@
 // import 'dart:convert';
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,6 +16,7 @@ import 'package:voyager/modules/home/services/percentage_tier.dart';
 import 'package:voyager/modules/login/services/accountsummary.dart';
 import 'package:voyager/modules/login/services/loginuser.dart';
 import 'package:voyager/modules/login/services/memberprofile.dart';
+import 'package:voyager/modules/my-profile/pages/my_profile.dart';
 import 'package:voyager/modules/transaction/pages/transaction_page.dart';
 import 'package:voyager/modules/wishlist/pages/wishlist_home.dart';
 import 'package:voyager/services/background.dart';
@@ -22,6 +25,8 @@ class LandingPage extends StatefulWidget {
   @override
   _LandingPageState createState() => _LandingPageState();
   static bool callApi = false;
+  static String proPicUrl = "";
+  static bool profilePic = false;
 }
 
 class _LandingPageState extends State<LandingPage> {
@@ -33,14 +38,25 @@ class _LandingPageState extends State<LandingPage> {
   String picUrl = "male.png";
   double tierPercent = 0.0;
 
-  profilepicUrl() {
+  profilepicUrl() async {
     sizeConfig.init(context);
-    String gender = profileObject.gender;
-    gender = gender.toLowerCase();
+    LandingPage.proPicUrl = await MyProfile().getPath();
 
-    print(gender);
-    if (gender != "m") {
-      picUrl = "female.png";
+    if (MyProfile.hasImage) {
+      setState(() {
+        LandingPage.profilePic = true;
+      });
+    } else {
+      LandingPage.profilePic = false;
+      String gender = profileObject.gender;
+      gender = gender.toLowerCase();
+
+      print(gender);
+      if (gender != "m") {
+        picUrl = "female.png";
+      } else {
+        picUrl = "male.png";
+      }
     }
   }
 
@@ -49,6 +65,7 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   go() async {
+    getTierPercent();
     if (LandingPage.callApi) {
       String membershipId = await _storage.read(key: 'membershipId');
 
@@ -62,6 +79,8 @@ class _LandingPageState extends State<LandingPage> {
           LandingPage.callApi = false;
         });
       } else {
+        profileObject = LoginUser.profileModel;
+        accountModel = LoginUser.accountModel;
         LandingPage.callApi = false;
       }
     }
@@ -71,8 +90,6 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     go();
     profilepicUrl();
-    getTierPercent();
-
     return Stack(
       children: [
         BackgroundClass(),
@@ -107,16 +124,26 @@ class _LandingPageState extends State<LandingPage> {
                     Align(
                       alignment: Alignment.center,
                       child: FlatButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/myprofile');
+                          onPressed: () async {
+                            await Navigator.pushNamed(context, '/myprofile');
+                            setState(() {});
                           },
-                          child: CircleAvatar(
-                            radius: SizeConfig.screenWidth / 5,
-                            backgroundColor: Colors.transparent,
-                            backgroundImage:
-                                AssetImage('assets/images/${picUrl}'),
-                          )),
-                    ),
+                          child: MyProfile.hasImage
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(100.0),
+                                  child: Image.file(
+                                    File(LandingPage.proPicUrl),
+                                    height: SizeConfig.screenWidth / 2.5,
+                                    width: SizeConfig.screenWidth / 2.5,
+                                    fit: BoxFit.fitWidth,
+                                  ))
+                              : CircleAvatar(
+                                  radius: SizeConfig.screenWidth / 5,
+                                  backgroundColor: Colors.transparent,
+                                  backgroundImage:
+                                      AssetImage('assets/images/${picUrl}'),
+                                )),
+                    )
                   ],
                 ),
                 Container(
