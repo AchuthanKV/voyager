@@ -236,7 +236,7 @@ class _ClaimMilesPageState extends State<ClaimMilesPage> {
                                       String listLogo = searchresultLogo[index];
                                       return Container(
                                         margin: EdgeInsets.symmetric(
-                                            horizontal: 10),
+                                            vertical: 10, horizontal: 10),
                                         decoration: BoxDecoration(
                                             boxShadow: [
                                               BoxShadow(

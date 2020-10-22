@@ -1,0 +1,3 @@
+Business Class (B)
+Economy Class (E)
+First Class (F)
