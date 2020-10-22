@@ -104,7 +104,7 @@ class _DineWishlistState extends State<DineWishlist> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("Cruise Wishlist"),
+          title: Text("Dine Wishlist"),
           centerTitle: true,
           actions: <Widget>[
             FlatButton(
